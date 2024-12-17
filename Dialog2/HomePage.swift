@@ -8,21 +8,30 @@ struct HomePageView: View {
         NavigationView {
             VStack {
                 // MARK: - Top Bar: Date and Log Mode Selection
-                VStack {
-                    Text(formattedDate(currentDate))
-                        .font(.title)
-                        .fontWeight(.bold)
-                    Picker("Log Mode", selection: $selectedLogMode) {
-                        Text("Simple").tag("Simple")
-                        Text("Comprehensive").tag("Comprehensive")
-                        Text("Intensive").tag("Intensive")
+                ZStack {
+                    // Background Covering Full Width
+                    Color("Primary_Color")
+                        .frame(maxWidth: .infinity, maxHeight: 160) // Full width and defined height
+                        .edgesIgnoringSafeArea(.top) // Extends to top edge of screen
+
+                    VStack(spacing: 10) {
+                        Text(formattedDate(currentDate))
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+
+                        Picker("Log Mode", selection: $selectedLogMode) {
+                            Text("Simple").tag("Simple")
+                            Text("Comprehensive").tag("Comprehensive")
+                            Text("Intensive").tag("Intensive")
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .padding(.horizontal, 20)
                     }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .padding()
+                    .padding(.top, 40) // Push content down slightly
                 }
-                .background(Color(UIColor.systemGray6))
-                .cornerRadius(10)
-                .padding(.horizontal)
 
                 // MARK: - Glucose Graph
                 VStack {
