@@ -14,7 +14,7 @@ struct InfoPageView: View {
                 Image("JavaCakes")
                     .resizable() // allows resizing
                     .scaledToFit() // maintains aspect ratio
-                    .frame(width: 100, height: 200) // adjust width and height as needed
+                    .frame(width: 200, height: 200) // adjust width and height as needed
 
                 // image of DiaLog logo
                 Image("DiaLog_Logo")
@@ -104,9 +104,27 @@ struct LoginView: View {
 }
 
 struct CreateAccountView: View {
+    @State private var firstName: String = "" // Binding to store user input
+    
     var body: some View {
-        Text("Create Account Page")
-            .font(.largeTitle)
+        VStack(alignment: .leading, spacing: 20) {
+            // First Name Label and TextField for input
+            Text("First Name:")
+                .font(.headline)
+            
+            TextField("Enter your first name", text: $firstName)
+                .padding() // Adds padding inside the TextField
+                .background(Color.gray.opacity(0.1)) // Background color to make the field noticeable
+                .cornerRadius(8) // Rounded corners for the TextField
+                .textFieldStyle(RoundedBorderTextFieldStyle()) // Standard border style for TextField
+
+            // Display entered text
+            Text("You entered: \(firstName)")
+                .padding(.top, 20)
+            
+            Spacer() // Pushes content upwards
+        }
+        .padding(40) // Padding around the VStack to avoid content being too close to the edges
     }
 }
 
