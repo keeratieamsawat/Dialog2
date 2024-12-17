@@ -172,14 +172,39 @@ struct CreateAccountView: View {
                         .stroke(Color("Primary_Color"), lineWidth: 2))
                 .offset(y:-10)
             
-                        
-            Spacer() // VStack spacer to push contents up
+            // button to direct to next page
+            NavigationLink(destination: PersonalInfoView()) {
+                Text("Next Step")
+                    .bold()
+                    .frame(maxWidth:.infinity,minHeight: 50)
+                    .foregroundColor(.white)
+                    .background(Color("Primary_Color"))
+                    .cornerRadius(10)
+                    .padding(.horizontal,40)
+            }
             
+            Spacer() // VStack spacer to push contents up
         }
         .padding(40) // VStack padding to make content not touch the edges
     }
 }
 
+struct PersonalInfoView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) { // use alignment in VStack to align everything to the left
+            
+            // texts on the create account page
+            HStack {
+                Text("Step 2 of 3")
+                    .font(.subheadline)
+                Spacer() // HStack spacer to push stuff to the left
+            }
+            Text("Personal Information")
+                .font(.title)
+                .bold() // Make it bold
+        }
+    }
+}
 
 struct SignInView: View {
     var body: some View {
