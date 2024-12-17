@@ -104,29 +104,82 @@ struct LoginView: View {
 }
 
 struct CreateAccountView: View {
-    @State private var firstName: String = "" // Binding to store user input
+    
+    // MARK: storing user inputs to the create account pages
+
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
+    @State private var userEmail: String = ""
+    @State private var password: String = ""
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // First Name Label and TextField for input
+        VStack(alignment: .leading, spacing: 20) { // use alignment in VStack to align everything to the left
+            
+            // texts on the create account page
+            HStack {
+                Text("Step 1 of 3")
+                    .font(.subheadline)
+                Spacer() // HStack spacer to push stuff to the left
+            }
+            Text("Create an Account")
+                .font(.title)
+                .bold() // Make it bold
+            
+            // MARK: text fields to intake user inputs for creating account
+            
+            // first name
             Text("First Name:")
                 .font(.headline)
-            
+            // textfield: allow user input
             TextField("Enter your first name", text: $firstName)
-                .padding() // Adds padding inside the TextField
-                .background(Color.gray.opacity(0.1)) // Background color to make the field noticeable
-                .cornerRadius(8) // Rounded corners for the TextField
-                .textFieldStyle(RoundedBorderTextFieldStyle()) // Standard border style for TextField
-
-            // Display entered text
-            Text("You entered: \(firstName)")
-                .padding(.top, 20)
+                .padding(10) // padding inside textfield to make it smaller
+                .frame(height: 40) // set smaller height/size for the textfield
+                .overlay( // user .overlay to add round rectangle border to textfield
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color("Primary_Color"), lineWidth: 2))
+                .offset(y:-10) // push the textfield a bit upwards
             
-            Spacer() // Pushes content upwards
+            // last name
+            Text("Last Name:")
+                .font(.headline)
+            TextField("Enter your last name", text: $lastName)
+                .padding(10)
+                .frame(height: 40)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color("Primary_Color"), lineWidth: 2))
+                .offset(y:-10)
+            
+            // user email
+            Text("Email Address:")
+                .font(.headline)
+            TextField("Enter your email", text: $userEmail)
+                .padding(10)
+                .frame(height: 40)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color("Primary_Color"), lineWidth: 2))
+                .offset(y:-10)
+            
+            // password
+            Text("Password:")
+                .font(.headline)
+            TextField("Create your password", text: $password)
+                .padding(10)
+                .frame(height: 40)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color("Primary_Color"), lineWidth: 2))
+                .offset(y:-10)
+            
+                        
+            Spacer() // VStack spacer to push contents up
+            
         }
-        .padding(40) // Padding around the VStack to avoid content being too close to the edges
+        .padding(40) // VStack padding to make content not touch the edges
     }
 }
+
 
 struct SignInView: View {
     var body: some View {
@@ -136,5 +189,5 @@ struct SignInView: View {
 }
 
 #Preview {
-    InfoPageView()
+    CreateAccountView()
 }
