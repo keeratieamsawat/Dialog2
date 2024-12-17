@@ -39,6 +39,7 @@ struct ComprehensiveMethodView: View {
                 // Subtitle
                 Text("*Ideal refining lifestyle or treatment strategies to improve diabetes management.")
                     .font(.footnote)
+                    .fontWeight(.bold)
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
 
@@ -49,26 +50,34 @@ struct ComprehensiveMethodView: View {
                             .foregroundColor(.blue)
                         Text("DATE:")
                         Spacer()
-                        TextField("Enter date", text: $date)
+                        TextField("", text: $date)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .multilineTextAlignment(.center)
                             .frame(maxWidth: 200)
                     }
                     HStack {
                         Image(systemName: "clock")
                             .foregroundColor(.blue)
                         Text("TIME:")
+                            .multilineTextAlignment(.center)
+                            
                         Spacer()
-                        TextField("Enter time", text: $time)
+                        TextField("", text: $time)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .multilineTextAlignment(.center)
                             .frame(maxWidth: 200)
                     }
                     HStack {
                         Image(systemName: "drop.fill")
                             .foregroundColor(.blue)
                         Text("BLOOD SUGAR LEVEL:")
+                            .lineLimit(1)
+                            .layoutPriority(1)
+                            .multilineTextAlignment(.leading)
                         Spacer()
-                        TextField("Enter level", text: $bloodSugarLevel)
+                        TextField("", text: $bloodSugarLevel)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .multilineTextAlignment(.center)
                             .frame(maxWidth: 200)
                     }
                     HStack {
@@ -76,9 +85,10 @@ struct ComprehensiveMethodView: View {
                             .foregroundColor(.blue)
                         Text("NOTE:")
                         Spacer()
-                        TextField("Enter note", text: $note)
+                        TextField("Optional", text: $note)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .frame(maxWidth: 200)
+                            .multilineTextAlignment(.center)
                     }
                 }
                 .padding()
@@ -92,6 +102,7 @@ struct ComprehensiveMethodView: View {
                     Text("INSULIN")
                         .font(.headline)
                         .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
 
                     HStack {
                         Text("Name:")
@@ -236,4 +247,4 @@ struct ComprehensiveMethodView_Previews: PreviewProvider {
     static var previews: some View {
         ComprehensiveMethodView()
     }
-}
+} 
