@@ -1,18 +1,20 @@
 import SwiftUI
 
 struct HomePageView: View {
-    @State private var selectedLogMode: String = "Simple" // Log mode selection
-    @State private var currentDate = Date() // Date Picker
-
+    // Update in real time
+    @State private var currentDate = Date()
+    
+    // Mode selection
+    @State private var selectedLogMode: String = "Simple"
+    
     var body: some View {
         NavigationView {
-            VStack {
-                // MARK: - Top Bar: Date and Log Mode Selection
+            VStack(spacing: 0) {
+                // MARK: - Top Section (Date and Log Mode Selection)
                 ZStack {
-                    // Background Covering Full Width
                     Color("Primary_Color")
-                        .frame(maxWidth: .infinity, maxHeight: 160) // Full width and defined height
-                        .edgesIgnoringSafeArea(.top) // Extends to top edge of screen
+                        .frame(maxWidth: .infinity, maxHeight: 160)
+                        .edgesIgnoringSafeArea(.top)
 
                     VStack(spacing: 10) {
                         Text(formattedDate(currentDate))
@@ -21,24 +23,24 @@ struct HomePageView: View {
                             .foregroundColor(.white)
 
                         Picker("Log Mode", selection: $selectedLogMode) {
-                            Text("Simple").tag("Simple")
-                            Text("Comprehensive").tag("Comprehensive")
-                            Text("Intensive").tag("Intensive")
+                            Text("Simple").tag("Simple").fontWeight(.bold)
+                            Text("Comprehensive").tag("Comprehensive").fontWeight(.bold)
+                            Text("Intensive").tag("Intensive").fontWeight(.bold)
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .background(Color.white)
                         .cornerRadius(10)
                         .padding(.horizontal, 20)
                     }
-                    .padding(.top, 40) // Push content down slightly
+                    .padding(.top, 40)
                 }
 
-                // MARK: - Glucose Graph
+                // MARK: - Daily Graph
                 VStack {
                     Text("Glucose Trends")
                         .font(.headline)
                         .foregroundColor(.blue)
-                    GraphView() // Placeholder for graph implementation
+                    GraphView()
                         .frame(height: 200)
                         .padding()
                 }
@@ -55,17 +57,16 @@ struct HomePageView: View {
                 }
                 .padding(.top)
 
-                // MARK: - Record Button
-                Button(action: {
-                    print("Record button tapped")
-                }) {
+                // MARK: - Record Button Navigation (Different Mode)
+                NavigationLink(destination: destinationView(for: selectedLogMode)) {
                     Text("RECORD")
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .frame(width: 150, height: 50)
-                        .background(Color.green)
-                        .cornerRadius(10)
+                        .background(Color.blue)
+                        .cornerRadius(25)
+                        .shadow(radius: 5)
                 }
                 .padding()
 
@@ -86,7 +87,22 @@ struct HomePageView: View {
         }
     }
 
-    // MARK: - Helper Functions
+    // MARK: - Helper Function to Determine Destination View
+    @ViewBuilder
+    func destinationView(for mode: String) -> some View {
+        switch mode {
+        case "Simple":
+            SimpleMethodView()
+        case "Comprehensive":
+            ComprehensiveMethodView()
+        //case "Intensive":
+            //IntensiveMethodView()
+        default:
+            Text("Unknown Mode")
+        }
+    }
+
+    // MARK: - Helper Function to Format Date
     func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d" // Format for 'November 16'
@@ -144,10 +160,11 @@ struct TabItem: View {
     }
 }
 
+
+
 // MARK: - Preview
 struct HomePageView_Previews: PreviewProvider {
     static var previews: some View {
         HomePageView()
     }
 }
-
