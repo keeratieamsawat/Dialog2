@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-struct Chen: View {
+struct InfoPageView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 40.0) {
@@ -112,4 +112,3 @@ struct SignInView: View {
 #Preview {
     ContentView()
 }
-
