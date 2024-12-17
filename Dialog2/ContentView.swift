@@ -34,6 +34,16 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                
+                NavigationLink(destination: InfoPageView()) {
+                    Text("Go to fucking login fuck u")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.purple)
+                        .foregroundColor(.white)
+                    .cornerRadius(10)}
+                
+                
             }
             .padding()
             .navigationTitle("Home")
