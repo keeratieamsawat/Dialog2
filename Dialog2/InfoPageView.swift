@@ -12,8 +12,9 @@ struct InfoPageView: View {
                 
                 // image of DiaLog logo
                 Image("DiaLog_Logo")
-                    .imageScale(.small) // change size of image
-                    .offset(y:-20) // move the image upwards
+                    .resizable() // allows resizing
+                    .scaledToFit() // maintains aspect ratio
+                    .frame(width: 300, height: 200) // adjust width and height as needed
                 
                 // texts on the main page
                 Text("Welcome!")
@@ -110,5 +111,5 @@ struct SignInView: View {
 }
 
 #Preview {
-    ContentView()
+    InfoPageView()
 }
