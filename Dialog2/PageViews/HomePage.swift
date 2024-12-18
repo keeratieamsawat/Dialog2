@@ -177,3 +177,4 @@ struct HomePageView_Previews: PreviewProvider {
         HomePageView()
     }
 }
+
