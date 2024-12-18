@@ -9,13 +9,23 @@ import SwiftUI
 
 struct DetailsPageView: View {
     var body: some View {
-        VStack(){
+        // alignment: aligning the VStack to the left
+        VStack(alignment: .leading, spacing: 20) {
             Text("We'll need some details about your condition...")
                 .font(.headline)
                 .bold()
+                .padding(.leading, 20) // padding from the left
+                .padding(.top, 40) // padding from the top
+            Text("First off, when were you diagnosed, and what diabetes type are you diagnosed with?")
+                .font(.title3)
+                .bold()
+                .padding(.leading, 20)
+                .padding(.top, 20)
+            
+            
             Spacer()
         }
-        .padding(20)
+        .padding(10) // padding for the whole VStack
     }
 }
 
