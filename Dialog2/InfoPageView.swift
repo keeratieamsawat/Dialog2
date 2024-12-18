@@ -1,7 +1,8 @@
-// JavaCakes!
-// Created by Chen Fan on 08/12/2024.
 
-// Main pages and sign-in/create account pages.
+// This file contains:
+// 1) main page: contains the logos and "get started"
+// 2) sign-up pages
+// 3) log-in pages
 
 import SwiftUI
 
@@ -98,7 +99,7 @@ struct LoginView: View {
             }
             
         }
-        // align all contents to the top of page
+        // align all contents to the centre of page
         .frame(maxHeight: .infinity, alignment: .center)
     }
 }
@@ -123,7 +124,7 @@ struct CreateAccountView: View {
                 .font(.title)
                 .bold() // Make it bold
             
-            // MARK: text fields to intake user inputs for creating account
+    // MARK: text fields to intake user inputs for creating account
             
             // first name
             Text("First Name:")
@@ -315,6 +316,17 @@ struct ConsentsView: View {
                 .bold()
             Spacer() // VStack spacer to push contents up
         }
+        
+        // button to the details page
+        NavigationLink(destination: DetailsPageView()) {
+            Text("Enter Details of Your Condition")
+                .bold()
+                .frame(maxWidth:.infinity,minHeight: 50)
+                .foregroundColor(.white)
+                .background(Color("Primary_Color"))
+                .cornerRadius(10)
+                .padding(.horizontal,40)
+        }
         .padding(30) // VStack padding to make content not touch the edges
     }
 }
@@ -328,5 +340,5 @@ struct SignInView: View {
 }
 
 #Preview {
-    ConsentsView()
+    LoginView()
 }
