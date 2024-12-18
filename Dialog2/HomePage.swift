@@ -7,6 +7,9 @@ struct HomePageView: View {
     // Mode selection
     @State private var selectedLogMode: String = "Simple"
     
+    // Shared data model (glucose level graph)
+    @ObservedObject var glucoseData = GlucoseData()
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -35,27 +38,42 @@ struct HomePageView: View {
                     .padding(.top, 40)
                 }
 
-                // MARK: - Daily Graph
-                VStack {
-                    Text("Glucose Trends")
-                        .font(.headline)
-                        .foregroundColor(.blue)
-                    GraphView()
-                        .frame(height: 200)
-                        .padding()
+                // MARK: - Daily Glucose Graph (Linked to MyStatistic Page)
+                NavigationLink(destination:
+                    GlucoseStatView(glucoseData: glucoseData)) {
+                    VStack {
+                        Text("Average Glucose Level Per Hour")
+                            .font(.headline)
+                            .foregroundColor(Color("Primary_Color"))
+                            .padding(.top, 10)
+                        
+                        GraphView(data: glucoseData.dailyGlucoseLevels)
+                            .frame(height: 170)
+                            .padding()
+                    }
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 2)
+                    .padding(.horizontal)
                 }
-                .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 2)
-                .padding(.horizontal)
 
                 // MARK: - Key Metrics
                 HStack {
-                    MetricCard(title: "Measured", value: "2 times")
-                    MetricCard(title: "Average", value: "4.5 mmol/L")
-                    MetricCard(title: "Carb Intake", value: "20 g")
+                    NavigationLink(destination: MeasuredStatView(glucoseData: glucoseData)) {
+                        MetricCard(title: "Measured", value: "\(glucoseData.dailyGlucoseLevels.count) times")
+                    }
+                    
+                    NavigationLink(destination: AverageStatView(glucoseData: glucoseData)) {
+                        MetricCard(title: "Average", value: "\(String(format: "%.2f", glucoseData.calculateAverage())) mmol/L")
+                    }
+
+                    NavigationLink(destination: CarbIntakeStatView()) { // Placeholder
+                        MetricCard(title: "Carb Intake", value: "20 mg")
+                    }
                 }
                 .padding(.top)
+
+
 
                 // MARK: - Record Button Navigation (Different Mode)
                 NavigationLink(destination: destinationView(for: selectedLogMode)) {
@@ -110,15 +128,6 @@ struct HomePageView: View {
     }
 }
 
-// MARK: - Placeholder for GraphView
-struct GraphView: View {
-    var body: some View {
-        Rectangle()
-            .foregroundColor(Color(UIColor.systemGray4))
-            .cornerRadius(8)
-            .overlay(Text("Graph Placeholder"))
-    }
-}
 
 // MARK: - Metric Card
 struct MetricCard: View {
