@@ -116,11 +116,9 @@ struct CreateAccountView: View {
         VStack(alignment: .leading, spacing: 20) { // use alignment in VStack to align everything to the left
             
             // texts on the create account page
-            HStack {
-                Text("Step 1 of 3")
-                    .font(.subheadline)
-                Spacer() // HStack spacer to push stuff to the left
-            }
+            Text("Step 1 of 3")
+                .font(.subheadline)
+               
             Text("Create an Account")
                 .font(.title)
                 .bold() // Make it bold
@@ -132,7 +130,7 @@ struct CreateAccountView: View {
                 .font(.headline)
             // textfield: allow user input
             TextField("Enter your first name", text: $firstName)
-                .padding(10) // padding inside textfield to make it smaller
+                .padding(10) // the padding inside textfield
                 .frame(height: 40) // set smaller height/size for the textfield
                 .overlay( // user .overlay to add round rectangle border to textfield
                     RoundedRectangle(cornerRadius: 8)
@@ -196,16 +194,16 @@ struct PersonalInfoView: View {
     @State private var birthDate: Date = Date()
     @State private var country: String = ""
     @State private var emergContact: String = ""
+    @State private var height: String = ""
+    @State private var weight: String = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) { // use alignment in VStack to align everything to the left
             
             // texts on the create account page
-            HStack {
-                Text("Step 2 of 3")
-                    .font(.subheadline)
-                Spacer() // HStack spacer to push stuff to the left
-            }
+            Text("Step 2 of 3")
+                .font(.subheadline)
+                
             Text("Personal Information")
                 .font(.title)
                 .bold() // Make it bold
@@ -254,15 +252,42 @@ struct PersonalInfoView: View {
             Text("Emergency Contact:")
                 .font(.headline)
                 .offset(y:10)
-            TextField("Enter the details of your emergency contact", text: $emergContact)
+            TextField("Details of your emergency contact", text: $emergContact)
                 .padding(10)
                 .frame(height: 40)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2))
             
+            // for weight and height
+            // using HStack and VStack to align them next to each other
+            HStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Weight:")
+                        .font(.headline)
+                        .bold()
+                    TextField("Enter weight", text: $weight)
+                        .padding(10)
+                        .frame(height: 40)
+                        .overlay( // Add a border
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color("Primary_Color"),lineWidth: 2))
+                }
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Height:")
+                        .font(.headline)
+                        .bold()
+                    TextField("Enter height", text: $height)
+                        .padding(10)
+                        .frame(height: 40)
+                        .overlay( // Add a border
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color("Primary_Color"),lineWidth: 2))
+                }
+            }
+            
             // button to direct to next page
-            NavigationLink(destination: PersonalInfoView()) {
+            NavigationLink(destination: ConsentsView()) {
                 Text("Final Step")
                     .bold()
                     .frame(maxWidth:.infinity,minHeight: 50)
@@ -278,6 +303,23 @@ struct PersonalInfoView: View {
     }
 }
 
+struct ConsentsView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) { // use alignment in VStack to align everything to the left
+            // texts on the create account page
+            Text("Step 3 of 3")
+                .font(.subheadline)
+            
+            Text("Privacy & Legal Consents")
+                .font(.title)
+                .bold()
+            Spacer() // VStack spacer to push contents up
+        }
+        .padding(30) // VStack padding to make content not touch the edges
+    }
+}
+
+
 struct SignInView: View {
     var body: some View {
         Text("Sign In Page")
@@ -286,5 +328,5 @@ struct SignInView: View {
 }
 
 #Preview {
-    PersonalInfoView()
+    ConsentsView()
 }
