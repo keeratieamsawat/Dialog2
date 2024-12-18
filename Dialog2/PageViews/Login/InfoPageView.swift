@@ -98,15 +98,15 @@ struct LoginView: View {
             }
             
         }
-        // align all contents to the top of page
+        // align all contents to the centre of page
         .frame(maxHeight: .infinity, alignment: .center)
     }
 }
 
 struct CreateAccountView: View {
     
-// MARK: storing user inputs to the create account pages
-
+// MARK: storing user input
+    
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var userEmail: String = ""
@@ -123,6 +123,7 @@ struct CreateAccountView: View {
                 .font(.title)
                 .bold() // Make it bold
             
+
 // MARK: text fields to intake user inputs for creating account
             
             // first name
@@ -188,7 +189,7 @@ struct CreateAccountView: View {
 }
 
 struct PersonalInfoView: View {
-    
+
 // MARK: storing user inputs to the create account pages
 
     @State private var gender: String = ""
