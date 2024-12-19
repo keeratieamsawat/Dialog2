@@ -53,11 +53,11 @@ struct DetailsPageView: View {
                 .frame(width:300,height:50) // Ensure Picker width and height are consistent with DatePicker
                 .background(Color.white) // Background color for the picker
                 .cornerRadius(10) // Rounded corners for the border
-                .overlay( // Border around the picker
+                .overlay( // border around the picker
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(Color("Primary_Color"), lineWidth: 2)
                 )
-                .padding(.horizontal,40) // Same padding as DatePicker
+                .padding(.horizontal,40)
             }
             // button to direct to next page
             NavigationLink(destination: InsulinInfoView()) {
@@ -211,6 +211,8 @@ struct MedicationView: View {
     }
 }
 
+// MARK: select preferred units for logging BS and carbohydrates
+
 struct UnitsView: View{
     
     @State private var bsUnit: String = "mmol/L" // default
@@ -279,6 +281,8 @@ struct UnitsView: View{
     }
 }
 
+// MARK: choose target BS range for control
+
 struct bsRangeView: View {
     
     // passing on the chosen blood sugar unit from UnitsView
@@ -293,17 +297,30 @@ struct bsRangeView: View {
             Text("What is your target blood sugar range?")
                 .font(.title3)
                 .bold()
-            // target range
-            Text("Lower bound in \(bsUnit):")
-                .font(.headline)
+            
+            // target range lower bound
+            Text("Lower bound: \(lowerBound,specifier: "%.2f")\(bsUnit)")
+                .font(.caption)
             Slider(value: $lowerBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
+                .offset(y:-40)
+            
+            // target range upper bound
             Text("Upper bound in \(bsUnit):")
                 .font(.headline)
+            Text("Upper bound: \(upperBound,specifier:"%.2f")\(bsUnit)")
+                .font(.caption)
             Slider(value: $upperBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
+                .offset(y:-40)
+            
+            // display chosen range
+            Text("Your chosen range: \(lowerBound,specifier: "%.2f") \(bsUnit) to \(upperBound,specifier: "%.2f") \(bsUnit)")
+                            .font(.footnote)
+                            .foregroundColor(.black)
+                            .offset(y:-40)
             
             NavigationLink(destination: DoctorInfoView()) {
                 Text("Confirm")
