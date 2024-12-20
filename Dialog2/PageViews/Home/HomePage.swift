@@ -58,20 +58,35 @@ struct HomePageView: View {
                 }
 
                 // MARK: - Key Metrics
-                HStack {
-                    NavigationLink(destination: MeasuredStatView(glucoseData: glucoseData)) {
-                        MetricCard(title: "Measured", value: "\(glucoseData.dailyGlucoseLevels.count) times")
+                VStack(spacing: 20) {
+                    HStack(spacing: 20) {
+                        NavigationLink(destination: MeasuredStatView(glucoseData: glucoseData)) {
+                            MetricCard(title: "Measured", value: "\(glucoseData.dailyGlucoseLevels.count) times")
+                        }
+                        
+                        NavigationLink(destination: AverageStatView(glucoseData: glucoseData)) {
+                            MetricCard(title: "Average", value: "\(String(format: "%.2f", glucoseData.calculateAverage())) mmol/L")
+                        }
+
+                        NavigationLink(destination: CarbIntakeStatView()) { // Placeholder
+                            MetricCard(title: "Carb Intake", value: "20 g")
+                        }
                     }
                     
-                    NavigationLink(destination: AverageStatView(glucoseData: glucoseData)) {
-                        MetricCard(title: "Average", value: "\(String(format: "%.2f", glucoseData.calculateAverage())) mmol/L")
-                    }
-
-                    NavigationLink(destination: CarbIntakeStatView()) { // Placeholder
-                        MetricCard(title: "Carb Intake", value: "20 mg")
+                    HStack(spacing: 20) {
+                        NavigationLink(destination: MedicationStatView()) {
+                            MetricCard(title: "Medication Intake", value: "500 mg")
+                        }
+                        NavigationLink(destination: ExerciseStatView()) {
+                            MetricCard(title: "Exercise", value: "30 min")
+                        }
+                        NavigationLink(destination: CalorieIntakeStatView()) {
+                            MetricCard(title: "Calorie Intake", value: "1500 kcal")
+                        }
                     }
                 }
                 .padding(.top)
+
 
 
 
@@ -81,12 +96,12 @@ struct HomePageView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(width: 150, height: 50)
-                        .background(Color.blue)
+                        .frame(width: 150, height: 80)
+                        .background(Color("Primary_Color"))
                         .cornerRadius(25)
                         .shadow(radius: 5)
                 }
-                .padding()
+                .padding(.top)
 
                 Spacer()
 
@@ -177,3 +192,4 @@ struct HomePageView_Previews: PreviewProvider {
         HomePageView()
     }
 }
+
