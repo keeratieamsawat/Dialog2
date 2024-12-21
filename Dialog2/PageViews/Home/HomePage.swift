@@ -126,8 +126,10 @@ struct HomePageView: View {
         switch mode {
         case "Simple":
             SimpleMethodView()
+                .navigationBarHidden(true)
         case "Comprehensive":
             ComprehensiveMethodView()
+                .navigationBarHidden(true)
         //case "Intensive":
             //IntensiveMethodView()
         default:
