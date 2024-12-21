@@ -119,6 +119,9 @@ struct HomePageView: View {
                     NavigationLink(destination: HelpPage()) {
                         TabItem(icon: "questionmark.circle", label: "Help")
                     }
+                    NavigationLink(destination: QuestionPage()) {
+                        TabItem(icon: "doc.text", label: "Form")
+                    }
                 }
                 .padding()
                 .background(Color(UIColor.systemGray5))
