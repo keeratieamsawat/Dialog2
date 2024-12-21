@@ -107,10 +107,18 @@ struct HomePageView: View {
 
                 // MARK: - Navigation Tabs
                 HStack {
-                    TabItem(icon: "chart.bar", label: "Stats")
-                    TabItem(icon: "house.fill", label: "Home", isSelected: true)
-                    TabItem(icon: "person.fill", label: "Me")
-                    TabItem(icon: "questionmark.circle", label: "Help")
+                    NavigationLink(destination: MyStatisticPage(glucoseData:glucoseData)) {
+                        TabItem(icon: "chart.bar", label: "Stats")
+                    }
+                    NavigationLink(destination: HomePageView()) {
+                        TabItem(icon: "house.fill", label: "Home", isSelected: true)
+                    }
+                    NavigationLink(destination: MyInfoPage()) {
+                        TabItem(icon: "person.fill", label: "Me")
+                    }
+                    NavigationLink(destination: HelpPage()) {
+                        TabItem(icon: "questionmark.circle", label: "Help")
+                    }
                 }
                 .padding()
                 .background(Color(UIColor.systemGray5))
@@ -128,8 +136,8 @@ struct HomePageView: View {
             SimpleMethodView()
         case "Comprehensive":
             ComprehensiveMethodView()
-        //case "Intensive":
-            //IntensiveMethodView()
+        case "Intensive":
+            IntensiveView()
         default:
             Text("Unknown Mode")
         }
@@ -142,7 +150,6 @@ struct HomePageView: View {
         return formatter.string(from: date)
     }
 }
-
 
 // MARK: - Metric Card
 struct MetricCard: View {
@@ -157,6 +164,7 @@ struct MetricCard: View {
             Text(value)
                 .font(.headline)
                 .fontWeight(.bold)
+                .foregroundColor(Color("Primary_Color")) // Optional color for values
         }
         .frame(width: 100, height: 80)
         .background(Color(UIColor.systemGray6))
@@ -164,6 +172,7 @@ struct MetricCard: View {
         .shadow(radius: 1)
     }
 }
+
 
 // MARK: - Tab Item
 struct TabItem: View {
@@ -192,4 +201,3 @@ struct HomePageView_Previews: PreviewProvider {
         HomePageView()
     }
 }
-
