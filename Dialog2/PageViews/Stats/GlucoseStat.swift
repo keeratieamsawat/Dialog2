@@ -3,7 +3,9 @@ import SwiftUI
 
 // MARK: - GlucoseStatView
 struct GlucoseStatView: View {
-    @ObservedObject var glucoseData: GlucoseData // Shared data model
+    
+    // ObservedObject wrapper allows the view page to observe and display changes glucoseData
+    @ObservedObject var glucoseData = GlucoseData()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -46,3 +48,8 @@ struct GlucoseStatView: View {
     }
 }
 
+struct GlucoseStatView_Previews: PreviewProvider {
+    static var previews: some View {
+        GlucoseStatView()
+    }
+}

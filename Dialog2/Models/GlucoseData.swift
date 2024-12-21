@@ -7,6 +7,7 @@ import Combine
 class GlucoseData: ObservableObject {
     @Published var dailyGlucoseLevels: [CGFloat] = [5.0, 4.8, 5.5, 6.0, 5.2, 4.9]
     
+    
     // Add a new glucose reading
     func addNewReading(_ newValue: CGFloat) {
         dailyGlucoseLevels.append(newValue)
@@ -23,6 +24,8 @@ class GlucoseData: ObservableObject {
 // MARK: - MeasuredStatView
 struct MeasuredStatView: View {
     @ObservedObject var glucoseData: GlucoseData
+    
+    var graphLineColor: Color = Color("Primary_Color")
 
     var body: some View {
         VStack(spacing: 20) {
@@ -33,6 +36,7 @@ struct MeasuredStatView: View {
 
             Text("Total Measurements: \(glucoseData.dailyGlucoseLevels.count) times")
                 .font(.headline)
+                .foregroundColor(Color("Primary_Color"))
                 .padding()
 
             GraphView(data: glucoseData.dailyGlucoseLevels)
@@ -97,7 +101,7 @@ struct GraphView: View {
                     path.addLine(to: CGPoint(x: x, y: y))
                 }
             }
-            .stroke(Color.blue, lineWidth: 2)
+            .stroke(Color("Primary_Color"), lineWidth: 2)
         }
         .background(Color(UIColor.systemGray5))
         .cornerRadius(10)
