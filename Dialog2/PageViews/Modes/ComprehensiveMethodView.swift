@@ -96,24 +96,24 @@ struct ComprehensiveMethodView: View {
                         Text("FOOD")
                             .font(.headline)
                             .foregroundColor(.green)
-
+                        
                         HStack(spacing: 10) {
-                                                   ForEach(tabs, id: \.self) { tab in
-                                                       Text(tab)
-                                                           .fontWeight(.semibold) // Optional: to emphasize the tab text
-                                                           .padding(.vertical, 10)
-                                                           .padding(.horizontal, 20)
-                                                           .lineLimit(1) // Ensures text is on one line
-                                                           .minimumScaleFactor(0.5) // Shrinks text to fit if needed
-                                                           .background(selectedTab == tab ? Color.green : Color.clear)
-                                                           .foregroundColor(selectedTab == tab ? .white : .green)
-                                                           .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.green, lineWidth: 1))
-                                                           .frame(minWidth: 0, maxWidth: .infinity) // Makes tabs equal width
-                                                           .onTapGesture {
-                                                               selectedTab = tab
-                                                           }
-                                                   }
-                                               }
+                            ForEach(tabs, id: \.self) { tab in
+                                Text(tab)
+                                    .fontWeight(.semibold) // Optional: to emphasize the tab text
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 20)
+                                    .lineLimit(1) // Ensures text is on one line
+                                    .minimumScaleFactor(0.5) // Shrinks text to fit if needed
+                                    .background(selectedTab == tab ? Color.green : Color.clear)
+                                    .foregroundColor(selectedTab == tab ? .white : .green)
+                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.green, lineWidth: 1))
+                                    .frame(minWidth: 0, maxWidth: .infinity) // Makes tabs equal width
+                                    .onTapGesture {
+                                        selectedTab = tab
+                                    }
+                            }
+                        }
 
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {

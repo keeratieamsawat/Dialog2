@@ -49,10 +49,6 @@ struct MainPageView: View {
         }
     }
 }
-                
-            
-    
-
 
 #Preview {
     MainPageView()
