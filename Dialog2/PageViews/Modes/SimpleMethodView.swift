@@ -1,18 +1,19 @@
 import SwiftUI
 
 struct SimpleMethodView: View {
+    
     @State private var selectedTab: String = "" // Initially empty
     @State private var selectedDate = Date()
     @State private var selectedTime = Date()
-
+    
     @State private var bloodSugarLevel: String = ""
     @State private var note: String = ""
     @State private var food: String = ""
     @State private var portionSize: String = ""
     @State private var carbohydrateIntake: String = ""
-
+    
     let tabs = ["Breakfast", "Lunch", "Dinner", "Snack"]
-
+    
     var body: some View {
         VStack(spacing: 0) {
             // Top Blue Bar
@@ -20,7 +21,7 @@ struct SimpleMethodView: View {
                 Color("Primary_Color")
                     .frame(height: 100)
                     .edgesIgnoringSafeArea(.top)
-
+                
                 Text("Simple Method")
                     .font(.title2)
                     .fontWeight(.bold)
@@ -28,7 +29,7 @@ struct SimpleMethodView: View {
                     .padding(.top, 55)
                     .padding(.bottom, 10)
             }
-
+            
             // Scrollable Content
             ScrollView {
                 VStack(spacing: 10) {
@@ -41,7 +42,7 @@ struct SimpleMethodView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                         .padding(.top, 20)
-
+                    
                     // Blue Section for Date, Time, and Blood Sugar
                     VStack(spacing: 15) {
                         HStack {
@@ -83,7 +84,7 @@ struct SimpleMethodView: View {
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10).fill(Color.blue.opacity(0.5)))
                     .padding(.horizontal)
-
+                    
                     // Food Section
                     VStack(spacing: 10) {
                         HStack {
@@ -110,7 +111,7 @@ struct SimpleMethodView: View {
                                     }
                             }
                         }
-
+                        
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Image(systemName: "clock")
@@ -159,7 +160,7 @@ struct SimpleMethodView: View {
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10).fill(Color.green.opacity(0.1)))
                     .padding(.horizontal)
-
+                    
                     // Apply Button
                     Button(action: {
                         print("Date: \(formattedDate())")
@@ -178,7 +179,7 @@ struct SimpleMethodView: View {
                 .padding(.bottom, 10) // Avoid overlap with bottom bar
             }
             .edgesIgnoringSafeArea([.leading, .trailing])
-
+            
             // Bottom Blue Bar
             ZStack {
                 Color("Primary_Color")
@@ -188,23 +189,22 @@ struct SimpleMethodView: View {
         }
         .edgesIgnoringSafeArea(.all)
     }
-
+    
     private func formattedDate() -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: selectedDate)
     }
-
+    
     private func formattedTime() -> String {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         return formatter.string(from: selectedTime)
     }
-}
-
-struct SimpleMethodView_Previews: PreviewProvider {
-    static var previews: some View {
-        SimpleMethodView()
+    
+    struct SimpleMethodView_Previews: PreviewProvider {
+        static var previews: some View {
+            SimpleMethodView()
+        }
     }
 }
-
