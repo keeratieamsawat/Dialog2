@@ -585,5 +585,3 @@ struct Intensive_Previews: PreviewProvider {
         IntensiveView()
     }
 }
-
-

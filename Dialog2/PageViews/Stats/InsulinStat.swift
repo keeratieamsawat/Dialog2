@@ -1,15 +1,18 @@
 import SwiftUI
 
-struct CalorieIntakeStatView: View {
+struct InsulinStatView: View {
     
     // vars to store from and to date - create a date range
     @State private var fromDate: Date = Date()
     @State private var time: Date = Date()
     @State private var toDate: Date = Date()
     
-    // for carbohydrate intake data
-    @State private var portionSize: String = "500g"
-    @State private var carbohydrateIntake: String = "1500kCal"
+    // for insulin intake data
+    @State private var medicationName: String = "medication"
+    @State private var dosage: String = "dose"
+    @State private var insulinTiming = Date()
+    @State private var insulinNote: String = "insulin taken on time"
+
     
     var body: some View {
         VStack(spacing: 0) {
@@ -18,7 +21,7 @@ struct CalorieIntakeStatView: View {
                 Color("Primary_Color")
                     .frame(maxWidth: .infinity, maxHeight: 100)
                     .edgesIgnoringSafeArea(.top)
-                Text("Calorie Intake")
+                Text("Insulin Intake")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
@@ -27,7 +30,7 @@ struct CalorieIntakeStatView: View {
 
             // date range pickers
             VStack(alignment: .leading, spacing: 15) {
-                Text("Choose a date range to view your calorie intake data...")
+                Text("Choose a date range to view your insulin intake data...")
                     .font(.headline)
                     .foregroundColor(.gray)
 
@@ -47,10 +50,10 @@ struct CalorieIntakeStatView: View {
             }
             .padding()
 
-            // calorie intake log
-            Text("Calorie Intake Log")
+            // insulin intake log
+            Text("Insulin Intake Log")
                 .font(.headline)
-                .foregroundColor(.green)
+                .foregroundColor(.orange)
                 .padding(.top)
 
             // scrollable logs
@@ -60,36 +63,35 @@ struct CalorieIntakeStatView: View {
                     ForEach(0..<3, id: \.self) { _ in
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
-                                Image(systemName: "calendar")
-                                Text("Date:")
+                                Image(systemName: "pills")
+                                Text("Medication: ")
                                 Spacer()
-                                DatePicker("", selection: $fromDate, displayedComponents: .date)
-                                    .labelsHidden()
+                                Text("\(medicationName)")
+                            }
+                            HStack {
+                                Image(systemName: "drop")
+                                Text("Dosage: ")
+                                Spacer()
+                                Text("\(dosage)")
                             }
                             HStack {
                                 Image(systemName: "clock")
-                                Text("Time:")
+                                Text("Time: ")
                                 Spacer()
-                                DatePicker("", selection: $time, displayedComponents: .hourAndMinute)
+                                DatePicker("",selection:$insulinTiming,displayedComponents:.hourAndMinute)
                                     .labelsHidden()
                             }
                             HStack {
-                                Image(systemName: "fork.knife")
-                                Text("Portion Size:")
+                                Image(systemName: "pencil")
+                                Text("Note: ")
                                 Spacer()
-                                Text("500g")
-                            }
-                            HStack {
-                                Image(systemName: "fork.knife")
-                                Text("Carbohydrate Intake:")
-                                Spacer()
-                                Text("1500kCal")
+                                Text("\(insulinNote)")
                             }
                         }
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.green.opacity(0.1))
+                                .fill(Color.orange.opacity(0.1))
                         )
                         .padding(.horizontal)
                     }
@@ -109,5 +111,5 @@ struct CalorieIntakeStatView: View {
 }
 
 #Preview {
-    CalorieIntakeStatView()
+    InsulinStatView()
 }

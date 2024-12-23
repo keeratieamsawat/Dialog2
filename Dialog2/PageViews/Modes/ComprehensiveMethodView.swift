@@ -1,6 +1,24 @@
 
 import SwiftUI
 
+// Define the data model for JSON encoding
+struct ComprehensiveMethodData: Codable {
+    let selectedDate: String
+    let selectedTime: String
+    let bloodSugarLevel: String
+    let note: String
+    let food: String
+    let portionSize: String
+    let carbohydrateIntake: String
+    let medicationName: String
+    let dosage: String
+    let insulinTiming: String
+    let insulinNote: String
+    let exerciseName: String
+    let duration: String
+    let intensity: String
+}
+
 struct ComprehensiveMethodView: View {
     
     @Environment(\.presentationMode) var presentationMode // For home page navigation
@@ -32,41 +50,40 @@ struct ComprehensiveMethodView: View {
         VStack(spacing: 0) {
             // Top Blue Bar
             ZStack {
-                            Color("Primary_Color")
-                                .frame(height: 120)
-                                .edgesIgnoringSafeArea(.top)
+                Color("Primary_Color")
+                    .frame(height: 120)
+                    .edgesIgnoringSafeArea(.top)
 
                 HStack {
-                                   // Close Icon on the Left
-                                   Button(action: {
-                                       presentationMode.wrappedValue.dismiss() // Close the page
-                                   }) {
-                                       Image(systemName: "xmark")
-                                           .font(.title2)
-                                           .foregroundColor(.white)
-                                   }
-                                   .frame(width: 50) // Ensure consistent spacing
+                    // Close Icon on the Left
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss() // Close the page
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 50) // Ensure consistent spacing
 
-                                   Spacer() // Ensures title is centered
+                    Spacer() // Ensures title is centered
 
-                                   // Title in the Middle
-                                   Text("Comprehensive Method")
-                                       .font(.title2)
-                                       .fontWeight(.bold)
-                                       .foregroundColor(.white)
-                                       .frame(maxWidth: .infinity, alignment: .center)
+                    // Title in the Middle
+                    Text("Comprehensive Method")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, alignment: .center)
 
-                                   Spacer() // Ensures title is centered
+                    Spacer() // Ensures title is centered
 
-                                   // Invisible Button to Balance Layout
-                                   Button(action: {}) {} // Placeholder for symmetry
-                                       .frame(width: 50) // Same width as the close button
-                               }
-                               .padding(.horizontal, 13)
-                               .padding(.top, 40)
-                               .frame(height: 120)
-                               
-                           }
+                    // Invisible Button to Balance Layout
+                    Button(action: {}) {} // Placeholder for symmetry
+                        .frame(width: 50) // Same width as the close button
+                }
+                .padding(.horizontal, 13)
+                .padding(.top, 40)
+                .frame(height: 120)
+            }
 
             // Scrollable Content
             ScrollView {
@@ -118,157 +135,164 @@ struct ComprehensiveMethodView: View {
                     .background(RoundedRectangle(cornerRadius: 10).fill(Color.blue.opacity(0.5)))
                     .padding(.horizontal)
 
+                    // Other sections (Food, Insulin, Exercise) remain unchanged
+                    
                     // Food Section
                     VStack(spacing: 10) {
                         Text("FOOD")
-                            .font(.headline)
-                            .foregroundColor(.green)
+                        .font(.headline)
+                        .foregroundColor(.green)
 
                         HStack(spacing: 10) {
-                                                   ForEach(tabs, id: \.self) { tab in
-                                                       Text(tab)
-                                                           .fontWeight(.semibold) // Optional: to emphasize the tab text
-                                                           .padding(.vertical, 10)
-                                                           .padding(.horizontal, 20)
-                                                           .lineLimit(1) // Ensures text is on one line
-                                                           .minimumScaleFactor(0.5) // Shrinks text to fit if needed
-                                                           .background(selectedTab == tab ? Color.green : Color.clear)
-                                                           .foregroundColor(selectedTab == tab ? .white : .green)
-                                                           .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.green, lineWidth: 1))
-                                                           .frame(minWidth: 0, maxWidth: .infinity) // Makes tabs equal width
-                                                           .onTapGesture {
-                                                               selectedTab = tab
-                                                           }
-                                                   }
-                                               }
+                        ForEach(tabs, id: \.self) { tab in
+                        Text(tab)
+                        .fontWeight(.semibold) // Optional: to emphasize the tab text
+                        .padding(.vertical, 10)
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Image(systemName: "clock")
-                                Text("Time:")
-                                Spacer()
-                                DatePicker("", selection: $selectedTime, displayedComponents: .hourAndMinute)
-                                    .labelsHidden()
-                            }
-                            HStack {
-                                Image(systemName: "fork.knife")
-                                Text("Food:")
-                                Spacer()
-                                TextField("", text: $food)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                            HStack {
-                                Image(systemName: "chart.bar")
-                                Text("Portion Size:")
-                                Spacer()
-                                TextField("", text: $portionSize)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                            HStack {
-                                Text("Carbohydrate Intake:")
-                                Spacer()
-                                TextField("", text: $carbohydrateIntake)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.green.opacity(0.1)))
-                    .padding(.horizontal)
+                        .lineLimit(1) // Ensures text is on one line
+                        .minimumScaleFactor(0.5) // Shrinks text to fit if needed
+                        .background(selectedTab == tab ? Color.green : Color.clear)
+                        .foregroundColor(selectedTab == tab ? .white : .green)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.green, lineWidth: 1))
+                        .frame(minWidth: 0, maxWidth: .infinity) // Makes tabs equal width
+                        .onTapGesture {
+                        selectedTab = tab
+                          }
+                  }
+              }
 
-                    // Insulin Section
-                    VStack(spacing: 10) {
-                        Text("INSULIN")
-                            .font(.headline)
-                            .foregroundColor(.orange)
+                       VStack(alignment: .leading, spacing: 10) {
+                           HStack {
+                               Image(systemName: "clock")
+                               Text("Time:")
+                               Spacer()
+                               DatePicker("", selection: $selectedTime, displayedComponents: .hourAndMinute)
+                                   .labelsHidden()
+                           }
+                           HStack {
+                               Image(systemName: "fork.knife")
+                               Text("Food:")
+                               Spacer()
+                               TextField("", text: $food)
+                                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                                   .frame(maxWidth: 200)
+                           }
+                           HStack {
+                               Image(systemName: "chart.bar")
+                               Text("Portion Size:")
+                               Spacer()
+                               TextField("", text: $portionSize)
+                                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                                   .frame(maxWidth: 200)
+                           }
+                           HStack {
+                               Text("Carbohydrate Intake:")
+                               Spacer()
+                               TextField("", text: $carbohydrateIntake)
+                                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                                   .frame(maxWidth: 200)
+                           }
+                       }
+                   }
+                   .padding()
+                   .background(RoundedRectangle(cornerRadius: 10).fill(Color.green.opacity(0.1)))
+                   .padding(.horizontal)
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Image(systemName: "pills")
-                                Text("Medication : ")
-                                Spacer()
-                                TextField("", text: $medicationName)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                            HStack {
-                                Image(systemName: "drop")
-                                Text("Dosage : ")
-                                Spacer()
-                                TextField("", text: $dosage)
-                                    .keyboardType(.decimalPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                            HStack {
-                                Image(systemName: "clock")
-                                Text("Timing : ")
-                                Spacer()
-                                DatePicker("", selection: $insulinTiming, displayedComponents: .hourAndMinute)
-                                    .labelsHidden()
-                            }
-                            HStack {
-                                Image(systemName: "pencil")
-                                Text("Note : ")
-                                Spacer()
-                                TextField("Optional", text: $insulinNote)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.orange.opacity(0.1)))
-                    .padding(.horizontal)
+                   // Insulin Section
+                   VStack(spacing: 10) {
+                       Text("INSULIN")
+                           .font(.headline)
+                           .foregroundColor(.orange)
 
-                    // Exercise Section
-                    VStack(spacing: 10) {
-                        Text("EXERCISE")
-                            .font(.headline)
-                            .foregroundColor(.purple)
+                       VStack(alignment: .leading, spacing: 10) {
+                           HStack {
+                               Image(systemName: "pills")
+                               Text("Medication : ")
+                               Spacer()
+                               TextField("", text: $medicationName)
+                                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                                   .frame(maxWidth: 200)
+                           }
+                           HStack {
+                               Image(systemName: "drop")
+                               Text("Dosage : ")
+                               Spacer()
+                               TextField("", text: $dosage)
+                                   .keyboardType(.decimalPad)
+                                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                                   .frame(maxWidth: 200)
+                           }
+                           HStack {
+                               Image(systemName: "clock")
+                               Text("Timing : ")
+                               Spacer()
+                               DatePicker("", selection: $insulinTiming, displayedComponents: .hourAndMinute)
+                                   .labelsHidden()
+                           }
+                           HStack {
+                               Image(systemName: "pencil")
+                               Text("Note : ")
+                               Spacer()
+                               TextField("Optional", text: $insulinNote)
+                                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                                   .frame(maxWidth: 200)
+                           }
+                       }
+                   }
+                   .padding()
+                   .background(RoundedRectangle(cornerRadius: 10).fill(Color.orange.opacity(0.1)))
+                   .padding(.horizontal)
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Text("Type of Exercise :")
-                                Spacer()
-                                TextField("", text: $exerciseName)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                            HStack {
-                                Image(systemName: "hourglass")
-                                Text("Duration :")
-                                Spacer()
-                                TextField("", text: $duration)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                            HStack {
-                                Text("Intensity")
-                                Spacer()
-                                TextField("", text: $intensity)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .frame(maxWidth: 200)
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.purple.opacity(0.1)))
-                    .padding(.horizontal)
+               // Exercise Section
+               VStack(spacing: 10) {
+                   Text("EXERCISE")
+                       .font(.headline)
+                       .foregroundColor(.purple)
 
-                    // Apply Button
-                    Button(action: saveData) {
-                        Text("APPLY")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color("Primary_Color"))
-                            .cornerRadius(10)
-                            .padding(.horizontal)
+                   VStack(alignment: .leading, spacing: 10) {
+                       HStack {
+                           Text("Type of Exercise :")
+                           Spacer()
+                           TextField("", text: $exerciseName)
+                               .textFieldStyle(RoundedBorderTextFieldStyle())
+                               .frame(maxWidth: 200)
+                       }
+                       HStack {
+                           Image(systemName: "hourglass")
+                           Text("Duration :")
+                           Spacer()
+                           TextField("", text: $duration)
+                               .textFieldStyle(RoundedBorderTextFieldStyle())
+                               .frame(maxWidth: 200)
+                       }
+                       HStack {
+                           Text("Intensity : ")
+                           Spacer()
+                           Picker("", selection: $intensity) {
+                               Text("Low").tag("Low")
+                               Text("Medium").tag("Medium")
+                               Text("High").tag("High")
+                           }
+                           // Use a segmented control style
+                           .pickerStyle(SegmentedPickerStyle())
+                       }
+                   }
+               }
+               .padding()
+               .background(RoundedRectangle(cornerRadius: 10).fill(Color.purple.opacity(0.1)))
+               .padding(.horizontal)
+
+
+                // Apply Button
+                Button(action: saveDataToJSON) {
+                    Text("APPLY")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color("Primary_Color"))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
                     }
                 }
             }
@@ -284,27 +308,35 @@ struct ComprehensiveMethodView: View {
         .edgesIgnoringSafeArea(.all)
     }
 
-    private func saveData() {
-        // Collect all data
-        let data: [String: Any] = [
-            "Date": formattedDate(),
-            "Time": formattedTime(),
-            "Blood Sugar Level": bloodSugarLevel,
-            "Note": note,
-            "Food": food,
-            "Portion Size": portionSize,
-            "Carbohydrate Intake": carbohydrateIntake,
-            "Medication Name": medicationName,
-            "Dosage": dosage,
-            "Insulin Timing": formattedTime(date: insulinTiming),
-            "Insulin Note": insulinNote,
-            "Exercise Name": exerciseName,
-            "Duration": duration,
-            "Intensity": intensity
-        ]
+    private func saveDataToJSON() {
+        let dataModel = ComprehensiveMethodData(
+            selectedDate: formattedDate(),
+            selectedTime: formattedTime(date: selectedTime),
+            bloodSugarLevel: bloodSugarLevel,
+            note: note,
+            food: food,
+            portionSize: portionSize,
+            carbohydrateIntake: carbohydrateIntake,
+            medicationName: medicationName,
+            dosage: dosage,
+            insulinTiming: formattedTime(date: insulinTiming),
+            insulinNote: insulinNote,
+            exerciseName: exerciseName,
+            duration: duration,
+            intensity: intensity
+        )
 
-        // Print data to debug
-        print("Saved Data:", data)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+
+        do {
+            let jsonData = try encoder.encode(dataModel)
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("JSON Data:\n\(jsonString)")
+            }
+        } catch {
+            print("Failed to encode JSON: \(error)")
+        }
     }
 
     private func formattedDate() -> String {

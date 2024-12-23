@@ -35,7 +35,7 @@ struct ContentView: View {
                         .cornerRadius(10)
                 }
                 
-                NavigationLink(destination: InfoPageView()) {
+                NavigationLink(destination: MainPageView()) {
                     Text("Go to fucking login fuck u")
                         .frame(maxWidth: .infinity)
                         .padding()
