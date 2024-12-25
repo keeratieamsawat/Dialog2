@@ -2,6 +2,9 @@
 import SwiftUI
 
 struct ComprehensiveMethodView: View {
+    
+    @Environment(\.presentationMode) var presentationMode // For home page navigation
+    
     @State private var selectedTab: String = "" // Initially empty
     @State private var selectedDate = Date()
     @State private var selectedTime = Date()
@@ -29,17 +32,41 @@ struct ComprehensiveMethodView: View {
         VStack(spacing: 0) {
             // Top Blue Bar
             ZStack {
-                Color("Primary_Color")
-                    .frame(height: 100)
-                    .ignoresSafeArea(edges: .top)
+                            Color("Primary_Color")
+                                .frame(height: 120)
+                                .edgesIgnoringSafeArea(.top)
 
-                Text("Comprehensive Method")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding(.top, 60)
-                    .padding(.bottom, 10)
-            }
+                HStack {
+                                   // Close Icon on the Left
+                                   Button(action: {
+                                       presentationMode.wrappedValue.dismiss() // Close the page
+                                   }) {
+                                       Image(systemName: "xmark")
+                                           .font(.title2)
+                                           .foregroundColor(.white)
+                                   }
+                                   .frame(width: 50) // Ensure consistent spacing
+
+                                   Spacer() // Ensures title is centered
+
+                                   // Title in the Middle
+                                   Text("Comprehensive Method")
+                                       .font(.title2)
+                                       .fontWeight(.bold)
+                                       .foregroundColor(.white)
+                                       .frame(maxWidth: .infinity, alignment: .center)
+
+                                   Spacer() // Ensures title is centered
+
+                                   // Invisible Button to Balance Layout
+                                   Button(action: {}) {} // Placeholder for symmetry
+                                       .frame(width: 50) // Same width as the close button
+                               }
+                               .padding(.horizontal, 13)
+                               .padding(.top, 40)
+                               .frame(height: 120)
+                               
+                           }
 
             // Scrollable Content
             ScrollView {
