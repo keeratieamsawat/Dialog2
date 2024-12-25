@@ -3,6 +3,7 @@ import SwiftUI
 struct MedicationStatView: View {
     
     // for medicine intake data
+    @State private var condition: String = "high blood pressure"
     @State private var medicationName: String = "medication"
     @State private var medDosage: String = "dose"
     @State private var medNote: String = "BOOM"
@@ -21,6 +22,12 @@ struct MedicationStatView: View {
                     .foregroundColor(.white)
                     .offset(y:20)
             }
+            
+            Text("You can change you medication record in My Profile page")
+                .font(.headline)
+                .foregroundColor(.gray)
+                .padding(.top)
+            
 
             // medicine intake record
             Text("Other Medicine Intake Record")
@@ -32,8 +39,14 @@ struct MedicationStatView: View {
             ScrollView {
                 VStack(spacing: 15) {
                     // some sample records
-                    ForEach(0..<3, id: \.self) { _ in
+                    ForEach(0..<5, id: \.self) { _ in
                         VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                Image(systemName: "pills")
+                                Text("Condition: ")
+                                Spacer()
+                                Text("\(condition)")
+                            }
                             HStack {
                                 Image(systemName: "pills")
                                 Text("Medication: ")

@@ -4,7 +4,6 @@ struct MyStatisticPage: View {
     @ObservedObject var glucoseData: GlucoseData // Shared data model for glucose statistics
 
     var body: some View {
-        NavigationView() {
             VStack(spacing: 0) {
                 // MARK: - Header Section
                 ZStack {
@@ -17,7 +16,7 @@ struct MyStatisticPage: View {
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .padding(-50)
+                            .offset(y:-40)
                     }
                 }
                 
@@ -133,7 +132,7 @@ struct MyStatisticPage: View {
             .navigationBarHidden(true)
         }
     }
-}
+
 
 // MARK: - Stat Card Component
 
