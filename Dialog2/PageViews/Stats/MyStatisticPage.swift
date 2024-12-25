@@ -78,7 +78,8 @@ struct MyStatisticPage: View {
                             icon: "chart.bar",
                             title: "Blood Sugar Fluctuations",
                             description: "See your blood sugar fluctuation trends during the chosen time period.",
-                            destination: MeasuredStatView(glucoseData: glucoseData)
+                            destination:
+                                GlucoseStatView(glucoseData: glucoseData)
                         )
                         
                         // Exercises & Change in Weight
