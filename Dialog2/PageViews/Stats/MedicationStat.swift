@@ -1,21 +1,80 @@
 import SwiftUI
 
 struct MedicationStatView: View {
+    
+    // for medicine intake data
+    @State private var medicationName: String = "medication"
+    @State private var medDosage: String = "dose"
+    @State private var medNote: String = "BOOM"
+
+    
     var body: some View {
-        VStack {
-            Text("Medication Intake Data")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding()
+        VStack(spacing: 0) {
+            // header
+            ZStack {
+                Color("Primary_Color")
+                    .frame(maxWidth: .infinity, maxHeight: 100)
+                    .edgesIgnoringSafeArea(.top)
+                Text("Other Medicine")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .offset(y:20)
+            }
 
-            Text("Medication intake tracking feature is coming soon.")
+            // medicine intake record
+            Text("Other Medicine Intake Record")
                 .font(.headline)
-                .foregroundColor(.gray)
-                .padding()
+                .foregroundColor(.yellow)
+                .padding(.top)
 
-            Spacer()
+            // scrollable records
+            ScrollView {
+                VStack(spacing: 15) {
+                    // some sample records
+                    ForEach(0..<3, id: \.self) { _ in
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                Image(systemName: "pills")
+                                Text("Medication: ")
+                                Spacer()
+                                Text("\(medicationName)")
+                            }
+                            HStack {
+                                Image(systemName: "drop")
+                                Text("Dosage: ")
+                                Spacer()
+                                Text("\(medDosage)")
+                            }
+                            HStack {
+                                Image(systemName: "pencil")
+                                Text("Note: ")
+                                Spacer()
+                                Text("\(medNote)")
+                            }
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.yellow.opacity(0.1))
+                        )
+                        .padding(.horizontal)
+                    }
+                }
+                .padding(.top)
+            }
+            // bottom blue bar
+            ZStack {
+                Color("Primary_Color")
+                    .frame(height: 80)
+                    .edgesIgnoringSafeArea(.bottom)
+                    .offset(y:40)
+            }
         }
-        .navigationTitle("Medication Stats")
-        .padding()
+        .edgesIgnoringSafeArea(.top)
     }
+}
+
+#Preview {
+    MedicationStatView()
 }

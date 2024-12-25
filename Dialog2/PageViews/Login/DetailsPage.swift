@@ -265,7 +265,7 @@ struct UnitsView: View{
             
             // button to direct to next page
             // passing on the bsUnit chosen to the bsRangeView page, bsRangeView will take bsUnit as argument
-            NavigationLink(destination: bsRangeView(bsUnit:bsUnit)) {
+            NavigationLink(destination: bsRangeView(bsUnit:bsUnit,carbUnit:carbUnit)) {
                 Text("Confirm")
                     .bold()
                     .frame(height:40)
@@ -285,8 +285,9 @@ struct UnitsView: View{
 
 struct bsRangeView: View {
     
-    // passing on the chosen blood sugar unit from UnitsView
+    // passing on the chosen bs and carbs unit from UnitsView
     let bsUnit:String
+    let carbUnit: String
     
     // target range, hyper and hypo
     @State private var lowerBound: Float = 0.0 // initial value
