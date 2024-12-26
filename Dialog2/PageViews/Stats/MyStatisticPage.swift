@@ -2,8 +2,9 @@ import SwiftUI
 
 struct MyStatisticPage: View {
     @ObservedObject var glucoseData: GlucoseData // Shared data model for glucose statistics
-
+    
     var body: some View {
+        NavigationView {
             VStack(spacing: 0) {
                 // MARK: - Header Section
                 ZStack {
@@ -78,7 +79,7 @@ struct MyStatisticPage: View {
                             title: "Blood Sugar Fluctuations",
                             description: "See your blood sugar fluctuation trends during the chosen time period.",
                             destination:
-                                GlucoseStatView(glucoseData: glucoseData)
+                                GlucoseStatsView(glucoseData: glucoseData)
                         )
                         
                         // Exercises & Change in Weight
@@ -105,12 +106,20 @@ struct MyStatisticPage: View {
                             destination: MedicationStatView()
                         )
                         
-                        // Food Intake
+                        // Calorie Intake
                         StatCard(
                             icon: "cart.fill",
-                            title: "Food Intake",
+                            title: "Calorie Intake",
                             description: "It is of utmost importance to eat properly!",
                             destination: CalorieIntakeStatView()
+                        )
+                        
+                        // Carbohydrate Intake
+                        StatCard(
+                            icon: "fork.knife",
+                            title: "Carbohydrate Intake",
+                            description: "View only your carbohydrate intake.",
+                            destination: CarbIntakeStatView()
                         )
                     }
                     .padding(15)
@@ -132,47 +141,48 @@ struct MyStatisticPage: View {
             .navigationBarHidden(true)
         }
     }
-
-
-// MARK: - Stat Card Component
-
-struct StatCard<Destination: View>: View {
-    var icon: String
-    var title: String
-    var description: String
-    var destination: Destination
-
-    var body: some View {
-        NavigationLink(destination: destination) {
-            HStack(alignment:.top, spacing:10) {
-                Image(systemName: icon)
-                    .font(.title)
-                    .foregroundColor(Color.blue)
-
-                VStack(alignment:.leading, spacing:5) {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-
-                    Text(description)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    // align all lines of texts to the left
-                        .multilineTextAlignment(.leading)
+    
+    
+    // MARK: - Stat Card Component
+    
+    struct StatCard<Destination: View>: View {
+        var icon: String
+        var title: String
+        var description: String
+        var destination: Destination
+        
+        var body: some View {
+            NavigationLink(destination: destination) {
+                HStack(alignment:.top, spacing:10) {
+                    Image(systemName: icon)
+                        .font(.title)
+                        .foregroundColor(Color.blue)
+                    
+                    VStack(alignment:.leading, spacing:5) {
+                        Text(title)
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        
+                        Text(description)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        // align all lines of texts to the left
+                            .multilineTextAlignment(.leading)
+                    }
+                    // make full width and align left
+                    .frame(maxWidth: .infinity, alignment:.leading)
                 }
-                // make full width and align left
-                .frame(maxWidth: .infinity, alignment:.leading)
+                .padding()
+                .background(Color(UIColor.secondarySystemBackground))
+                .cornerRadius(10)
             }
-            .padding()
-            .background(Color(UIColor.secondarySystemBackground))
-            .cornerRadius(10)
         }
     }
 }
-
-// MARK: - Preview
-struct MyStatisticPage_Previews: PreviewProvider {
-    static var previews: some View {
-        MyStatisticPage(glucoseData: GlucoseData())
+    
+    // MARK: - Preview
+    struct MyStatisticPage_Previews: PreviewProvider {
+        static var previews: some View {
+            MyStatisticPage(glucoseData: GlucoseData())
+        }
     }
-}

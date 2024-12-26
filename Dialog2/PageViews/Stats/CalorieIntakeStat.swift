@@ -8,8 +8,8 @@ struct CalorieIntakeStatView: View {
     @State private var toDate: Date = Date()
     
     // for carbohydrate intake data
-    @State private var portionSize: String = "500g"
-    @State private var carbohydrateIntake: String = "1500kCal"
+    @State private var calPortion: String = "500g"
+    @State private var calIntake: String = "1500kCal"
     
     var body: some View {
         VStack(spacing: 0) {
@@ -77,13 +77,13 @@ struct CalorieIntakeStatView: View {
                                 Image(systemName: "fork.knife")
                                 Text("Portion Size:")
                                 Spacer()
-                                Text("500g")
+                                Text(calPortion)
                             }
                             HStack {
                                 Image(systemName: "fork.knife")
-                                Text("Carbohydrate Intake:")
+                                Text("Calorie Intake:")
                                 Spacer()
-                                Text("1500kCal")
+                                Text(calIntake)
                             }
                         }
                         .padding()

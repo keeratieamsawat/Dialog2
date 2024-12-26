@@ -45,25 +45,25 @@ struct MedicationStatView: View {
                                 Image(systemName: "pills")
                                 Text("Condition: ")
                                 Spacer()
-                                Text("\(condition)")
+                                Text(condition)
                             }
                             HStack {
                                 Image(systemName: "pills")
                                 Text("Medication: ")
                                 Spacer()
-                                Text("\(medicationName)")
+                                Text(medicationName)
                             }
                             HStack {
                                 Image(systemName: "drop")
                                 Text("Dosage: ")
                                 Spacer()
-                                Text("\(medDosage)")
+                                Text(medDosage)
                             }
                             HStack {
                                 Image(systemName: "pencil")
                                 Text("Note: ")
                                 Spacer()
-                                Text("\(medNote)")
+                                Text(medNote)
                             }
                         }
                         .padding()
