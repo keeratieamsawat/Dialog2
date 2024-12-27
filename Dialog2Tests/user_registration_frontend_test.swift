@@ -2,11 +2,11 @@ import Foundation
 
 // Example user data (this will replace the UI inputs)
 let userData: [String: Any] = [
-    "first_name": "Chen",
+    "first_name": "Yi",
     "last_name": "Fan",
     "email": "ginny12@ic.ac.uk",
-    "password": "password123",
-    "confirm_password": "password123",
+    "password": "12",
+    "confirm_password": "12",
     "gender": "Female",
     "birthdate": "1990-01-01",
     "country_of_residence": "China",
