@@ -3,29 +3,50 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import datetime
 import boto3
+import smtplib, ssl
 
 
 # Mock database
 users = {}
 app = Flask(__name__)
 
-# Initialize the DynamoDB client
+port = 465
+SENDER_EMAIL = 'javacakes_dialog@gmail.com'
+EMAIL_PASS = 'unobvious password'
+
 dynamodb = boto3.resource('dynamodb')
-data_table = dynamodb.Table("DiaLog_Data")
+data_table = dynamodb.Table('DiaLog_Data')
+users_table = dynamodb.Table('DiaLog_Users')
 
 class UserClient:
     def __init__(self, user_id):
         self.user_id = user_id
+
+    def search_data(self, attribute):
+        try:
+            response = users_table.get_item(Key={'userid':self.user_id},
+                ProjectionExpression=attribute
+            )
+
+            item = response.get('Item')
+            if item:
+                return item
+            else:
+                print("Item not found")
+        except Exception as e:
+            print(f"Error searching data: {e}")
+            return None
 
     def query_by_date_range(self, data_type, start_date, end_date):
         try:
             response = data_table.query(
                 KeyConditionExpression=(
                         Key('userid#datatype').eq(f'{self.user_id}#{data_type}') &
-                        Key('date').between(start_date, end_date)
+                        Key('date').between(f'{start_date}T00:00:00', f'{end_date}T23:59:59')
                 ),
-                ProjectionExpression="date, value", # only get date and value
-                Limit = 500 # limit number of items per request
+                ProjectionExpression="#date, #value",
+                ExpressionAttributeNames={'#date': 'date', '#value': 'value'},
+                Limit=500
             )
             return response.get('Items', [])
         except Exception as e:
@@ -195,8 +216,20 @@ def gen_graph():
 
 @app.route('/alert-doctor', methods=['POST'])
 def send_alert(bloodSugarLevel):
-    # messaging API
-    pass
+    current_user_id = get_jwt_identity()  # Extract user_id from the JWT
+    user = User(current_user_id)  # Create a User instance
+
+    firstname = user.search_data('firstName')['firstName']
+    lastname = user.search_data('lastName')['lastName']
+    doctor_email = user.search_data('doctorEmail')['doctorEmail']
+
+    context = ssl.create_default_context()
+    content = f"Alert: Your patient, {firstname} {lastname}, reported an unsafe blood sugar level of {bloodSugarLevel}."
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+        server.login(SENDER_EMAIL, EMAIL_PASS)
+        server.sendmail(SENDER_EMAIL, doctor_email, content)
+
 
 # send notifications accroding to user's personal settings - eg. at a specific time every day
 
