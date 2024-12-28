@@ -3,16 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import datetime
 import boto3
-import smtplib, ssl
+import smtplib
+from email.message import EmailMessage
 
 
 # Mock database
 users = {}
 app = Flask(__name__)
-
-port = 465
-SENDER_EMAIL = 'javacakes_dialog@gmail.com'
-EMAIL_PASS = 'unobvious password'
 
 dynamodb = boto3.resource('dynamodb')
 data_table = dynamodb.Table('DiaLog_Data')
@@ -222,13 +219,20 @@ def send_alert(bloodSugarLevel):
     firstname = user.search_data('firstName')['firstName']
     lastname = user.search_data('lastName')['lastName']
     doctor_email = user.search_data('doctorEmail')['doctorEmail']
+    unit = user.search_data('unit')['unit']
 
-    context = ssl.create_default_context()
-    content = f"Alert: Your patient, {firstname} {lastname}, reported an unsafe blood sugar level of {bloodSugarLevel}."
+    msg = EmailMessage()
+    msg.set_content(f'Your patient, {firstname} {lastname}, has recorded an unsafe blood sugar level of {bloodSugarLevel} {unit}.')
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login(SENDER_EMAIL, EMAIL_PASS)
-        server.sendmail(SENDER_EMAIL, doctor_email, content)
+    msg['Subject'] = 'Patient Alert from DiaLog'
+    msg['From'] = 'javacakesdialog@gmail.com'
+    msg['To'] = doctor_email
+
+    # send the message via our own SMTP server
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server.login('javacakesdialog@gmail.com', "kwzr qwep klty agqm")
+    server.send_message(msg)
+    server.quit()
 
 
 # send notifications accroding to user's personal settings - eg. at a specific time every day
