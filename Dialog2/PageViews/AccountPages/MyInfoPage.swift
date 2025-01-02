@@ -1,22 +1,24 @@
 import SwiftUI
 
 struct MyInfoPage: View {
+    var userName: String = "User Name"
+    
     var body: some View {
         ZStack {
-            Color("Primary_Color") // Background for blue borders
+            Color("Primary_Color")
                 .edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 0) {
                 // MARK: - Top Blue Border
                 Color("Primary_Color")
-                    .frame(height: 100) // Small blue border height
+                    .frame(height: 100) 
 
                 // MARK: - Content Section
                 VStack(spacing: 0) {
                     // Header Section
                     ZStack {
                         Color.white
-                            .clipShape(RoundedCorners(tl: 0, tr: 0, bl: 20, br: 20)) // Apply rounded corners to bottom-left and bottom-right
+                            .clipShape(RoundedCorners(tl: 0, tr: 0, bl: 20, br: 20))
 
                         VStack(spacing: 10) {
                             HStack {
@@ -32,39 +34,42 @@ struct MyInfoPage: View {
                                     .font(.title)
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
-                                    .padding(.top,-90)
+                                    .padding(.top,-70)
                                 Spacer()
                             }
                             .padding(.bottom, 10)
 
-                            HStack(spacing: 20) {
+                            HStack(spacing: 40) {
                                 Circle()
-                                    .fill(Color.blue)
-                                    .frame(width: 60, height: 60)
+                                    .fill(Color("Primary_Color"))
+                                    .frame(width: 100, height: 100)
                                     .overlay(
-                                        Text("U")
+                                        Text(String(userName.prefix(1)))
                                             .foregroundColor(.white)
-                                            .font(.largeTitle)
+                                            .font(.system(size: 50, weight: .bold))
                                     )
                                     .overlay(
                                         Image(systemName: "camera")
                                             .foregroundColor(.gray)
-                                            .padding(4)
+                                            .padding(6)
                                             .background(Color.white)
                                             .clipShape(Circle())
-                                            .offset(x: 20, y: 20),
+                                            .offset(x: 25, y: 25), // Adjusted position for larger avatar
                                         alignment: .bottomTrailing
                                     )
+                                    .offset(y: -20)
 
                                 VStack(alignment: .leading) {
-                                    Text("User Name")
-                                        .font(.headline)
+                                    Text(userName)
+                                        .font(.system(size: 24, weight: .bold))
                                         .foregroundColor(.black)
                                     Text("dialog@gmail.com")
-                                        .font(.subheadline)
+                                        .font(.system(size: 18, weight: .regular))
                                         .foregroundColor(.gray)
                                 }
+                                .offset(x:-10, y: -20)
                             }
+
                             Spacer()
                         }
                         .padding()
@@ -86,19 +91,17 @@ struct MyInfoPage: View {
                             NavigationLink(destination: Text("Food")) {
                                 InfoRow(iconName: "applelogo", iconColor: .orange, title: "Food")
                             }
-                            NavigationLink(destination: Text("My Monster")) {
-                                InfoRow(iconName: "face.smiling", iconColor: .green, title: "My monster")
-                            }
-                            NavigationLink(destination: Text("Other Settings")) {
-                                InfoRow(iconName: "gearshape", iconColor: .gray, title: "Other settings")
-                            }
                             NavigationLink(destination: Text("Change Password")) {
                                 InfoRow(iconName: "lock.fill", iconColor: .gray, title: "Change password")
+                            }
+                            NavigationLink(destination: Text("App Data")) {
+                                InfoRow(iconName: "square.and.arrow.up", iconColor: .blue, title: "App Data")
                             }
                         }
                     }
                     .listStyle(InsetGroupedListStyle())
                     .frame(maxWidth: .infinity)
+                    .offset(y:-10)
 
                     // MARK: - Log Out Button
                     VStack {
@@ -107,13 +110,14 @@ struct MyInfoPage: View {
                         }) {
                             Text("Log out")
                                 .foregroundColor(.red)
-                                .font(.headline)
+                                .font(.system(size: 18, weight: .medium))
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding()
                                 .background(Color.white)
                                 .cornerRadius(10)
                                 .padding(.horizontal)
                         }
+                        .offset(y: -17)
                     }
                 }
                 .background(Color(UIColor.systemGray6))
@@ -138,9 +142,14 @@ struct InfoRow: View {
                 .foregroundColor(iconColor)
                 .frame(width: 24, height: 24)
             Text(title)
-                .font(.body)
-                .foregroundColor(.primary)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(.black)
+            Spacer()
         }
+        .padding(.vertical, 7)
+        .padding(.horizontal, 10)
+        .background(Color.white)
+        .cornerRadius(8)
     }
 }
 
