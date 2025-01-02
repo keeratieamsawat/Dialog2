@@ -12,7 +12,7 @@ struct AppDataView: View {
                 .font(.body)
                 .padding()
         }
-        .navigationTitle("App Data Management") // Sets the navigation title
+        .navigationTitle("App Data Management")
     }
 }
 
