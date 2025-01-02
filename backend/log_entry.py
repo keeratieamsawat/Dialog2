@@ -10,7 +10,7 @@ app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Change this in a real app
 jwt = JWTManager(app)
 
 # DynamoDB configuration
-dynamodb = boto3.resource('dynamodb', region_name='us-west-2')  # Change region if needed
+dynamodb = boto3.resource('dynamodb', region_name='eu-west-2')  # Change region if needed
 table = dynamodb.Table('DiaLog_Data')  # Replace with your actual DynamoDB table name
 
 # POST /logs: Add a new log entry
