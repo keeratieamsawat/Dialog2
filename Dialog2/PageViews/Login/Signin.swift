@@ -9,8 +9,8 @@ struct SigninView: View {
     @State private var userEmail: String = ""
     @State private var password: String = ""
     @State private var loginMessage: String = ""
-    @State private var accessToken: String? = nil  // store access token if login is successful
-    @State private var navigateToHome: Bool = false  // boolean variable to conditionally navigate to HomePageView
+    @State private var accessToken: String? = nil // when login successful, store access token
+    @State private var navigateToHome: Bool = false // boolean variable to conditionally navigate to HomePageView
     
     var body: some View {
         NavigationStack {
@@ -18,7 +18,8 @@ struct SigninView: View {
                 Text("Sign-In to Your Account")
                     .font(.title)
                     .bold()
-                // MARK: Text fields to intake user inputs for login
+                
+                // user input their registered email and password
                 Text("User Email:")
                     .font(.headline)
                 TextField("Enter your registration email", text: $userEmail)
@@ -41,13 +42,11 @@ struct SigninView: View {
                     )
                     .offset(y: -10)
                 
-// MARK: Login Button, calling the login function
-                
+               // login button
                 Button(action: {
-                    // calling login function
+                    // calling the login function (written below)
                     loginUser(email: userEmail, password: password)
                 }) {
-                    // design of the button
                     Text("Login")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -56,26 +55,28 @@ struct SigninView: View {
                         .cornerRadius(8)
                 }
                 
-                // display success/failure of logging in for testing
+               // display login message - success/error
+                
                 if !loginMessage.isEmpty {
                     Text(loginMessage)
                         .font(.subheadline)
                         .foregroundColor(loginMessage.contains("success") ? .green : .red)
                         .padding(.top, 10)
                 }
-                // navigate to HomePage when login is successful
+                
+                // navigation linnk for home page
                 NavigationLink(destination: HomePageView(), isActive: $navigateToHome) {
-                    HomePageView() // activates when login is successful
+                    EmptyView() // make sure the navigation link does not show anything on the view page
                 }
             }
             .padding(40)
         }
     }
     
-// MARK: function for sending login request to backend
-    
+    // loginUser function to handle logging in, communicate with server
     func loginUser(email: String, password: String) {
-        // input URL to backend server
+        
+        // backend database URL input here
         guard let url = URL(string: "http://127.0.0.1:5000/login") else {
             loginMessage = "Invalid URL"
             return
@@ -85,7 +86,7 @@ struct SigninView: View {
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        // taking email and password to send to server
+        // prepare email and password to send to server
         let loginData: [String: String] = ["email": email, "password": password]
         guard let httpBody = try? JSONSerialization.data(withJSONObject: loginData, options: []) else {
             loginMessage = "Failed to encode request data"
@@ -93,7 +94,7 @@ struct SigninView: View {
         }
         request.httpBody = httpBody
         
-        // sending the request
+        // sending email and password to server
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 DispatchQueue.main.async {
@@ -109,8 +110,6 @@ struct SigninView: View {
                 return
             }
             
-// MARK: conditionals to handle the response for testing
-            // display different messasges based on status codes
             if let data = data {
                 do {
                     let jsonResponse = try JSONSerialization.jsonObject(with: data, options: [])
@@ -118,10 +117,10 @@ struct SigninView: View {
                         if let responseDict = jsonResponse as? [String: Any],
                            let message = responseDict["message"] as? String,
                            let token = responseDict["access_token"] as? String {
-                            // Login successful, store the access token
                             DispatchQueue.main.async {
-                                loginMessage = "Login successful"
-                                accessToken = token  // Store the token
+                                loginMessage = message
+                                accessToken = token
+                                navigateToHome = true // set boolean value to be true, to navigate to HomePageView after success in login
                             }
                         } else {
                             DispatchQueue.main.async {
@@ -131,7 +130,7 @@ struct SigninView: View {
                     } else if let responseDict = jsonResponse as? [String: Any],
                               let errorMessage = responseDict["error"] as? String {
                         DispatchQueue.main.async {
-                            loginMessage = errorMessage  // Show the error message from backend
+                            loginMessage = errorMessage
                         }
                     } else {
                         DispatchQueue.main.async {
