@@ -221,7 +221,7 @@ struct UnitsView: View{
     // list of blood sugar units
     let bsUnits = ["mmol/L","mg/dL"]
     // list of carbohydrate units
-    let carbUnits = ["grams","Carlories"]
+    let carbUnits = ["grams","Calories"]
     
     var body:some View {
         VStack(spacing:30) {
