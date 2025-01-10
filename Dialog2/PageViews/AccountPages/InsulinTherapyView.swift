@@ -2,13 +2,14 @@ import SwiftUI
 
 struct InsulinTherapyView: View {
     @State private var therapyType: String = "Pen / Syringes"
-    @State private var insulinInfo: String = ""
+    @State private var insulinType: String = "Rapid-acting insulin"
+    @State private var customInsulinType: String = ""
     @State private var healthConditions: String = ""
     @State private var otherMedications: String = ""
     @State private var showTherapyTypePicker = false
     @State private var showInputSheet = false
-    @State private var inputTitle = ""
-    @State private var inputText = ""
+    @State private var inputTitle: String = ""
+    @State private var inputText: String = ""
 
     var body: some View {
         NavigationView {
@@ -79,23 +80,21 @@ struct InsulinTherapyView: View {
                                 }
                             }
                             
-                            // Insulin Section
+                            // Insulin Type Section
                             Section {
-                                Button(action: {
-                                    inputTitle = "Insulin"
-                                    inputText = insulinInfo
-                                    showInputSheet = true
-                                }) {
-                                    HStack {
-                                        Text("Insulin")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text(insulinInfo.isEmpty ? "Add info" : insulinInfo)
-                                            .font(.body)
-                                            .foregroundColor(insulinInfo.isEmpty ? .gray : .black)
-                                            .lineLimit(1)
-                                    }
+                                Picker("Insulin type", selection: $insulinType) {
+                                    Text("Rapid-acting insulin").tag("Rapid-acting insulin")
+                                    Text("Short-acting insulin").tag("Short-acting insulin")
+                                    Text("Intermediate-acting insulin").tag("Intermediate-acting insulin")
+                                    Text("Long-acting insulin").tag("Long-acting insulin")
+                                    Text("Other").tag("Other")
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                                
+                                // Show custom input field if "Other" is selected
+                                if insulinType == "Other" {
+                                    TextField("Enter insulin type", text: $customInsulinType)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
                                 }
                             }
                             
@@ -159,9 +158,7 @@ struct InsulinTherapyView: View {
                     title: inputTitle,
                     inputText: $inputText,
                     onSave: { newText in
-                        if inputTitle == "Insulin" {
-                            insulinInfo = newText
-                        } else if inputTitle == "Other Health Conditions" {
+                        if inputTitle == "Other Health Conditions" {
                             healthConditions = newText
                         } else if inputTitle == "Other Medications" {
                             otherMedications = newText
