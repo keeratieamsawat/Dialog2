@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct BasicTherapyInfoView: View {
+    @State private var diabetesType: String = "Type 2"
+    @State private var sex: String = "-"
+    @State private var yearOfDiagnosis: Int = 2022
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -33,7 +37,7 @@ struct BasicTherapyInfoView: View {
                                         .font(.title)
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
-                                        .padding(.top, -60)
+                                        .padding(.top, -65)
                                     Spacer()
                                 }
                                 .padding(.bottom, 10)
@@ -44,9 +48,7 @@ struct BasicTherapyInfoView: View {
                                     .multilineTextAlignment(.center)
                                     .frame(maxWidth: .infinity)
                                     .padding(.horizontal, 20)
-                                 
-                                
-                                Spacer()
+                                    .padding(.top, -35)
                             }
                             .padding()
                         }
@@ -55,44 +57,47 @@ struct BasicTherapyInfoView: View {
                         // MARK: - List of Options
                         List {
                             Section {
-                                HStack {
-                                    Text("Diabetes type")
-                                        .font(.body)
-                                        .foregroundColor(.black)
-                                    Spacer()
-                                    Text("Type 2")
-                                        .font(.body)
-                                        .foregroundColor(.gray)
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.gray)
+                                NavigationLink(
+                                    destination: DiabetesTypeSelectionView(selectedType: $diabetesType)
+                                ) {
+                                    HStack {
+                                        Text("Diabetes type")
+                                            .font(.body)
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        Text(diabetesType)
+                                            .font(.body)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
-                                .contentShape(Rectangle()) // Makes the row tappable
                                 
-                                HStack {
-                                    Text("Sex")
-                                        .font(.body)
-                                        .foregroundColor(.black)
-                                    Spacer()
-                                    Text("-")
-                                        .font(.body)
-                                        .foregroundColor(.gray)
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.gray)
+                                NavigationLink(
+                                    destination: SexSelectionView(selectedSex: $sex)
+                                ) {
+                                    HStack {
+                                        Text("Sex")
+                                            .font(.body)
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        Text(sex)
+                                            .font(.body)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
-                                .contentShape(Rectangle()) // Makes the row tappable
                                 
-                                HStack {
-                                    Text("Year of diagnosis")
-                                        .font(.body)
-                                        .foregroundColor(.black)
-                                    Spacer()
-                                    Text("-")
-                                        .font(.body)
-                                        .foregroundColor(.gray)
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.gray)
+                                NavigationLink(
+                                    destination: YearOfDiagnosisSelectionView(selectedYear: $yearOfDiagnosis)
+                                ) {
+                                    HStack {
+                                        Text("Year of diagnosis")
+                                            .font(.body)
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                        Text("\(yearOfDiagnosis)")
+                                            .font(.body)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
-                                .contentShape(Rectangle()) // Makes the row tappable
                             }
                         }
                         .listStyle(InsetGroupedListStyle())
@@ -111,6 +116,76 @@ struct BasicTherapyInfoView: View {
     }
 }
 
+// MARK: - Diabetes Type Selection View
+struct DiabetesTypeSelectionView: View {
+    @Binding var selectedType: String
+    let types = ["Type 1", "Type 2"]
+
+    var body: some View {
+        List {
+            ForEach(types, id: \.self) { type in
+                Button(action: {
+                    selectedType = type
+                }) {
+                    HStack {
+                        Text(type)
+                        Spacer()
+                        if selectedType == type {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle("Select Diabetes Type")
+    }
+}
+
+// MARK: - Sex Selection View
+struct SexSelectionView: View {
+    @Binding var selectedSex: String
+    let options = ["Female", "Male", "Other"]
+
+    var body: some View {
+        List {
+            ForEach(options, id: \.self) { option in
+                Button(action: {
+                    selectedSex = option
+                }) {
+                    HStack {
+                        Text(option)
+                        Spacer()
+                        if selectedSex == option {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle("Select Sex")
+    }
+}
+
+// MARK: - Year of Diagnosis Selection View
+struct YearOfDiagnosisSelectionView: View {
+    @Binding var selectedYear: Int
+    let years = Array(1900...Calendar.current.component(.year, from: Date()))
+
+    var body: some View {
+        Picker("Year of Diagnosis", selection: $selectedYear) {
+            ForEach(years, id: \.self) { year in
+                Text("\(year)").tag(year)
+            }
+        }
+        .pickerStyle(WheelPickerStyle())
+        .navigationTitle("Select Year")
+    }
+}
+
+
+// MARK: Preview
 struct BasicTherapyInfoView_Previews: PreviewProvider {
     static var previews: some View {
         BasicTherapyInfoView()

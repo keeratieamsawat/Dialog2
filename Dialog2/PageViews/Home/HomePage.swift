@@ -116,11 +116,8 @@ struct HomePageView: View {
                         NavigationLink(destination: MyInfoPage()) {
                             TabItem(icon: "person.fill", label: "Me")
                         }
-                        NavigationLink(destination: HelpPage()) {
-                            TabItem(icon: "questionmark.circle", label: "Help")
-                        }
                         NavigationLink(destination: QuestionPage()) {
-                            TabItem(icon: "doc.text", label: "Form")
+                            TabItem(icon: "doc.text", label: "Questions")
                         }
                     }
                     .frame(maxWidth: .infinity)

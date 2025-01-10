@@ -92,9 +92,6 @@ struct MyInfoPage: View {
                                 NavigationLink(destination: FoodView()) {
                                     InfoRow(iconName: "applelogo", iconColor: .orange, title: "Food")
                                 }
-                                NavigationLink(destination: ChangePasswordView()) {
-                                    InfoRow(iconName: "lock.fill", iconColor: .gray, title: "Change password")
-                                }
                                 NavigationLink(destination: AppDataView()) {
                                     InfoRow(iconName: "square.and.arrow.up", iconColor: .blue, title: "App data")
                                 }
