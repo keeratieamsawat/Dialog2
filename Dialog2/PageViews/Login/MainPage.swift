@@ -1,51 +1,61 @@
-// Main pages and sign-in/create account pages.
-
 import SwiftUI
 
 struct MainPageView: View {
+    @State private var isFirstTimeUser: Bool = UserDefaults.standard.bool(forKey: "isFirstTimeUser") != false
+    @State private var navigateToCreateAccount = false
+    @State private var navigateToLogin = false
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 40.0) {
-                // image of JavaCakes logo
+                // JavaCakes logo
                 Image("JavaCakes")
-                    .resizable() // allows resizing
-                    .scaledToFit() // maintains aspect ratio
-                    .frame(width: 200, height: 200) // adjust width and height as needed
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
                 
-                // image of DiaLog logo
+                // DiaLog logo
                 Image("DiaLog_Logo")
-                    .resizable() // allows resizing
-                    .scaledToFit() // maintains aspect ratio
-                    .frame(width: 300, height: 200) // adjust width and height as needed
-                    .offset(y:-80)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 200)
+                    .offset(y: -80)
                 
-                // texts on the main page
+                // Welcome text
                 Text("Welcome!")
                     .bold()
                     .font(.largeTitle)
-                    .foregroundStyle(Color("Primary_Color"))
-                    .offset(y:-140)
+                    .foregroundColor(Color("Primary_Color"))
+                    .offset(y: -140)
                 
+                // Description text
                 Text("Set up your personal digital diabetic logbook.")
                     .font(.body)
-                    .bold()
-                    .font(.largeTitle)
-                    .foregroundStyle(Color.black)
-                    .offset(y:-160)
+                    .foregroundColor(.black)
+                    .offset(y: -160)
                 
-                // "Get Started" button
-                // clicking on it navigates to log-in page
-                NavigationLink(destination: LoginView()) {
-                    Text("Get Started")
-                        .bold()
-                        .frame(maxWidth:.infinity,minHeight: 50)
-                        .foregroundColor(.white)
-                        .background(Color("Primary_Color"))
-                        .cornerRadius(10)
-                        .padding(.horizontal,40)
-                        .offset(y:-160)
+                // Navigation links for dynamic navigation
+                NavigationLink("", destination: CreateAccountView(), isActive: $navigateToCreateAccount)
+                NavigationLink("", destination: LoginView(), isActive: $navigateToLogin)
+
+                // Get Started button
+                Button("Get Started") {
+                    if isFirstTimeUser {
+                        UserDefaults.standard.set(false, forKey: "isFirstTimeUser") // Update UserDefaults
+                        navigateToCreateAccount = true
+                    } else {
+                        navigateToLogin = true
+                    }
                 }
+                .bold()
+                .frame(maxWidth: .infinity, minHeight: 50)
+                .foregroundColor(.white)
+                .background(Color("Primary_Color"))
+                .cornerRadius(10)
+                .padding(.horizontal, 40)
+                .offset(y: -250)
             }
+            .padding()
         }
     }
 }
