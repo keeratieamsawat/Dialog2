@@ -120,7 +120,7 @@ struct HomePageView: View {
                             TabItem(icon: "questionmark.circle", label: "Help")
                         }
                         NavigationLink(destination: QuestionPage()) {
-                            TabItem(icon: "doc.text", label: "Form")
+                            TabItem(icon: "doc.text", label: "Questions")
                         }
                     }
                     .frame(maxWidth: .infinity)
