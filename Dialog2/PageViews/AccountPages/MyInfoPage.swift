@@ -95,6 +95,9 @@ struct MyInfoPage: View {
                                 NavigationLink(destination: AppDataView()) {
                                     InfoRow(iconName: "square.and.arrow.up", iconColor: .blue, title: "App data")
                                 }
+                                NavigationLink(destination: DoctorContactView()) {
+                                    InfoRow(iconName: "stethoscope", iconColor: .purple, title: "Doctor contact")
+                                                                }
                             }
                         }
                         .listStyle(InsetGroupedListStyle())
