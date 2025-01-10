@@ -34,7 +34,7 @@ struct LoginView: View {
                 
                 // "Sign-in": prompt exisiting user to sign in
                 // this button goes to sign-in page
-                NavigationLink(destination: SignInView()) {
+                NavigationLink(destination: SigninView()) {
                     Text("Sign-in")
                         .bold()
                         .frame(maxWidth: .infinity, minHeight: 50)
