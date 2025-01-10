@@ -22,7 +22,7 @@ struct CreateAccountView: View {
                     .bold() // Make it bold
                 
                 
-                // MARK: text fields to intake user inputs for creating account
+// MARK: text fields to intake user inputs for creating account
                 
                 // first name
                 Text("First Name:")
