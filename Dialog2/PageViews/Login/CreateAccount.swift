@@ -2,8 +2,7 @@ import SwiftUI
 
 struct CreateAccountView: View {
     
-    // calling UserRegistrationData model as observed object
-    @ObservedObject var userData: UserRegistrationData
+    @StateObject var userData: UserRegistrationData
     
     var body: some View {
         NavigationStack {
@@ -77,7 +76,7 @@ struct CreateAccountView: View {
                     .offset(y:-10)
                 
                 // button to direct to next page
-                NavigationLink(destination: PersonalInfoView()) {
+                NavigationLink(destination: PersonalInfoView(userData:userData)) {
                     Text("Next Step")
                         .bold()
                         .frame(maxWidth:.infinity,minHeight: 50)

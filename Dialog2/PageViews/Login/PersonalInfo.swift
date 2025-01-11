@@ -79,7 +79,7 @@ struct PersonalInfoView: View {
                         TextField("Enter weight", text: $userData.weight)
                             .padding(10)
                             .frame(height: 40)
-                            .overlay( // Add a border
+                            .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color("Primary_Color"),lineWidth: 2))
                     }
@@ -90,14 +90,14 @@ struct PersonalInfoView: View {
                         TextField("Enter height", text: $userData.height)
                             .padding(10)
                             .frame(height: 40)
-                            .overlay( // Add a border
+                            .overlay( 
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color("Primary_Color"),lineWidth: 2))
                     }
                 }
                 
                 // button to direct to next page
-                NavigationLink(destination: ConsentsView()) {
+                NavigationLink(destination: ConsentsView(userData:userData)) {
                     Text("Final Step")
                         .bold()
                         .frame(maxWidth:.infinity,minHeight: 50)
@@ -115,13 +115,8 @@ struct PersonalInfoView: View {
 }
 
 
-struct Signin: View {
-    var body: some View {
-        Text("Sign In Page")
-            .font(.largeTitle)
+struct PersonalInfoView_Previews: PreviewProvider {
+    static var previews: some View {
+        PersonalInfoView(userData: UserRegistrationData())
     }
-}
-
-#Preview {
-    PersonalInfoView()
 }
