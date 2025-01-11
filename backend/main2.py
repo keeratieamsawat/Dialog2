@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-import datetime
+from datetime import datetime, timezone
 import boto3
 import smtplib
 from email.message import EmailMessage
@@ -9,6 +9,7 @@ import uuid
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 import json
+import logging
 
 
 
@@ -67,8 +68,8 @@ class UserClient:
 class User:
     def __init__(self, first_name, last_name, email, password, gender, birthdate, country_of_residence, weight, height, consent):
         self.userid = str(uuid.uuid4())  # Generate a unique user ID
-        self.firstName = first_name
-        self.lastName = last_name
+        self.first_name = first_name
+        self.last_name = last_name
         self.email = email
         self.password = password
         self.gender = gender
@@ -81,8 +82,8 @@ class User:
     def as_dict(self):
         return {
             'userid': self.userid,
-            'first_name': self.firstName,
-            'last_name': self.lastName,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
             'email': self.email,
             'password': self.password,  # Hash this in production
             'gender': self.gender,
@@ -167,6 +168,7 @@ def add_diabetes_info():
 
         # Prepare the diabetes info
         diabetes_info = {
+            'userid': userid,
             'diabetes_type': data.get('diabetes_type'),
             'diagnose_date': data.get('diagnose_date'),
             'insulin_type': data.get('insulin_type'),
@@ -176,14 +178,63 @@ def add_diabetes_info():
             'bs_unit': data.get('bs_unit'),
             'carb_unit': data.get('carb_unit'),
             'lower_bound': data.get('lower_bound'),
-            'upper_bound': data.get('upper_bound')
+            'upper_bound': data.get('upper_bound'),
+            'doctor_email':data.get('doctor_email')
         }
 
-        # Use the update_item method to add or update the diabetes information
+        # Update only the diabetes_info field
+        update_expression = "SET diabetes_info = :diabetes_info"
+        expression_values = {":diabetes_info": diabetes_info}
+
+        users_table.update_item(
+            Key={'PK': userid, 'SK': f"USER#{userid}"},
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=expression_values
+        )
+
+        return jsonify({"message": "Diabetes information added successfully!"}), 201
+
+    except ClientError as e:
+        return jsonify({"error": e.response['Error']['Message']}), 500
+    
+
+    #update the diabetic info 
+@app.route('/update_diabetes_info', methods=['PUT'])
+def update_diabetes_info():
+    data = request.json
+    userid = data.get("userid")
+
+    if not userid:
+        return jsonify({"error": "User ID is required"}), 400
+
+    # Fetch user from DynamoDB (assuming user already exists)
+    try:
+        response = users_table.get_item(Key={'PK': userid, 'SK': f"USER#{userid}"})
+        if 'Item' not in response:
+            return jsonify({"error": "User not found"}), 404
+
+        # Prepare the updated diabetes info
+        updated_diabetes_info = {
+            'userid': userid,
+            'diabetes_type': data.get('diabetes_type'),
+            'diagnose_date': data.get('diagnose_date'),
+            'insulin_type': data.get('insulin_type'),
+            'admin_route': data.get('admin_route'),
+            'condition': data.get('condition'),
+            'medication': data.get('medication'),
+            'bs_unit': data.get('bs_unit'),
+            'carb_unit': data.get('carb_unit'),
+            'lower_bound': data.get('lower_bound'),
+            'upper_bound': data.get('upper_bound'),
+            'doctor_email':data.get('doctor_email')
+            
+        }
+
+        # Use the update_item method to update the diabetes information
         try:
             update_expression = "SET diabetes_info = :diabetes_info"
             expression_values = {
-                ":diabetes_info": diabetes_info
+                ":diabetes_info": updated_diabetes_info
             }
 
             users_table.update_item(
@@ -192,7 +243,7 @@ def add_diabetes_info():
                 ExpressionAttributeValues=expression_values
             )
 
-            return jsonify({"message": "Diabetes information added successfully!"}), 201
+            return jsonify({"message": "Diabetes information updated successfully!"}), 200
 
         except ClientError as e:
             return jsonify({"error": e.response['Error']['Message']}), 500
@@ -260,20 +311,50 @@ patient_conditions = {}
 def add_conditions():
     data = request.json
     user_id = data.get("user_id")
+    conditions = data.get("conditions")
     
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
     
-    # Save data to DynamoDB
+    if not conditions or not isinstance(conditions, list):
+        return jsonify({"error": "Conditions data is required and must be a list"}), 400
+
     try:
-        data_table.put_item(
-            Item={
-                'user_id': user_id,
-                'condition_data': data  # Storing all condition data as one attribute
+        for condition in conditions:
+            datatype = condition.get('datatype')
+            value = condition.get('value')  # Blood sugar value or other
+            date = condition.get('date')  # Ensure each condition has a unique identifier
+            
+            if not datatype or value is None or not date:
+                return jsonify({"error": "Each condition must have datatype, value, and date"}), 400
+            
+            try:
+                datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
+            except ValueError:
+                return jsonify({"error": "Invalid date format"}), 400
+            
+            # Create the composite key
+            composite_key = f"{user_id}#{datatype}"
+
+            # Prepare the item for insertion into DynamoDB
+            item = {
+                'userid#datatype': composite_key,  # Composite key
+                'date': date,                      # Date of the condition
+                'value': value,      # Store condition details
+                'timestamp': datetime.now(timezone.utc).isoformat()  # Timestamp of the entry
             }
-        )
-        return jsonify({"message": "User condition data saved successfully!", "user_id": user_id}), 201
+
+            # Insert the item into DynamoDB
+            try:
+                data_table.put_item(Item=item)
+            except Exception as e:
+                print(f"Error inserting into DynamoDB: {str(e)}")
+                return jsonify({"error": "Failed to insert data into DynamoDB"}), 500
+
+
+        return jsonify({"message": "User conditions saved successfully!", "user_id": user_id}), 201
     except Exception as e:
+        print(f"Error in add_conditions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
@@ -281,29 +362,96 @@ def add_conditions():
 def get_conditions(user_id):
     try:
         # Retrieve data from DynamoDB
-        response = data_table.get_item(
-            Key={
-                'user_id': user_id
+        # Scan the table for all conditions associated with the user_id
+        response = data_table.scan(
+            FilterExpression="begins_with(userid#datatype, :user_id)",
+            ExpressionAttributeValues={
+                ':user_id': user_id
             }
         )
         
         # Check if data exists
-        if 'Item' not in response:
+        items = response.get('Items', [])
+        if not items:
             return jsonify({"error": "No data found for the specified user ID"}), 404
-        
-        # Return the condition data
-        return jsonify(response['Item']['condition_data']), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
+        conditions = [
+            {
+                'datatype': item['userid#datatype'].split('#')[1],
+                'date': item['date'],
+                'value': item['value']
+            }
+            for item in items
+        ]
+
+        return jsonify({"user_id": user_id, "conditions": conditions}), 200
+    except Exception as e:
+        print(f"Error in get_conditions: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/conditions/<user_id>/<datatype>', methods=['PUT'])
+def update_conditions(user_id, datatype):
+    data = request.json
+
+    if not data or 'value' not in data or 'date' not in data:
+        error_message = "Condition data (value and date) is required"
+        logging.error(error_message)
+        return jsonify({"error": error_message}), 400
+    
+    value = data.get('value')
+    date = data.get('date')
+
+    try:
+        composite_key = f"{user_id}#{datatype}"
+
+        logging.debug(f"Attempting to update condition for user_id: {user_id}, datatype: {datatype}, value: {value}, date: {date}")
+
+        # Check if the item exists in DynamoDB before updating
+        response = data_table.get_item(Key={'userid#datatype': composite_key})
+        if 'Item' not in response:
+            error_message = "Condition not found for the given user_id and datatype"
+            logging.error(f"{error_message} (user_id: {user_id}, datatype: {datatype})")
+            return jsonify({"error": error_message}), 404
+        
+        logging.debug(f"Found condition data in DynamoDB: {response}")
+        
+        # Update the item
+        update_response = data_table.update_item(
+            Key={'userid#datatype': composite_key},
+            UpdateExpression="SET value = :value, date = :date",
+            ExpressionAttributeValues={
+                ':value': value,
+                ':date': date
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+
+        logging.debug(f"Update response from DynamoDB: {update_response}")
+
+        # Get the updated data from the update response
+        updated_data = update_response.get('Attributes', {})
+        if not updated_data:
+            error_message = "Condition not found for the given user_id and datatype"
+            logging.error(f"{error_message} (user_id: {user_id}, datatype: {datatype})")
+            return jsonify({"error": error_message}), 404
+        
+        logging.info(f"Successfully updated condition for user_id: {user_id}, datatype: {datatype}")
+
+        return jsonify({
+            "message": "User condition data updated successfully!",
+            "updated_data": updated_data
+        }), 200
+    
+    except Exception as e:
+        logging.error(f"Error in update_conditions: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
     
 @app.route('/graphs', methods=['GET'])
 @jwt_required()
 def gen_graph():
     data = request.json()
-    start = data.get("start")
-    end = data.get("end")
 
     current_user_id = get_jwt_identity()  # Extract user_id from the JWT
     user = UserClient(current_user_id)  # Create a User instance
@@ -311,14 +459,20 @@ def gen_graph():
     start_date = request.args.get('start_date')
     end_date = request.args.get('end_date')
 
+    print("DEBUG: Received start_date =", start_date)
+    print("DEBUG: Received end_date =", end_date)
+
     if not start_date or not end_date:
-        return jsonify({"error": "Missing required parameters"}), 400
+        return jsonify({"error": "Missing required parameters"}), 400, {'Content-Type': 'application/json'}
 
     data = user.query_data(start_date, end_date)
+    print("DEBUG: query_data result =", data)
     if data is None:
+        print("DEBUG: query_data returned None, triggering 500 response.")
         return jsonify({"error": "Failed to query data"}), 500
 
     return jsonify({"data": data})
+
 
 @app.route('/alert-doctor', methods=['POST'])
 def send_alert(bloodSugarLevel):
@@ -351,16 +505,17 @@ def send_alert(bloodSugarLevel):
 @app.route('/questionnaire', methods=['POST'])
 @jwt_required()
 def submit_questionnaire():
-    data = request.json
-    current_user_id = get_jwt_identity()  # Extract user ID from the JWT
+    data = request.json(force=True, silent=True)
+    current_user_id = get_jwt_identity()
+    if not data:
+        return jsonify({"error": "Invalid JSON format"}), 400
 
     # Validate required fields
     required_fields = ['answers']
-    for field in required_fields:
-        if field not in data:
-            return jsonify({"error": f"Missing required field: {field}"}), 400
-
-    # Store the questionnaire data in DynamoDB
+    if not all(field in data for field in required_fields) or not isinstance(data['answers'], list):
+        return jsonify({"error": "Invalid or missing 'answers' field"}), 400
+    
+    
     try:
         # Store answers in the DiaLog_Data table using store_answers
         store_answers(current_user_id, data['answers'])

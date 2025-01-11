@@ -51,6 +51,24 @@ class UserClient:
             print(f"Error querying data: {e}")
             return None
 
+# User model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)  # Hash passwords in production
+    gender = db.Column(db.String(10))
+    birthdate = db.Column(db.String(20))
+    country_of_residence = db.Column(db.String(50))
+    weight = db.Column(db.Float)
+    height = db.Column(db.Float)
+    consent = db.Column(db.Boolean)
+
+# Create the database tables
+with app.app_context():
+    db.create_all()
+
 # User registration
 @app.route('/register', methods=['POST'])
 def register():
