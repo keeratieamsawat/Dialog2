@@ -3,12 +3,12 @@ import SwiftUI
 struct AppDataView: View {
     var body: some View {
         VStack {
-            Text("App Data Management")
+            Text("Export Data")
                 .font(.largeTitle)
                 .padding()
 
             // Add your content here
-            Text("This is the page for App Data Management.")
+            Text("This feature is under development")
                 .font(.body)
                 .padding()
         }

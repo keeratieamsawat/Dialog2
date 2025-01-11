@@ -1,5 +1,5 @@
 // Used to store and manage glucose level data
-// Sample data used now, need to be fixed to get dynamic data from user input 
+// Sample data used now, need to be fixed to get dynamic data from user input
 import SwiftUI
 import Combine
 
@@ -107,4 +107,3 @@ struct GraphView: View {
         .cornerRadius(10)
     }
 }
-
