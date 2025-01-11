@@ -12,164 +12,153 @@ struct InsulinTherapyView: View {
     @State private var inputText: String = ""
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                Color("Primary_Color")
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: 0) {
-                    // MARK: - Top Blue Border
+        ZStack {
+            VStack(spacing: 0) {
+                // MARK: - Top Blue Bar
+                ZStack {
                     Color("Primary_Color")
                         .frame(height: 100)
-                    
-                    // MARK: - Content Section
-                    VStack(spacing: 0) {
-                        // Header Section
-                        ZStack {
-                            Color.white
-                                .clipShape(RoundedCorners(tl: 0, tr: 0, bl: 20, br: 20))
-                            
-                            VStack(spacing: 8) {
-                                HStack {
-                                    Button(action: {
-                                        // Handle back button action
-                                    }) {
-                                        Image(systemName: "chevron.left")
-                                            .foregroundColor(.white)
-                                            .font(.title2)
-                                    }
-                                    Spacer()
-                                    Text("Insulin Therapy Info")
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .padding(.top, -50)
-                                    Spacer()
-                                }
-                                .padding(.bottom, 8)
-                                
-                                Text("How you take in insulin and how it affects your body")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(.gray)
-                                    .multilineTextAlignment(.center)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.horizontal, 16)
-                                    .padding(.bottom, 20)
-                            }
-                            .padding(.top, -10)
-                            .padding(.bottom, 8)
+                        .edgesIgnoringSafeArea(.top)
+
+                    Text("Insulin Therapy Info")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.top, 55)
+                        .padding(.bottom, 10)
+                }
+
+                // MARK: - Content Section
+                VStack(spacing: 0) {
+                    // Header Section
+                    ZStack {
+                        Color.white
+
+                        VStack(spacing: 8) {
+                            Text("How you take in insulin and how it affects your body")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal, 16)
                         }
-                        .frame(height: 120) // Adjust height to fit content
-                        
-                        // MARK: - List of Options
-                        List {
-                            // Therapy Type Section
-                            Section {
-                                Button(action: {
-                                    showTherapyTypePicker = true
-                                }) {
-                                    HStack {
-                                        Text("Therapy type")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text(therapyType)
-                                            .font(.body)
-                                            .foregroundColor(.gray)
-                                    }
-                                }
-                            }
-                            
-                            // Insulin Type Section
-                            Section {
-                                Picker("Insulin type", selection: $insulinType) {
-                                    Text("Rapid-acting insulin").tag("Rapid-acting insulin")
-                                    Text("Short-acting insulin").tag("Short-acting insulin")
-                                    Text("Intermediate-acting insulin").tag("Intermediate-acting insulin")
-                                    Text("Long-acting insulin").tag("Long-acting insulin")
-                                    Text("Other").tag("Other")
-                                }
-                                .pickerStyle(MenuPickerStyle())
-                                
-                                // Show custom input field if "Other" is selected
-                                if insulinType == "Other" {
-                                    TextField("Enter insulin type", text: $customInsulinType)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                }
-                            }
-                            
-                            // Other Health Conditions Section
-                            Section {
-                                Button(action: {
-                                    inputTitle = "Other Health Conditions"
-                                    inputText = healthConditions
-                                    showInputSheet = true
-                                }) {
-                                    HStack {
-                                        Text("Other health conditions")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text(healthConditions.isEmpty ? "Add info" : healthConditions)
-                                            .font(.body)
-                                            .foregroundColor(healthConditions.isEmpty ? .gray : .black)
-                                            .lineLimit(1)
-                                    }
-                                }
-                            }
-                            
-                            // Other Medications Section
-                            Section {
-                                Button(action: {
-                                    inputTitle = "Other Medications"
-                                    inputText = otherMedications
-                                    showInputSheet = true
-                                }) {
-                                    HStack {
-                                        Text("Other medications")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text(otherMedications.isEmpty ? "Add info" : otherMedications)
-                                            .font(.body)
-                                            .foregroundColor(otherMedications.isEmpty ? .gray : .black)
-                                            .lineLimit(1)
-                                    }
-                                }
-                            }
-                        }
-                        .listStyle(InsetGroupedListStyle())
-                        .frame(maxWidth: .infinity)
-                        .offset(y: -10)
+                        .padding()
                     }
-                    .background(Color(UIColor.systemGray6))
-                    
-                    // MARK: - Bottom Blue Border
+                    .frame(height: 80)
+
+                    // MARK: - List of Options
+                    List {
+                        // Therapy Type Section
+                        Section {
+                            Button(action: {
+                                showTherapyTypePicker = true
+                            }) {
+                                HStack {
+                                    Text("Therapy type")
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Text(therapyType)
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        }
+
+                        // Insulin Type Section
+                        Section {
+                            Picker("Insulin type", selection: $insulinType) {
+                                Text("Rapid-acting insulin").tag("Rapid-acting insulin")
+                                Text("Short-acting insulin").tag("Short-acting insulin")
+                                Text("Intermediate-acting insulin").tag("Intermediate-acting insulin")
+                                Text("Long-acting insulin").tag("Long-acting insulin")
+                                Text("Other").tag("Other")
+                            }
+                            .pickerStyle(MenuPickerStyle())
+
+                            // Show custom input field if "Other" is selected
+                            if insulinType == "Other" {
+                                TextField("Enter insulin type", text: $customInsulinType)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                            }
+                        }
+
+                        // Other Health Conditions Section
+                        Section {
+                            Button(action: {
+                                inputTitle = "Other Health Conditions"
+                                inputText = healthConditions
+                                showInputSheet = true
+                            }) {
+                                HStack {
+                                    Text("Other health conditions")
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Text(healthConditions.isEmpty ? "Add info" : healthConditions)
+                                        .font(.body)
+                                        .foregroundColor(healthConditions.isEmpty ? .gray : .black)
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+
+                        // Other Medications Section
+                        Section {
+                            Button(action: {
+                                inputTitle = "Other Medications"
+                                inputText = otherMedications
+                                showInputSheet = true
+                            }) {
+                                HStack {
+                                    Text("Other medications")
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Text(otherMedications.isEmpty ? "Add info" : otherMedications)
+                                        .font(.body)
+                                        .foregroundColor(otherMedications.isEmpty ? .gray : .black)
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(InsetGroupedListStyle())
+                    .frame(maxWidth: .infinity)
+                    .offset(y: -10)
+                }
+                .background(Color(UIColor.systemGray6))
+
+                // MARK: - Bottom Blue Bar
+                ZStack {
                     Color("Primary_Color")
-                        .frame(height: 20)
+                        .frame(height: 80)
+                        .edgesIgnoringSafeArea(.bottom)
                 }
             }
-            .navigationTitle("")
-            .sheet(isPresented: $showTherapyTypePicker) {
-                TherapyTypePicker(therapyType: $therapyType)
-            }
-            .sheet(isPresented: $showInputSheet) {
-                InputSheet(
-                    title: inputTitle,
-                    inputText: $inputText,
-                    onSave: { newText in
-                        if inputTitle == "Other Health Conditions" {
-                            healthConditions = newText
-                        } else if inputTitle == "Other Medications" {
-                            otherMedications = newText
-                        }
+        }
+        .edgesIgnoringSafeArea(.all)
+        .navigationBarHidden(true)
+        .sheet(isPresented: $showTherapyTypePicker) {
+            TherapyTypePicker(therapyType: $therapyType)
+        }
+        .sheet(isPresented: $showInputSheet) {
+            InputSheet(
+                title: inputTitle,
+                inputText: $inputText,
+                onSave: { newText in
+                    if inputTitle == "Other Health Conditions" {
+                        healthConditions = newText
+                    } else if inputTitle == "Other Medications" {
+                        otherMedications = newText
                     }
-                )
-            }
+                }
+            )
         }
     }
 }
 
+// MARK: - Therapy Type Picker
 struct TherapyTypePicker: View {
     @Binding var therapyType: String
     let options = ["Pen / Syringes", "Pump", "No Insulin", "Other"]
@@ -206,6 +195,7 @@ struct TherapyTypePicker: View {
     }
 }
 
+// MARK: - Input Sheet
 struct InputSheet: View {
     let title: String
     @Binding var inputText: String
@@ -219,7 +209,7 @@ struct InputSheet: View {
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(8)
                     .padding()
-                
+
                 Spacer()
             }
             .navigationTitle(title)
@@ -240,6 +230,7 @@ struct InputSheet: View {
     }
 }
 
+// MARK: - Preview
 struct InsulinTherapyView_Previews: PreviewProvider {
     static var previews: some View {
         InsulinTherapyView()

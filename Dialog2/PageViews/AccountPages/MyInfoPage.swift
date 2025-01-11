@@ -58,7 +58,7 @@ struct MyInfoPage: View {
                                                 .offset(x: 2, y: 5), //
                                             alignment: .bottomTrailing
                                         )
-                                        .offset(y: -20)
+                                        .offset(y: -35)
                                     
                                     VStack(alignment: .leading) {
                                         Text(userName)
@@ -68,23 +68,21 @@ struct MyInfoPage: View {
                                             .font(.system(size: 18, weight: .regular))
                                             .foregroundColor(.gray)
                                     }
-                                    .offset(x:-10, y: -20)
+                                    .offset(x:-10, y: -30)
                                 }
                                 
                                 Spacer()
                             }
                             .padding()
                         }
-                        .frame(height: 180)
+                        .frame(height: 120)
                         
                         // MARK: - List of Options
                         List {
                             Section {
                                 NavigationLink(destination: BasicTherapyInfoView()) {
                                     InfoRow(iconName: "circle.fill", iconColor: .blue, title: "Basic therapy info")
-                                }
-                                NavigationLink(destination: BloodSugarTestingView()) {
-                                    InfoRow(iconName: "drop.fill", iconColor: .orange, title: "Blood sugar testing")
+                        
                                 }
                                 NavigationLink(destination: InsulinTherapyView()) {
                                     InfoRow(iconName: "drop.triangle.fill", iconColor: .teal, title: "Insulin therapy")
@@ -102,7 +100,7 @@ struct MyInfoPage: View {
                         }
                         .listStyle(InsetGroupedListStyle())
                         .frame(maxWidth: .infinity)
-                        .offset(y: -10) 
+                        .offset(y: -10)
                         
                         // MARK: - Log Out Button
                         VStack {
