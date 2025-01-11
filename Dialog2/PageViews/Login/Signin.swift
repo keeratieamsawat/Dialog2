@@ -56,7 +56,6 @@ struct SigninView: View {
                 }
                 
                // display login message - success/error
-                
                 if !loginMessage.isEmpty {
                     Text(loginMessage)
                         .font(.subheadline)
@@ -64,7 +63,7 @@ struct SigninView: View {
                         .padding(.top, 10)
                 }
                 
-                // navigation linnk for home page
+                // navigation link for home page
                 NavigationLink(destination: HomePageView(), isActive: $navigateToHome) {
                     EmptyView() // make sure the navigation link does not show anything on the view page
                 }
@@ -73,7 +72,9 @@ struct SigninView: View {
         }
     }
     
-    // loginUser function to handle logging in, communicate with server
+// MARK: loginUser function to handle user login, send login request to backend.
+// Backend will check if email and password are already stored in database, and allow the user to continue to their account if so
+    
     func loginUser(email: String, password: String) {
         
         // backend database URL input here
@@ -94,7 +95,7 @@ struct SigninView: View {
         }
         request.httpBody = httpBody
         
-        // sending email and password to server
+        // sending email and password user input to server
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 DispatchQueue.main.async {

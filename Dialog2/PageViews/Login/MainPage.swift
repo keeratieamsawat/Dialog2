@@ -4,6 +4,8 @@ struct MainPageView: View {
     @State private var isFirstTimeUser: Bool = UserDefaults.standard.bool(forKey: "isFirstTimeUser") != false
     @State private var navigateToCreateAccount = false
     @State private var navigateToLogin = false
+    
+    @StateObject var userData = UserRegistrationData()
 
     var body: some View {
         NavigationStack {
@@ -35,7 +37,7 @@ struct MainPageView: View {
                     .offset(y: -160)
                 
                 // Navigation links for dynamic navigation
-                NavigationLink("", destination: CreateAccountView(), isActive: $navigateToCreateAccount)
+                NavigationLink("", destination: CreateAccountView(userData:userData), isActive: $navigateToCreateAccount)
                 NavigationLink("", destination: LoginView(), isActive: $navigateToLogin)
 
                 // Get Started button
