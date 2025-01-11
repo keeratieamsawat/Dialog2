@@ -4,12 +4,7 @@ struct PersonalInfoView: View {
 
 // MARK: storing user inputs to the create account pages
 
-    @State private var gender: String = ""
-    @State private var birthDate: Date = Date()
-    @State private var country: String = ""
-    @State private var emergContact: String = ""
-    @State private var height: String = ""
-    @State private var weight: String = ""
+    @ObservedObject var userData = UserRegistrationData()
     
     var body: some View {
         NavigationStack {
@@ -28,7 +23,7 @@ struct PersonalInfoView: View {
                 // gender
                 Text("Gender:")
                     .font(.headline)
-                TextField("Your gender", text: $gender)
+                TextField("Your gender", text: $userData.gender)
                     .padding(10)
                     .frame(height: 40)
                     .overlay(
@@ -45,7 +40,7 @@ struct PersonalInfoView: View {
                     
                     DatePicker(
                         "Select your birthday",
-                        selection: $birthDate,
+                        selection: $userData.birthDate,
                         displayedComponents: [.date])
                     .padding(10)
                 }
@@ -56,7 +51,7 @@ struct PersonalInfoView: View {
                 Text("Country of Residence:")
                     .font(.headline)
                     .offset(y:10)
-                TextField("Enter your country of residence", text: $country)
+                TextField("Enter your country of residence", text: $userData.country)
                     .padding(10)
                     .frame(height: 40)
                     .overlay(
@@ -67,7 +62,7 @@ struct PersonalInfoView: View {
                 Text("Emergency Contact:")
                     .font(.headline)
                     .offset(y:10)
-                TextField("Details of your emergency contact", text: $emergContact)
+                TextField("Details of your emergency contact", text: $userData.emergContact)
                     .padding(10)
                     .frame(height: 40)
                     .overlay(
@@ -81,7 +76,7 @@ struct PersonalInfoView: View {
                         Text("Weight:")
                             .font(.headline)
                             .bold()
-                        TextField("Enter weight", text: $weight)
+                        TextField("Enter weight", text: $userData.weight)
                             .padding(10)
                             .frame(height: 40)
                             .overlay( // Add a border
@@ -92,7 +87,7 @@ struct PersonalInfoView: View {
                         Text("Height:")
                             .font(.headline)
                             .bold()
-                        TextField("Enter height", text: $height)
+                        TextField("Enter height", text: $userData.height)
                             .padding(10)
                             .frame(height: 40)
                             .overlay( // Add a border
@@ -119,26 +114,8 @@ struct PersonalInfoView: View {
     }
 }
 
-struct ConsentsView: View {
-    var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 20) { // use alignment in VStack to align everything to the left
-                // texts on the create account page
-                Text("Step 3 of 3")
-                    .font(.subheadline)
-                
-                Text("Privacy & Legal Consents")
-                    .font(.title)
-                    .bold()
-                Spacer() // VStack spacer to push contents up
-            }
-            .padding(30) // VStack padding to make content not touch the edges
-        }
-    }
-}
 
-
-struct SignInView: View {
+struct Signin: View {
     var body: some View {
         Text("Sign In Page")
             .font(.largeTitle)
