@@ -10,6 +10,8 @@ struct CalorieIntakeStatView: View {
     // for carbohydrate intake data
     @State private var calPortion: String = "500g"
     @State private var calIntake: String = "1500kCal"
+    @State private var portionSize: String = "500g"
+    @State private var carbohydrateIntake: String = "1500kCal"
     
     var body: some View {
         VStack(spacing: 0) {
@@ -84,6 +86,13 @@ struct CalorieIntakeStatView: View {
                                 Text("Calorie Intake:")
                                 Spacer()
                                 Text(calIntake)
+                                Text("500g")
+                            }
+                            HStack {
+                                Image(systemName: "fork.knife")
+                                Text("Carbohydrate Intake:")
+                                Spacer()
+                                Text("1500kCal")
                             }
                         }
                         .padding()

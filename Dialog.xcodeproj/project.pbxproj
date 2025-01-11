@@ -7,75 +7,62 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
-		F9C539712D0AD8A0007DF398 /* PBXContainerItemProxy */ = {
+		F969E8DA2D20405C004E2192 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = F9C539572D0AD89F007DF398 /* Project object */;
+			containerPortal = F969E8C02D20405A004E2192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F9C5395E2D0AD89F007DF398;
-			remoteInfo = Dialog2;
+			remoteGlobalIDString = F969E8C72D20405A004E2192;
+			remoteInfo = Dialog;
 		};
-		F9C5397B2D0AD8A1007DF398 /* PBXContainerItemProxy */ = {
+		F969E8E42D20405C004E2192 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = F9C539572D0AD89F007DF398 /* Project object */;
+			containerPortal = F969E8C02D20405A004E2192 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F9C5395E2D0AD89F007DF398;
-			remoteInfo = Dialog2;
+			remoteGlobalIDString = F969E8C72D20405A004E2192;
+			remoteInfo = Dialog;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F9C5395F2D0AD89F007DF398 /* Dialog2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dialog2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F9C539702D0AD8A0007DF398 /* Dialog2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Dialog2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F9C5397A2D0AD8A1007DF398 /* Dialog2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Dialog2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F969E8C82D20405A004E2192 /* Dialog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dialog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F969E8D92D20405C004E2192 /* DialogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DialogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F969E8E32D20405C004E2192 /* DialogUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DialogUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		679F57552D32CDAD0074E3BF /* Exceptions for "Dialog2" folder in "Dialog2" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Untitled.swift,
-			);
-			target = F9C5395E2D0AD89F007DF398 /* Dialog2 */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F9C539612D0AD89F007DF398 /* Dialog2 */ = {
+		F969E8CA2D20405A004E2192 /* Dialog */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				679F57552D32CDAD0074E3BF /* Exceptions for "Dialog2" folder in "Dialog2" target */,
-			);
-			path = Dialog2;
+			path = Dialog;
 			sourceTree = "<group>";
 		};
-		F9C539732D0AD8A0007DF398 /* Dialog2Tests */ = {
+		F969E8DC2D20405C004E2192 /* DialogTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Dialog2Tests;
+			path = DialogTests;
 			sourceTree = "<group>";
 		};
-		F9C5397D2D0AD8A1007DF398 /* Dialog2UITests */ = {
+		F969E8E62D20405C004E2192 /* DialogUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Dialog2UITests;
+			path = DialogUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		F9C5395C2D0AD89F007DF398 /* Frameworks */ = {
+		F969E8C52D20405A004E2192 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9C5396D2D0AD8A0007DF398 /* Frameworks */ = {
+		F969E8D62D20405C004E2192 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9C539772D0AD8A1007DF398 /* Frameworks */ = {
+		F969E8E02D20405C004E2192 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -85,22 +72,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F9C539562D0AD89F007DF398 = {
+		F969E8BF2D20405A004E2192 = {
 			isa = PBXGroup;
 			children = (
-				F9C539612D0AD89F007DF398 /* Dialog2 */,
-				F9C539732D0AD8A0007DF398 /* Dialog2Tests */,
-				F9C5397D2D0AD8A1007DF398 /* Dialog2UITests */,
-				F9C539602D0AD89F007DF398 /* Products */,
+				F969E8CA2D20405A004E2192 /* Dialog */,
+				F969E8DC2D20405C004E2192 /* DialogTests */,
+				F969E8E62D20405C004E2192 /* DialogUITests */,
+				F969E8C92D20405A004E2192 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		F9C539602D0AD89F007DF398 /* Products */ = {
+		F969E8C92D20405A004E2192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F9C5395F2D0AD89F007DF398 /* Dialog2.app */,
-				F9C539702D0AD8A0007DF398 /* Dialog2Tests.xctest */,
-				F9C5397A2D0AD8A1007DF398 /* Dialog2UITests.xctest */,
+				F969E8C82D20405A004E2192 /* Dialog.app */,
+				F969E8D92D20405C004E2192 /* DialogTests.xctest */,
+				F969E8E32D20405C004E2192 /* DialogUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,134 +95,134 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F9C5395E2D0AD89F007DF398 /* Dialog2 */ = {
+		F969E8C72D20405A004E2192 /* Dialog */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F9C539842D0AD8A1007DF398 /* Build configuration list for PBXNativeTarget "Dialog2" */;
+			buildConfigurationList = F969E8ED2D20405C004E2192 /* Build configuration list for PBXNativeTarget "Dialog" */;
 			buildPhases = (
-				F9C5395B2D0AD89F007DF398 /* Sources */,
-				F9C5395C2D0AD89F007DF398 /* Frameworks */,
-				F9C5395D2D0AD89F007DF398 /* Resources */,
+				F969E8C42D20405A004E2192 /* Sources */,
+				F969E8C52D20405A004E2192 /* Frameworks */,
+				F969E8C62D20405A004E2192 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F9C539612D0AD89F007DF398 /* Dialog2 */,
+				F969E8CA2D20405A004E2192 /* Dialog */,
 			);
-			name = Dialog2;
+			name = Dialog;
 			packageProductDependencies = (
 			);
-			productName = Dialog2;
-			productReference = F9C5395F2D0AD89F007DF398 /* Dialog2.app */;
+			productName = Dialog;
+			productReference = F969E8C82D20405A004E2192 /* Dialog.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F9C5396F2D0AD8A0007DF398 /* Dialog2Tests */ = {
+		F969E8D82D20405C004E2192 /* DialogTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F9C539872D0AD8A1007DF398 /* Build configuration list for PBXNativeTarget "Dialog2Tests" */;
+			buildConfigurationList = F969E8F02D20405C004E2192 /* Build configuration list for PBXNativeTarget "DialogTests" */;
 			buildPhases = (
-				F9C5396C2D0AD8A0007DF398 /* Sources */,
-				F9C5396D2D0AD8A0007DF398 /* Frameworks */,
-				F9C5396E2D0AD8A0007DF398 /* Resources */,
+				F969E8D52D20405C004E2192 /* Sources */,
+				F969E8D62D20405C004E2192 /* Frameworks */,
+				F969E8D72D20405C004E2192 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F9C539722D0AD8A0007DF398 /* PBXTargetDependency */,
+				F969E8DB2D20405C004E2192 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				F9C539732D0AD8A0007DF398 /* Dialog2Tests */,
+				F969E8DC2D20405C004E2192 /* DialogTests */,
 			);
-			name = Dialog2Tests;
+			name = DialogTests;
 			packageProductDependencies = (
 			);
-			productName = Dialog2Tests;
-			productReference = F9C539702D0AD8A0007DF398 /* Dialog2Tests.xctest */;
+			productName = DialogTests;
+			productReference = F969E8D92D20405C004E2192 /* DialogTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F9C539792D0AD8A1007DF398 /* Dialog2UITests */ = {
+		F969E8E22D20405C004E2192 /* DialogUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F9C5398A2D0AD8A1007DF398 /* Build configuration list for PBXNativeTarget "Dialog2UITests" */;
+			buildConfigurationList = F969E8F32D20405C004E2192 /* Build configuration list for PBXNativeTarget "DialogUITests" */;
 			buildPhases = (
-				F9C539762D0AD8A1007DF398 /* Sources */,
-				F9C539772D0AD8A1007DF398 /* Frameworks */,
-				F9C539782D0AD8A1007DF398 /* Resources */,
+				F969E8DF2D20405C004E2192 /* Sources */,
+				F969E8E02D20405C004E2192 /* Frameworks */,
+				F969E8E12D20405C004E2192 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F9C5397C2D0AD8A1007DF398 /* PBXTargetDependency */,
+				F969E8E52D20405C004E2192 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				F9C5397D2D0AD8A1007DF398 /* Dialog2UITests */,
+				F969E8E62D20405C004E2192 /* DialogUITests */,
 			);
-			name = Dialog2UITests;
+			name = DialogUITests;
 			packageProductDependencies = (
 			);
-			productName = Dialog2UITests;
-			productReference = F9C5397A2D0AD8A1007DF398 /* Dialog2UITests.xctest */;
+			productName = DialogUITests;
+			productReference = F969E8E32D20405C004E2192 /* DialogUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		F9C539572D0AD89F007DF398 /* Project object */ = {
+		F969E8C02D20405A004E2192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
-					F9C5395E2D0AD89F007DF398 = {
+					F969E8C72D20405A004E2192 = {
 						CreatedOnToolsVersion = 16.1;
 					};
-					F9C5396F2D0AD8A0007DF398 = {
+					F969E8D82D20405C004E2192 = {
 						CreatedOnToolsVersion = 16.1;
-						TestTargetID = F9C5395E2D0AD89F007DF398;
+						TestTargetID = F969E8C72D20405A004E2192;
 					};
-					F9C539792D0AD8A1007DF398 = {
+					F969E8E22D20405C004E2192 = {
 						CreatedOnToolsVersion = 16.1;
-						TestTargetID = F9C5395E2D0AD89F007DF398;
+						TestTargetID = F969E8C72D20405A004E2192;
 					};
 				};
 			};
-			buildConfigurationList = F9C5395A2D0AD89F007DF398 /* Build configuration list for PBXProject "Dialog2" */;
+			buildConfigurationList = F969E8C32D20405A004E2192 /* Build configuration list for PBXProject "Dialog" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = F9C539562D0AD89F007DF398;
+			mainGroup = F969E8BF2D20405A004E2192;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = F9C539602D0AD89F007DF398 /* Products */;
+			productRefGroup = F969E8C92D20405A004E2192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F9C5395E2D0AD89F007DF398 /* Dialog2 */,
-				F9C5396F2D0AD8A0007DF398 /* Dialog2Tests */,
-				F9C539792D0AD8A1007DF398 /* Dialog2UITests */,
+				F969E8C72D20405A004E2192 /* Dialog */,
+				F969E8D82D20405C004E2192 /* DialogTests */,
+				F969E8E22D20405C004E2192 /* DialogUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F9C5395D2D0AD89F007DF398 /* Resources */ = {
+		F969E8C62D20405A004E2192 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9C5396E2D0AD8A0007DF398 /* Resources */ = {
+		F969E8D72D20405C004E2192 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9C539782D0AD8A1007DF398 /* Resources */ = {
+		F969E8E12D20405C004E2192 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -245,21 +232,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F9C5395B2D0AD89F007DF398 /* Sources */ = {
+		F969E8C42D20405A004E2192 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9C5396C2D0AD8A0007DF398 /* Sources */ = {
+		F969E8D52D20405C004E2192 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F9C539762D0AD8A1007DF398 /* Sources */ = {
+		F969E8DF2D20405C004E2192 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -269,20 +256,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		F9C539722D0AD8A0007DF398 /* PBXTargetDependency */ = {
+		F969E8DB2D20405C004E2192 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F9C5395E2D0AD89F007DF398 /* Dialog2 */;
-			targetProxy = F9C539712D0AD8A0007DF398 /* PBXContainerItemProxy */;
+			target = F969E8C72D20405A004E2192 /* Dialog */;
+			targetProxy = F969E8DA2D20405C004E2192 /* PBXContainerItemProxy */;
 		};
-		F9C5397C2D0AD8A1007DF398 /* PBXTargetDependency */ = {
+		F969E8E52D20405C004E2192 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F9C5395E2D0AD89F007DF398 /* Dialog2 */;
-			targetProxy = F9C5397B2D0AD8A1007DF398 /* PBXContainerItemProxy */;
+			target = F969E8C72D20405A004E2192 /* Dialog */;
+			targetProxy = F969E8E42D20405C004E2192 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		F9C539822D0AD8A1007DF398 /* Debug */ = {
+		F969E8EB2D20405C004E2192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -343,7 +330,7 @@
 			};
 			name = Debug;
 		};
-		F9C539832D0AD8A1007DF398 /* Release */ = {
+		F969E8EC2D20405C004E2192 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -396,15 +383,15 @@
 			};
 			name = Release;
 		};
-		F9C539852D0AD8A1007DF398 /* Debug */ = {
+		F969E8EE2D20405C004E2192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Dialog2/Dialog2.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Dialog/Dialog.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Dialog2/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Dialog/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -422,7 +409,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
@@ -433,15 +420,15 @@
 			};
 			name = Debug;
 		};
-		F9C539862D0AD8A1007DF398 /* Release */ = {
+		F969E8EF2D20405C004E2192 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Dialog2/Dialog2.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Dialog/Dialog.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Dialog2/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Dialog/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -459,7 +446,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
@@ -470,7 +457,7 @@
 			};
 			name = Release;
 		};
-		F9C539882D0AD8A1007DF398 /* Debug */ = {
+		F969E8F12D20405C004E2192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -480,19 +467,19 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog2Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.DialogTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dialog2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Dialog2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dialog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Dialog";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
 		};
-		F9C539892D0AD8A1007DF398 /* Release */ = {
+		F969E8F22D20405C004E2192 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -502,19 +489,19 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog2Tests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.DialogTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dialog2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Dialog2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dialog.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Dialog";
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
 		};
-		F9C5398B2D0AD8A1007DF398 /* Debug */ = {
+		F969E8F42D20405C004E2192 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -523,19 +510,19 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog2UITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.DialogUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = Dialog2;
+				TEST_TARGET_NAME = Dialog;
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
 		};
-		F9C5398C2D0AD8A1007DF398 /* Release */ = {
+		F969E8F52D20405C004E2192 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -544,14 +531,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.Dialog2UITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.DialogUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = Dialog2;
+				TEST_TARGET_NAME = Dialog;
 				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
@@ -559,43 +546,43 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F9C5395A2D0AD89F007DF398 /* Build configuration list for PBXProject "Dialog2" */ = {
+		F969E8C32D20405A004E2192 /* Build configuration list for PBXProject "Dialog" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F9C539822D0AD8A1007DF398 /* Debug */,
-				F9C539832D0AD8A1007DF398 /* Release */,
+				F969E8EB2D20405C004E2192 /* Debug */,
+				F969E8EC2D20405C004E2192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F9C539842D0AD8A1007DF398 /* Build configuration list for PBXNativeTarget "Dialog2" */ = {
+		F969E8ED2D20405C004E2192 /* Build configuration list for PBXNativeTarget "Dialog" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F9C539852D0AD8A1007DF398 /* Debug */,
-				F9C539862D0AD8A1007DF398 /* Release */,
+				F969E8EE2D20405C004E2192 /* Debug */,
+				F969E8EF2D20405C004E2192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F9C539872D0AD8A1007DF398 /* Build configuration list for PBXNativeTarget "Dialog2Tests" */ = {
+		F969E8F02D20405C004E2192 /* Build configuration list for PBXNativeTarget "DialogTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F9C539882D0AD8A1007DF398 /* Debug */,
-				F9C539892D0AD8A1007DF398 /* Release */,
+				F969E8F12D20405C004E2192 /* Debug */,
+				F969E8F22D20405C004E2192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F9C5398A2D0AD8A1007DF398 /* Build configuration list for PBXNativeTarget "Dialog2UITests" */ = {
+		F969E8F32D20405C004E2192 /* Build configuration list for PBXNativeTarget "DialogUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F9C5398B2D0AD8A1007DF398 /* Debug */,
-				F9C5398C2D0AD8A1007DF398 /* Release */,
+				F969E8F42D20405C004E2192 /* Debug */,
+				F969E8F52D20405C004E2192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = F9C539572D0AD89F007DF398 /* Project object */;
+	rootObject = F969E8C02D20405A004E2192 /* Project object */;
 }

@@ -16,7 +16,7 @@ struct HomePageView: View {
                 // MARK: - Top Section (Date and Log Mode Selection)
                 ZStack {
                     Color("Primary_Color")
-                        .frame(maxWidth: .infinity, maxHeight: 100)
+                        .frame(maxWidth: .infinity, maxHeight: 160)
                         .edgesIgnoringSafeArea(.top)
 
                     VStack(spacing: 10) {
@@ -24,25 +24,23 @@ struct HomePageView: View {
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .padding(.top, -10)
 
                         Picker("Log Mode", selection: $selectedLogMode) {
-                            Text("Simple").tag("Simple")
-                            Text("Comprehensive").tag("Comprehensive")
-                            Text("Intensive").tag("Intensive")
+                            Text("Simple").tag("Simple").fontWeight(.bold)
+                            Text("Comprehensive").tag("Comprehensive").fontWeight(.bold)
+                            Text("Intensive").tag("Intensive").fontWeight(.bold)
                         }
                         .pickerStyle(SegmentedPickerStyle())
-                        .font(.headline)
-                        .frame(height: 50)
                         .background(Color.white)
                         .cornerRadius(10)
                         .padding(.horizontal, 20)
-
                     }
+                    .padding(.top, 40)
                 }
 
                 // MARK: - Daily Glucose Graph (Linked to MyStatistic Page)
-                NavigationLink(destination: GlucoseStatView(glucoseData: glucoseData)) {
+                NavigationLink(destination:
+                    GlucoseStatView(glucoseData: glucoseData)) {
                     VStack {
                         Text("Average Glucose Level Per Hour")
                             .font(.headline)
@@ -89,13 +87,16 @@ struct HomePageView: View {
                 }
                 .padding(.top)
 
+
+
+
                 // MARK: - Record Button Navigation (Different Mode)
                 NavigationLink(destination: destinationView(for: selectedLogMode)) {
                     Text("RECORD")
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(width: 170, height: 120)
+                        .frame(width: 150, height: 80)
                         .background(Color("Primary_Color"))
                         .cornerRadius(25)
                         .shadow(radius: 5)
@@ -104,33 +105,25 @@ struct HomePageView: View {
 
                 Spacer()
 
-                // MARK: - Navigation Tabs and Blue Bottom Section
-                VStack(spacing: 0) {
-                    HStack {
-                        NavigationLink(destination: MyStatisticPage(glucoseData: glucoseData)) {
-                            TabItem(icon: "chart.bar", label: "Stats")
-                        }
-                        NavigationLink(destination: HomePageView()) {
-                            TabItem(icon: "house.fill", label: "Home", isSelected: true)
-                        }
-                        NavigationLink(destination: MyInfoPage()) {
-                            TabItem(icon: "person.fill", label: "Me")
-                        }
-                        NavigationLink(destination: QuestionPage()) {
-                            TabItem(icon: "doc.text", label: "Questions")
-                        }
+                // MARK: - Navigation Tabs
+                HStack {
+                    NavigationLink(destination: MyStatisticPage(glucoseData:glucoseData)) {
+                        TabItem(icon: "chart.bar", label: "Stats")
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(UIColor.systemGray5))
-
-                    // Blue Section at the Bottom
-                    Color("Primary_Color")
-                        .frame(height: 40)
-                        .ignoresSafeArea(edges: .bottom)
+                    NavigationLink(destination: HomePageView()) {
+                        TabItem(icon: "house.fill", label: "Home", isSelected: true)
+                    }
+                    NavigationLink(destination: MyInfoPage()) {
+                        TabItem(icon: "person.fill", label: "Me")
+                    }
+                    NavigationLink(destination: HelpPage()) {
+                        TabItem(icon: "questionmark.circle", label: "Help")
+                    }
                 }
+                .padding()
+                .background(Color(UIColor.systemGray5))
+                .cornerRadius(10)
             }
-            .ignoresSafeArea(edges: .bottom) // Ensure all content respects safe area
             .navigationBarHidden(true)
         }
     }
@@ -145,9 +138,12 @@ struct HomePageView: View {
         case "Comprehensive":
             ComprehensiveMethodView()
                 .navigationBarHidden(true)
+        //case "Intensive":
+            //IntensiveMethodView()
+
         case "Intensive":
             IntensiveView()
-                .navigationBarHidden(true)
+
         default:
             Text("Unknown Mode")
         }
@@ -156,7 +152,7 @@ struct HomePageView: View {
     // MARK: - Helper Function to Format Date
     func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d" // Format for 'December 25'
+        formatter.dateFormat = "MMMM d" // Format for 'November 16'
         return formatter.string(from: date)
     }
 }
@@ -183,6 +179,7 @@ struct MetricCard: View {
     }
 }
 
+
 // MARK: - Tab Item
 struct TabItem: View {
     let icon: String
@@ -201,6 +198,8 @@ struct TabItem: View {
         .frame(maxWidth: .infinity)
     }
 }
+
+
 
 // MARK: - Preview
 struct HomePageView_Previews: PreviewProvider {

@@ -1,7 +1,7 @@
 import Foundation
 
 struct DateUtils {
-    /// Formats a ⁠ Date ⁠ into a string using the specified format and the Gregorian calendar.
+    /// Formats a `Date` into a string using the specified format and the Gregorian calendar.
     static func formattedDate(from date: Date, format: String = "MMM d, yyyy") -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format
@@ -10,7 +10,7 @@ struct DateUtils {
         return formatter.string(from: date)
     }
 
-    /// Formats a ⁠ Date ⁠ into a string for time using the specified format and the Gregorian calendar.
+    /// Formats a `Date` into a string for time using the specified format and the Gregorian calendar.
     static func formattedTime(from time: Date, format: String = "HH:mm") -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format

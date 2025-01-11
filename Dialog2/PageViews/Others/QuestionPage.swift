@@ -28,7 +28,7 @@ struct QuestionPage: View {
                 ZStack {
                     Color("Primary_Color")
                         .edgesIgnoringSafeArea(.top)
-                        .frame(height: 80)
+                        .frame(height: 60)
 
                     Text("Symptom Assessment")
                         .font(.title)
