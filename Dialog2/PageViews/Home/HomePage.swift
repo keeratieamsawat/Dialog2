@@ -1,52 +1,48 @@
 import SwiftUI
 
 struct HomePageView: View {
-    // Update in real time
-    @State private var currentDate = Date()
-    
-    // Mode selection
-    @State private var selectedLogMode: String = "Simple"
-    
-    // Shared data model (glucose level graph)
-    @ObservedObject var glucoseData = GlucoseData()
-    
+    @State private var currentDate = Date() // Update in real time
+    @State private var selectedLogMode: String = "Simple" // Mode selection
+    @ObservedObject var glucoseData = GlucoseData() // Shared data model
+
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // MARK: - Top Section (Date and Log Mode Selection)
+                // MARK: - Top Blue Bar
                 ZStack {
                     Color("Primary_Color")
-                        .frame(maxWidth: .infinity, maxHeight: 160)
+                        .frame(height: 120)
                         .edgesIgnoringSafeArea(.top)
 
-                    VStack(spacing: 10) {
-                        Text(formattedDate(currentDate))
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-
-                        Picker("Log Mode", selection: $selectedLogMode) {
-                            Text("Simple").tag("Simple").fontWeight(.bold)
-                            Text("Comprehensive").tag("Comprehensive").fontWeight(.bold)
-                            Text("Intensive").tag("Intensive").fontWeight(.bold)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .padding(.horizontal, 20)
-                    }
-                    .padding(.top, 40)
+                    Text(formattedDate(currentDate))
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.top, 55)
+                        .padding(.bottom, 10)
                 }
 
-                // MARK: - Daily Glucose Graph (Linked to MyStatistic Page)
-                NavigationLink(destination:
-                    GlucoseStatView(glucoseData: glucoseData)) {
+                // MARK: - Log Mode Picker
+                Picker("Log Mode", selection: $selectedLogMode) {
+                    Text("Simple").tag("Simple")
+                    Text("Comprehensive").tag("Comprehensive")
+                    Text("Intensive").tag("Intensive")
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .font(.headline)
+                .frame(height: 50)
+                .background(Color.white)
+                .cornerRadius(10)
+                .padding(.horizontal, 20)
+
+                // MARK: - Daily Glucose Graph
+                NavigationLink(destination: GlucoseStatView(glucoseData: glucoseData)) {
                     VStack {
                         Text("Average Glucose Level Per Hour")
                             .font(.headline)
                             .foregroundColor(Color("Primary_Color"))
                             .padding(.top, 10)
-                        
+
                         GraphView(data: glucoseData.dailyGlucoseLevels)
                             .frame(height: 170)
                             .padding()
@@ -63,16 +59,13 @@ struct HomePageView: View {
                         NavigationLink(destination: MeasuredStatView(glucoseData: glucoseData)) {
                             MetricCard(title: "Measured", value: "\(glucoseData.dailyGlucoseLevels.count) times")
                         }
-                        
                         NavigationLink(destination: AverageStatView(glucoseData: glucoseData)) {
                             MetricCard(title: "Average", value: "\(String(format: "%.2f", glucoseData.calculateAverage())) mmol/L")
                         }
-
-                        NavigationLink(destination: CarbIntakeStatView()) { // Placeholder
+                        NavigationLink(destination: CarbIntakeStatView()) {
                             MetricCard(title: "Carb Intake", value: "20 g")
                         }
                     }
-                    
                     HStack(spacing: 20) {
                         NavigationLink(destination: MedicationStatView()) {
                             MetricCard(title: "Medication Intake", value: "500 mg")
@@ -87,16 +80,13 @@ struct HomePageView: View {
                 }
                 .padding(.top)
 
-
-
-
-                // MARK: - Record Button Navigation (Different Mode)
+                // MARK: - Record Button
                 NavigationLink(destination: destinationView(for: selectedLogMode)) {
                     Text("RECORD")
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(width: 150, height: 80)
+                        .frame(width: 170, height: 120)
                         .background(Color("Primary_Color"))
                         .cornerRadius(25)
                         .shadow(radius: 5)
@@ -105,27 +95,43 @@ struct HomePageView: View {
 
                 Spacer()
 
-                // MARK: - Navigation Tabs
-                HStack {
-                    NavigationLink(destination: MyStatisticPage(glucoseData:glucoseData)) {
-                        TabItem(icon: "chart.bar", label: "Stats")
+                // MARK: - Navigation Tabs and Bottom Blue Section
+                VStack(spacing: 0) {
+                    HStack {
+                        NavigationLink(destination: MyStatisticPage(glucoseData: glucoseData)) {
+                            TabItem(icon: "chart.bar", label: "Stats")
+                        }
+                        NavigationLink(destination: HomePageView()) {
+                            TabItem(icon: "house.fill", label: "Home", isSelected: true)
+                        }
+                        NavigationLink(destination: MyInfoPage()) {
+                            TabItem(icon: "person.fill", label: "Me")
+                        }
+                        NavigationLink(destination: QuestionPage()) {
+                            TabItem(icon: "doc.text", label: "Questions")
+                        }
                     }
-                    NavigationLink(destination: HomePageView()) {
-                        TabItem(icon: "house.fill", label: "Home", isSelected: true)
-                    }
-                    NavigationLink(destination: MyInfoPage()) {
-                        TabItem(icon: "person.fill", label: "Me")
-                    }
-                    NavigationLink(destination: HelpPage()) {
-                        TabItem(icon: "questionmark.circle", label: "Help")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(UIColor.systemGray5))
+
+                    ZStack {
+                        Color("Primary_Color")
+                            .frame(height: 80)
+                            .edgesIgnoringSafeArea(.bottom)
                     }
                 }
-                .padding()
-                .background(Color(UIColor.systemGray5))
-                .cornerRadius(10)
             }
+            .edgesIgnoringSafeArea(.all)
             .navigationBarHidden(true)
         }
+    }
+
+    // MARK: - Helper Function to Format Date
+    func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d"
+        return formatter.string(from: date)
     }
 
     // MARK: - Helper Function to Determine Destination View
@@ -134,30 +140,17 @@ struct HomePageView: View {
         switch mode {
         case "Simple":
             SimpleMethodView()
-                .navigationBarHidden(true)
         case "Comprehensive":
             ComprehensiveMethodView()
-                .navigationBarHidden(true)
-        //case "Intensive":
-            //IntensiveMethodView()
-
         case "Intensive":
             IntensiveView()
-
         default:
             Text("Unknown Mode")
         }
     }
-
-    // MARK: - Helper Function to Format Date
-    func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d" // Format for 'November 16'
-        return formatter.string(from: date)
-    }
 }
 
-// MARK: - Metric Card
+// MARK: - Metric Card Component
 struct MetricCard: View {
     let title: String
     let value: String
@@ -170,7 +163,7 @@ struct MetricCard: View {
             Text(value)
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundColor(Color("Primary_Color")) // Optional color for values
+                .foregroundColor(Color("Primary_Color"))
         }
         .frame(width: 100, height: 80)
         .background(Color(UIColor.systemGray6))
@@ -179,8 +172,7 @@ struct MetricCard: View {
     }
 }
 
-
-// MARK: - Tab Item
+// MARK: - Tab Item Component
 struct TabItem: View {
     let icon: String
     let label: String
@@ -198,8 +190,6 @@ struct TabItem: View {
         .frame(maxWidth: .infinity)
     }
 }
-
-
 
 // MARK: - Preview
 struct HomePageView_Previews: PreviewProvider {

@@ -6,113 +6,105 @@ struct BasicTherapyInfoView: View {
     @State private var yearOfDiagnosis: Int = 2022
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                Color("Primary_Color")
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: 0) {
-                    // MARK: - Top Blue Border
+        ZStack {
+            VStack(spacing: 0) {
+                // MARK: - Top Blue Bar
+                ZStack {
                     Color("Primary_Color")
                         .frame(height: 100)
-                    
-                    // MARK: - Content Section
-                    VStack(spacing: 0) {
-                        // Header Section
-                        ZStack {
-                            Color.white
-                                .clipShape(RoundedCorners(tl: 0, tr: 0, bl: 20, br: 20))
-                            
-                            VStack(spacing: 10) {
-                                HStack {
-                                    Button(action: {
-                                        // Handle back button action
-                                    }) {
-                                        Image(systemName: "chevron.left")
-                                            .foregroundColor(.white)
-                                            .font(.title2)
-                                    }
-                                    Spacer()
-                                    Text("Basic Therapy Info")
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .padding(.top, -65)
-                                    Spacer()
-                                }
-                                .padding(.bottom, 10)
-                                
-                                Text("Change your therapy details if needed.")
-                                    .font(.system(size: 18, weight: .medium))
-                                    .foregroundColor(.black)
-                                    .multilineTextAlignment(.center)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.horizontal, 20)
-                                    .padding(.top, -35)
-                            }
-                            .padding()
+                        .edgesIgnoringSafeArea(.top)
+
+                    Text("Basic Therapy Info")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.top, 55)
+                        .padding(.bottom, 10)
+                }
+
+                // MARK: - Content Section
+                VStack(spacing: 0) {
+                    // Header Section
+                    ZStack {
+                        Color.white
+
+                        VStack(spacing: 8) {
+                            Text("Change your therapy details if needed.")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal, 16)
                         }
-                        .frame(height: 80) // Reduced height for header
-                        
-                        // MARK: - List of Options
-                        List {
-                            Section {
-                                NavigationLink(
-                                    destination: DiabetesTypeSelectionView(selectedType: $diabetesType)
-                                ) {
-                                    HStack {
-                                        Text("Diabetes type")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text(diabetesType)
-                                            .font(.body)
-                                            .foregroundColor(.gray)
-                                    }
-                                }
-                                
-                                NavigationLink(
-                                    destination: SexSelectionView(selectedSex: $sex)
-                                ) {
-                                    HStack {
-                                        Text("Sex")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text(sex)
-                                            .font(.body)
-                                            .foregroundColor(.gray)
-                                    }
-                                }
-                                
-                                NavigationLink(
-                                    destination: YearOfDiagnosisSelectionView(selectedYear: $yearOfDiagnosis)
-                                ) {
-                                    HStack {
-                                        Text("Year of diagnosis")
-                                            .font(.body)
-                                            .foregroundColor(.black)
-                                        Spacer()
-                                        Text("\(yearOfDiagnosis)")
-                                            .font(.body)
-                                            .foregroundColor(.gray)
-                                    }
-                                }
-                            }
-                        }
-                        .listStyle(InsetGroupedListStyle())
-                        .frame(maxWidth: .infinity)
-                        .offset(y: -10)
+                        .padding()
                     }
-                    .background(Color(UIColor.systemGray6))
-                    
-                    // MARK: - Bottom Blue Border
+                    .frame(height: 80)
+
+                    // MARK: - List of Options
+                    List {
+                        // Diabetes Type Section
+                        Section {
+                            NavigationLink(
+                                destination: DiabetesTypeSelectionView(selectedType: $diabetesType)
+                            ) {
+                                HStack {
+                                    Text("Diabetes type")
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Text(diabetesType)
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+
+                            // Sex Section
+                            NavigationLink(
+                                destination: SexSelectionView(selectedSex: $sex)
+                            ) {
+                                HStack {
+                                    Text("Sex")
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Text(sex)
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+
+                            // Year of Diagnosis Section
+                            NavigationLink(
+                                destination: YearOfDiagnosisSelectionView(selectedYear: $yearOfDiagnosis)
+                            ) {
+                                HStack {
+                                    Text("Year of diagnosis")
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                    Spacer()
+                                    Text("\(yearOfDiagnosis)")
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(InsetGroupedListStyle())
+                    .frame(maxWidth: .infinity)
+                    .offset(y: -10)
+                }
+                .background(Color(UIColor.systemGray6))
+
+                // MARK: - Bottom Blue Bar
+                ZStack {
                     Color("Primary_Color")
-                        .frame(height: 20) // Small blue border height
+                        .frame(height: 80)
+                        .edgesIgnoringSafeArea(.bottom)
                 }
             }
-            .navigationTitle("")
         }
+        .edgesIgnoringSafeArea(.all)
+        .navigationBarHidden(true)
     }
 }
 
@@ -184,8 +176,7 @@ struct YearOfDiagnosisSelectionView: View {
     }
 }
 
-
-// MARK: Preview
+// MARK: - Preview
 struct BasicTherapyInfoView_Previews: PreviewProvider {
     static var previews: some View {
         BasicTherapyInfoView()
