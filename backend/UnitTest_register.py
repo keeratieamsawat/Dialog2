@@ -15,7 +15,7 @@ class TestDiaLogApp(unittest.TestCase):
         data = {
             "first_name": "John",
             "last_name": "Doe",
-            "email": "jd1@example.com",
+            "email": "jd8@example.com",
             "password": "password123",
             "confirm_password": "password123",
             "gender": "Male",
@@ -35,7 +35,7 @@ class TestDiaLogApp(unittest.TestCase):
         data = {
             "first_name": "John",
             "last_name": "Doe",
-            "email": "jd1@example.com",
+            "email": "jd8@example.com",
             "password": "password123",
             "confirm_password": "password123",
             "gender": "Male",

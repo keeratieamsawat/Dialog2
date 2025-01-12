@@ -22,10 +22,10 @@ class TestAddDiabetesInfo(unittest.TestCase):
             "admin_route": "Subcutaneous",
             "condition": "Stable",
             "medication": "Insulin",
-            "bs_unit": "mg/dL",
-            "carb_unit": "g",
             "lower_bound": 80,
-            "upper_bound": 180
+            "upper_bound": 180, 
+            "doctor_name": "Martin",
+            "doctor_email": "123@ic.ac.uk"
         }
 
         # Mock DynamoDB get_item response
@@ -72,10 +72,10 @@ class TestAddDiabetesInfo(unittest.TestCase):
             "admin_route": "Subcutaneous",
             "condition": "Controlled",
             "medication": "Metformin",
-            "bs_unit": "mmol/L",
-            "carb_unit": "g",
             "lower_bound": 4.0,
-            "upper_bound": 7.0
+            "upper_bound": 7.0,
+            "doctor_name": "Martin",
+            "doctor_email": "123@ic.ac.uk"
         }
 
         # Mock DynamoDB get_item response (simulate the user exists)

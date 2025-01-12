@@ -30,30 +30,34 @@ class UserClient:
     def __init__(self, user_id):
         self.user_id = user_id
 
-    def search_data(self, attribute):
+    def search_data(self, field_name):
         try:
-            response = users_table.get_item(
-    Key={'userid': self.user_id},
-    ProjectionExpression="#name, email",
-    ExpressionAttributeNames={"#name": "name"}
-)
+            # Query the user's main record
+            response = users_table.get_item(Key={'PK': self.user_id, 'SK': f"USER#{self.user_id}"})
+            if 'Item' not in response:
+                raise ValueError("User not found")
 
+            # Check if the requested field is in the main record
+            user_data = response['Item']
+            if field_name in user_data:
+                return user_data[field_name]
 
-            item = response.get('Item')
-            if item:
-                return item
-            else:
-                print("Item not found")
+            # Check if the field is in the diabetes_info structure
+            diabetes_info = user_data.get('diabetes_info', {})
+            if field_name in diabetes_info:
+                return diabetes_info[field_name]
+
+            raise ValueError(f"Field {field_name} not found")
         except Exception as e:
-            print(f"Error searching data: {e}")
+            print(f"Error retrieving data: {e}")
             return None
 
-    def query_by_date_range(self, data_type, start_date, end_date):
+    def query_by_date_range(self, data_type, start_datetime, end_datetime):
         try:
             response = data_table.query(
                 KeyConditionExpression=(
                         Key('userid#datatype').eq(f'{self.user_id}#{data_type}') &
-                        Key('date').between(f'{start_date}T00:00:00', f'{end_date}T23:59:59')
+                        Key('date').between(start_datetime, end_datetime)
                 ),
                 ProjectionExpression="#date, #value",
                 ExpressionAttributeNames={'#date': 'date', '#value': 'value'},
@@ -175,10 +179,9 @@ def add_diabetes_info():
             'admin_route': data.get('admin_route'),
             'condition': data.get('condition'),
             'medication': data.get('medication'),
-            'bs_unit': data.get('bs_unit'),
-            'carb_unit': data.get('carb_unit'),
             'lower_bound': data.get('lower_bound'),
             'upper_bound': data.get('upper_bound'),
+            'doctor_name':data.get('doctor_name'),
             'doctor_email':data.get('doctor_email')
         }
 
@@ -222,10 +225,9 @@ def update_diabetes_info():
             'admin_route': data.get('admin_route'),
             'condition': data.get('condition'),
             'medication': data.get('medication'),
-            'bs_unit': data.get('bs_unit'),
-            'carb_unit': data.get('carb_unit'),
             'lower_bound': data.get('lower_bound'),
             'upper_bound': data.get('upper_bound'),
+            'doctor_name':data.get('doctor_name'),
             'doctor_email':data.get('doctor_email')
             
         }
@@ -456,8 +458,8 @@ def gen_graph():
     current_user_id = get_jwt_identity()  # Extract user_id from the JWT
     user = UserClient(current_user_id)  # Create a User instance
 
-    start_date = request.args.get('start_date')
-    end_date = request.args.get('end_date')
+    start_date = request.args.get('start_datetime')
+    end_date = request.args.get('end_datetime')
 
     print("DEBUG: Received start_date =", start_date)
     print("DEBUG: Received end_date =", end_date)
@@ -475,27 +477,50 @@ def gen_graph():
 
 
 @app.route('/alert-doctor', methods=['POST'])
-def send_alert(bloodSugarLevel):
-    current_user_id = get_jwt_identity()  # Extract user_id from the JWT
-    user = User(current_user_id)  # Create a User instance
+def send_alert():
+    try:
+        # Extract the data from the request
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['userid', 'bloodSugarLevel']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
+        
+        # Extract the user ID and blood sugar level
+        current_user_id = data['userid']
+        bloodSugarLevel = data['bloodSugarLevel']
+        
+        # Create a User instance
+        user = UserClient(current_user_id)
 
-    firstname = user.search_data('firstName')['firstName']
-    lastname = user.search_data('lastName')['lastName']
-    doctor_email = user.search_data('doctorEmail')['doctorEmail']
-    unit = user.search_data('unit')['unit']
+        # Retrieve user data for constructing the email
+        firstname = user.search_data('first_name')
+        lastname = user.search_data('last_name')
+        doctor_email = user.search_data('doctor_email')
 
-    msg = EmailMessage()
-    msg.set_content(f'Your patient, {firstname} {lastname}, has recorded an unsafe blood sugar level of {bloodSugarLevel} {unit}.')
+        if not firstname or not lastname or not doctor_email:
+            return jsonify({"error": "User data incomplete. Unable to send alert."}), 400
+        
+        # Create the email message
+        msg = EmailMessage()
+        msg.set_content(f'Your patient, {firstname} {lastname}, has recorded an unsafe blood sugar level of {bloodSugarLevel} mol/L.')
+        msg['Subject'] = 'Patient Alert from DiaLog'
+        msg['From'] = 'javacakesdialog@gmail.com'
+        msg['To'] = doctor_email
 
-    msg['Subject'] = 'Patient Alert from DiaLog'
-    msg['From'] = 'javacakesdialog@gmail.com'
-    msg['To'] = doctor_email
+        # Send the message via SMTP
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login('javacakesdialog@gmail.com', "kwzr qwep klty agqm")
+        server.send_message(msg)
+        server.quit()
 
-    # send the message via our own SMTP server
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.login('javacakesdialog@gmail.com', "kwzr qwep klty agqm")
-    server.send_message(msg)
-    server.quit()
+        return jsonify({"message": "Alert sent to doctor successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+
 
 
 # send notifications accroding to user's personal settings - eg. at a specific time every day

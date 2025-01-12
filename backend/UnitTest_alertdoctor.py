@@ -1,89 +1,105 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from main2 import app  # Import your Flask app
+from flask import Flask, jsonify
+from main2 import app, User  # Import your Flask app and User class
 
 class TestSendAlert(unittest.TestCase):
 
     def setUp(self):
-        self.app = app.test_client()  # Set up the Flask test client
-        self.app.testing = True
+        self.client = app.test_client()
+        self.client.testing = True
 
-    @patch('main2.get_jwt_identity')  # Mocking get_jwt_identity
-    @patch('main2.User')  # Mocking the User class
-    @patch('smtplib.SMTP_SSL')  # Mocking smtplib.SMTP_SSL
-    def test_send_alert_success(self, MockSMTP, MockUser, MockGetJWT):
-        # Mock the JWT identity to return a user ID
-        MockGetJWT.return_value = 'test_user_id'
+    @patch('main2.UserClient.search_data')
+    @patch('main2.smtplib.SMTP_SSL')
+    def test_send_alert_success(self, MockSMTP, mock_search_data):
+        # Mocking the User's search_data method
+        mock_search_data.side_effect = lambda field: {
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'doctor_email': 'doctor@example.com',
+        }.get(field)
 
-        # Mock the User instance and the search_data method
-        mock_user = MagicMock()
-        mock_user.search_data.side_effect = [
-            {'first_name': 'John'},  # first_name
-            {'last_name': 'Doe'},  # last_name
-            {'doctor_email': 'doctor@example.com'},  # doctor_email
-            {'unit': 'mg/dL'}  # unit
-        ]
-        MockUser.return_value = mock_user
-
-        # Mock the SMTP server
+        # Mock the SMTP_SSL behavior
         mock_smtp_instance = MagicMock()
         MockSMTP.return_value = mock_smtp_instance
 
-        # Simulate the POST request to the /alert-doctor endpoint
-        response = self.app.post(
-            '/alert-doctor',
-            json={'bloodSugarLevel': 150},  # Test data
-        )
+        # Example request data
+        request_data = {
+            "userid": "f87cd4cb-8959-4daf-a040-88add0d53727",
+            "bloodSugarLevel": 250
+        }
 
-        # Verify the response
+        # Send POST request to /alert-doctor endpoint
+        response = self.client.post('/alert-doctor', json=request_data)
+
+        # Check the response status and message
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Alert sent successfully!", response.get_json()["message"])
+        self.assertIn("Alert sent to doctor successfully!", response.json['message'])
 
-        # Check the email message was created correctly
+        # Ensure that the email was sent
+        mock_smtp_instance.send_message.assert_called_once()
+
+        # Verify the email content
         msg = mock_smtp_instance.send_message.call_args[0][0]
-        self.assertIn(
-            'Your patient, John Doe, has recorded an unsafe blood sugar level of 150 mg/dL.',
-            msg.get_payload()
-        )
+        self.assertIn('Your patient, John Doe, has recorded an unsafe blood sugar level of 250 mol/L.', msg.get_content())
 
-        # Verify the correct subject, sender, and recipient
-        self.assertEqual(msg['Subject'], 'Patient Alert from DiaLog')
-        self.assertEqual(msg['From'], 'javacakesdialog@gmail.com')
-        self.assertEqual(msg['To'], 'doctor@example.com')
+    @patch('main2.UserClient.search_data')
+    def test_send_alert_missing_fields(self, mock_search_data):
+        # Simulate missing 'bloodSugarLevel'
+        request_data = {
+            "userid": "f87cd4cb-8959-4daf-a040-88add0d53727"
+        }
 
-        # Check that the email was sent
-        mock_smtp_instance.send_message.assert_called_once_with(msg)
-        mock_smtp_instance.quit.assert_called_once()
+        # Send POST request to /alert-doctor endpoint
+        response = self.client.post('/alert-doctor', json=request_data)
 
-    @patch('main2.get_jwt_identity')  # Mocking get_jwt_identity
-    @patch('main2.User')  # Mocking the User class
-    @patch('smtplib.SMTP_SSL')  # Mocking smtplib.SMTP_SSL
-    def test_send_alert_missing_email(self, MockSMTP, MockUser, MockGetJWT):
-        # Mock the JWT identity to return a user ID
-        MockGetJWT.return_value = 'test_user_id'
-
-        # Mock the User instance with missing email
-        mock_user = MagicMock()
-        mock_user.search_data.side_effect = [
-            {'first_name': 'John'},  # first_name
-            {'last_name': 'Doe'},  # last_name
-            {},  # Missing doctor_email
-            {'unit': 'mg/dL'}  # unit
-        ]
-        MockUser.return_value = mock_user
-
-        # Simulate the POST request to the /alert-doctor endpoint
-        response = self.app.post(
-            '/alert-doctor',
-            json={'bloodSugarLevel': 150},  # Test data
-        )
-
-        # Verify the response when doctor_email is missing
+        # Check the response status and error message
         self.assertEqual(response.status_code, 400)
-        self.assertIn("Doctor email is missing", response.get_json()["error"])
+        self.assertIn("Missing required fields: bloodSugarLevel", response.json['error'])
 
-        # Verify that no email was sent
-        MockSMTP.return_value.send_message.assert_not_called()
+    @patch('main2.UserClient.search_data')
+    @patch('main2.smtplib.SMTP_SSL')
+    def test_send_alert_incomplete_user_data(self, MockSMTP, mock_search_data):
+        # Mocking incomplete user data (e.g., missing doctor email)
+        mock_search_data.side_effect = lambda field: {
+            'first_name': 'John',
+            'last_name': 'Doe',
+        }.get(field)
+
+        # Mock the SMTP_SSL behavior
+        mock_smtp_instance = MagicMock()
+        MockSMTP.return_value = mock_smtp_instance
+
+        # Example request data
+        request_data = {
+            "userid": "f87cd4cb-8959-4daf-a040-88add0d53727",
+            "bloodSugarLevel": 250
+        }
+
+        # Send POST request to /alert-doctor endpoint
+        response = self.client.post('/alert-doctor', json=request_data)
+
+        # Check the response status and error message
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("User data incomplete. Unable to send alert.", response.json['error'])
+
+    @patch('main2.UserClient.search_data')
+    def test_send_alert_error(self, mock_search_data):
+        # Mocking an exception during the user data retrieval
+        mock_search_data.side_effect = Exception("Some error")
+
+        # Example request data
+        request_data = {
+            "userid": "f87cd4cb-8959-4daf-a040-88add0d53727",
+            "bloodSugarLevel": 250
+        }
+
+        # Send POST request to /alert-doctor endpoint
+        response = self.client.post('/alert-doctor', json=request_data)
+
+        # Check the response status and error message
+        self.assertEqual(response.status_code, 500)
+        self.assertIn("An unexpected error occurred", response.json['error'])
 
 if __name__ == '__main__':
     unittest.main()
