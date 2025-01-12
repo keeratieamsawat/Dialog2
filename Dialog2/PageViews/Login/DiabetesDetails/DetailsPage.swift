@@ -6,7 +6,7 @@ import SwiftUI
 struct DetailsPageView: View {
     
     // calling the data model
-    @ObservedObject var diabetesData:DiabetesDetailsData
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         NavigationStack {
@@ -74,7 +74,7 @@ struct DetailsPageView: View {
 
 struct InsulinInfoView: View {
     
-    @ObservedObject var diabetesData:DiabetesDetailsData
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30) {
@@ -141,7 +141,7 @@ struct InsulinInfoView: View {
 
 struct MedicationView: View {
     
-    @ObservedObject var diabetesData:DiabetesDetailsData
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30) {
@@ -189,7 +189,7 @@ struct MedicationView: View {
 
 struct bsRangeView: View {
     
-    @ObservedObject var diabetesData:DiabetesDetailsData
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30){

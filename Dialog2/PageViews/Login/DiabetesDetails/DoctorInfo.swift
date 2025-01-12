@@ -1,8 +1,9 @@
 import SwiftUI
+import Foundation
 
 struct DoctorInfoView: View {
     
-    @ObservedObject var diabetesData:DiabetesDetailsData
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(alignment:.leading,spacing: 30) {
@@ -62,7 +63,7 @@ struct DoctorInfoView: View {
         let diabetesDetails: [String: Any] = [
             "userid":diabetesData.userID,
             "diabetes_type":diabetesData.diabetesType,
-            "diagnose_date":DateUtils.formattedDate(from: diabetesData.diagnoseDate, format: "yy-MM-dd"),
+            "diagnose_date":DateUtils.formattedDate(from: diabetesData.diagnoseDate, format: "yyyy-MM-dd"),
             "insulin_type":diabetesData.insulinType,
             "admin_route":diabetesData.adminRoute,
             "condition":diabetesData.condition,
@@ -94,6 +95,9 @@ struct DoctorInfoView: View {
         // perform the request
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
+                DispatchQueue.main.async {
+                    print("Error: \(error.localizedDescription)") // Print on the main thread
+                }
                 completion(.failure(error))
                 return
             }
@@ -102,37 +106,46 @@ struct DoctorInfoView: View {
                 do {
                     // Assuming the backend returns a success message in the body
                     let responseString = String(data: data, encoding: .utf8) ?? "Unknown response"
+                    DispatchQueue.main.async {
+                        print("Response: \(responseString)") // Print on the main thread
+                    }
                     completion(.success(responseString))
                 } catch {
+                    DispatchQueue.main.async {
+                        print("Error during data parsing: \(error.localizedDescription)") // Print on the main thread
+                    }
                     completion(.failure(error))
                 }
             }
-            print("Data being sent to the backend: \(diabetesDetails)")
+            DispatchQueue.main.async {
+                print("Data being sent to the backend: \(diabetesDetails)") // Print on the main thread
+            }
         }
         
         task.resume()
     }
     
-    // MARK: this function submits the diabetes details data to backend
+    // MARK: this function submits the diabetes details data to backend, when "All done" button is clicked
     
     func submitDiabetes() {
         // Send the diabetes details data to the backend
         sendDiabetesData(diabetesData: diabetesData) { result in
-            switch result {
-            case .success(let responseMessage):
-                print("Submission of diabetes details success: \(responseMessage)")
-                // Navigate to the next screen or show a success message
-            case .failure(let error):
-                print("Submission of diabetes details failed: \(error.localizedDescription)")
-                // Handle failure (e.g., show an error alert)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let responseMessage):
+                    print("Submission of diabetes details success: \(responseMessage)")
+                    // Navigate to the next screen or show a success message
+                case .failure(let error):
+                    print("Submission of diabetes details failed: \(error.localizedDescription)")
+                    // Handle failure (e.g., show an error alert)
+                }
             }
         }
     }
 }
-
-struct DoctorInfo_Previews: PreviewProvider {
-    static var previews: some View {
-        DoctorInfoView(diabetesData: DiabetesDetailsData())
+    struct DoctorInfo_Previews: PreviewProvider {
+        static var previews: some View {
+            DoctorInfoView(diabetesData: DiabetesDetailsData())
+        }
     }
-}
 
