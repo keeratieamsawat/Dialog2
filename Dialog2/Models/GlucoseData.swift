@@ -3,6 +3,7 @@
 import SwiftUI
 import Combine
 
+
 // MARK: - GlucoseData (Shared Data Model)
 class GlucoseData: ObservableObject {
     @Published var dailyGlucoseLevels: [CGFloat] = [5.0, 4.8, 5.5, 6.0, 5.2, 4.9]

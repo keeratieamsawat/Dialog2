@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct LoginView: View {
+    
+    @StateObject var userData = UserRegistrationData()
+    
     var body: some View {
         NavigationStack {
             VStack(spacing:30) { // organize items with spacing
@@ -22,7 +25,7 @@ struct LoginView: View {
                 
                 // "Create Account": prompt the user to create account
                 // this button goes to create account page
-                NavigationLink(destination: CreateAccountView()) {
+                NavigationLink(destination: CreateAccountView(userData:userData)) {
                     Text("Create Account")
                         .bold()
                         .frame(maxWidth: .infinity, minHeight: 50)
@@ -35,22 +38,23 @@ struct LoginView: View {
                 // "Sign-in": prompt exisiting user to sign in
                 // this button goes to sign-in page
                 NavigationLink(destination: SigninView()) {
-                    Text("Sign-in")
-                        .bold()
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .foregroundColor(.white)
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                        .padding(.horizontal,40)
+                    NavigationLink(destination: SigninView()) {
+                        Text("Sign-in")
+                            .bold()
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .padding(.horizontal,40)
+                    }
+                    
                 }
-                
+                // align all contents to the centre of page
+                .frame(maxHeight: .infinity, alignment: .center)
             }
-            // align all contents to the centre of page
-            .frame(maxHeight: .infinity, alignment: .center)
         }
     }
 }
-
-#Preview {
-    LoginView()
-}
+    #Preview {
+        LoginView()
+    }
