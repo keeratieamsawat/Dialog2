@@ -2,8 +2,12 @@ import SwiftUI
 
 struct CreateAccountView: View {
     
-    // calling UserRegistrationData model as observed object
-    @ObservedObject var userData: UserRegistrationData
+// MARK: storing user input
+    
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
+    @State private var userEmail: String = ""
+    @State private var password: String = ""
     
     var body: some View {
         NavigationStack {
@@ -24,7 +28,7 @@ struct CreateAccountView: View {
                 Text("First Name:")
                     .font(.headline)
                 // textfield: allow user input
-                TextField("Enter your first name", text: $userData.firstName)
+                TextField("Enter your first name", text: $firstName)
                     .padding(10) // the padding inside textfield
                     .frame(height: 40) // set smaller height/size for the textfield
                     .overlay( // user .overlay to add round rectangle border to textfield
@@ -35,7 +39,7 @@ struct CreateAccountView: View {
                 // last name
                 Text("Last Name:")
                     .font(.headline)
-                TextField("Enter your last name", text: $userData.lastName)
+                TextField("Enter your last name", text: $lastName)
                     .padding(10)
                     .frame(height: 40)
                     .overlay(
@@ -46,7 +50,7 @@ struct CreateAccountView: View {
                 // user email
                 Text("Email Address:")
                     .font(.headline)
-                TextField("Enter your email", text: $userData.userEmail)
+                TextField("Enter your email", text: $userEmail)
                     .padding(10)
                     .frame(height: 40)
                     .overlay(
@@ -57,18 +61,7 @@ struct CreateAccountView: View {
                 // password
                 Text("Password:")
                     .font(.headline)
-                TextField("Create your password", text: $userData.password)
-                    .padding(10)
-                    .frame(height: 40)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color("Primary_Color"), lineWidth: 2))
-                    .offset(y:-10)
-                
-                // confirm password
-                Text("Confirm Password:")
-                    .font(.headline)
-                TextField("Input your chosen password again", text: $userData.confirmPassword)
+                TextField("Create your password", text: $password)
                     .padding(10)
                     .frame(height: 40)
                     .overlay(
@@ -95,8 +88,6 @@ struct CreateAccountView: View {
 }
 
 
-struct CreateAccountView_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateAccountView(userData: UserRegistrationData())
-    }
+#Preview {
+    CreateAccountView()
 }

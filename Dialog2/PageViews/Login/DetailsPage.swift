@@ -196,7 +196,7 @@ struct MedicationView: View {
                 .background(Color("Primary_Color"))
                 .cornerRadius(10)
             // button to direct to next page
-            NavigationLink(destination: bsRangeView()) {
+            NavigationLink(destination: UnitsView()) {
                 Text("Confirm")
                     .bold()
                     .frame(height:40)
@@ -211,10 +211,83 @@ struct MedicationView: View {
     }
 }
 
+// MARK: select preferred units for logging BS and carbohydrates
+
+struct UnitsView: View{
+    
+    @State private var bsUnit: String = "mmol/L" // default
+    @State private var carbUnit: String = "grams" //default
+    
+    // list of blood sugar units
+    let bsUnits = ["mmol/L","mg/dL"]
+    // list of carbohydrate units
+    let carbUnits = ["grams","Calories"]
+    
+    var body:some View {
+        VStack(spacing:30) {
+            Text("Almost there!")
+                .font(.title)
+                .bold()
+            Text("What units are you most comfortable with?")
+                .font(.title3)
+                .bold()
+            
+            // drop-down picker for blood sugar units
+            Picker("Blood Sugar Units", selection: $bsUnit) {
+                ForEach(bsUnits, id: \.self) { type in
+                    Text(type)
+                        .tag(type)
+                }
+            }
+            .pickerStyle(MenuPickerStyle()) // drop-down menu
+            .frame(width:300,height:50)
+            .background(Color.white)
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color("Primary_Color"), lineWidth: 2)
+            )
+            // drop-down picker for carbohydrate units
+            Picker("Carbs Units", selection: $carbUnit) {
+                ForEach(carbUnits, id: \.self) { type in
+                    Text(type)
+                        .tag(type)
+                }
+            }
+            .pickerStyle(MenuPickerStyle()) // drop-down menu
+            .frame(width:300,height:50)
+            .background(Color.white)
+            .cornerRadius(10)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color("Primary_Color"), lineWidth: 2)
+            )
+            
+            // button to direct to next page
+            // passing on the bsUnit chosen to the bsRangeView page, bsRangeView will take bsUnit as argument
+            NavigationLink(destination: bsRangeView(bsUnit:bsUnit,carbUnit:carbUnit)) {
+                Text("Confirm")
+                    .bold()
+                    .frame(height:40)
+                    .frame(maxWidth:.infinity)
+                    .foregroundColor(.white)
+                    .background(Color("Primary_Color"))
+                    .cornerRadius(10)
+                    .padding(.horizontal,40)
+            }
+            
+        }
+        .padding(.horizontal,40)
+    }
+}
 
 // MARK: choose target BS range for control
 
 struct bsRangeView: View {
+    
+    // passing on the chosen bs and carbs unit from UnitsView
+    let bsUnit:String
+    let carbUnit: String
     
     // target range, hyper and hypo
     @State private var lowerBound: Float = 0.0 // initial value
@@ -227,7 +300,7 @@ struct bsRangeView: View {
                 .bold()
             
             // target range lower bound
-            Text("Lower bound: \(lowerBound,specifier: "%.2f")")
+            Text("Lower bound: \(lowerBound,specifier: "%.2f")\(bsUnit)")
                 .font(.caption)
             Slider(value: $lowerBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
@@ -235,9 +308,9 @@ struct bsRangeView: View {
                 .offset(y:-40)
             
             // target range upper bound
-            Text("Upper bound in:")
+            Text("Upper bound in \(bsUnit):")
                 .font(.headline)
-            Text("Upper bound: \(upperBound,specifier:"%.2f")")
+            Text("Upper bound: \(upperBound,specifier:"%.2f")\(bsUnit)")
                 .font(.caption)
             Slider(value: $upperBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
@@ -245,7 +318,7 @@ struct bsRangeView: View {
                 .offset(y:-40)
             
             // display chosen range
-            Text("Your chosen range: \(lowerBound,specifier: "%.2f") to \(upperBound,specifier: "%.2f") ")
+            Text("Your chosen range: \(lowerBound,specifier: "%.2f") \(bsUnit) to \(upperBound,specifier: "%.2f") \(bsUnit)")
                             .font(.footnote)
                             .foregroundColor(.black)
                             .offset(y:-40)

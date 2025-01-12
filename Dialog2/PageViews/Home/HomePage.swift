@@ -163,7 +163,7 @@ struct MetricCard: View {
             Text(value)
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundColor(Color("Primary_Color")) 
+                .foregroundColor(Color("Primary_Color"))
         }
         .frame(width: 100, height: 80)
         .background(Color(UIColor.systemGray6))
