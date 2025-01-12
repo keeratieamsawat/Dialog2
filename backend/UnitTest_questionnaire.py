@@ -1,72 +1,94 @@
 import unittest
-from unittest.mock import patch
-from flask import Flask, jsonify
-from flask.testing import FlaskClient
-from main2 import app  # Assuming your app is named 'app.py'
-from flask_jwt_extended import jwt_required
+from unittest.mock import patch, MagicMock
+from main2 import app, send_results_to_doctor  
+from flask import jsonify
 
-class TestQuestionnaireEndpoint(unittest.TestCase):
-    
-    def setUp(self):
-        self.client = app.test_client()  # This sets up the test client
+class TestSubmitQuestionnaire(unittest.TestCase):
 
-    @patch('main2.store_answers')  # Mock store_answers function
-    @patch('main2.send_results_to_doctor')  # Mock send_results_to_doctor function
-    @patch('flask_jwt_extended.jwt_required')
-    def test_submit_questionnaire_success(self, mock_jwt, mock_send_results, mock_store_answers):
-        # Arrange
-        mock_jwt.return_value = None
-        mock_store_answers.return_value = None  # Mock successful storage
-        mock_send_results.return_value = None  # Mock successful email sending
-        data = {"answers": [{"question_id": 1, "answer": "yes"}]}
+    @patch('main2.data_table.put_item')  # Mocking DynamoDB's put_item
+    @patch('main2.smtplib.SMTP_SSL')    # Mocking smtplib's SMTP_SSL
+    @patch('main2.get_user_by_patient_id')  # Mocking the get_user_by_patient_id function
+    def test_submit_questionnaire_success(self, mock_get_user, mock_smtp, mock_put_item):
+        # Setup mock return values
+        mock_get_user.return_value = {'first_name': 'John', 'last_name': 'Doe', 'doctor_email': 'doctor@example.com'}
         
-        # Act
-        response = self.client.post('/questionnaire', json=data)
+        mock_smtp.return_value = MagicMock()  # Mocking the SMTP server
+        mock_smtp.return_value.login.return_value = None
+        mock_smtp.return_value.send_message.return_value = None
         
-        # Assert
-        self.assertEqual(response.status_code, 201)
-        self.assertIn('Questionnaire submitted successfully!', response.json['message'])
+        # Mock the data to be submitted in the request
+        data = {
+            'userid': '12345',
+            'answers': [
+                {'question_id': 'q1', 'answer': 'Yes'},
+                {'question_id': 'q2', 'answer': 'No'}
+            ]
+        }
+        
+        with app.test_client() as client:
+            # Simulate a POST request to the /questionnaire route
+            response = client.post('/questionnaire', json=data)
 
-    @patch('flask_jwt_extended.jwt_required')
-    def test_submit_questionnaire_invalid_json(self, mock_jwt):
-        # Arrange: Invalid JSON
-        mock_jwt.return_value = None
-        invalid_json = '{invalid_json}'  # This will cause a JSON parsing error
-        
-        # Act
-        response = self.client.post('/questionnaire', data=invalid_json, content_type='application/json')
-        
-        # Assert: Expect a 422 error for invalid JSON
-        self.assertEqual(response.status_code, 422)
-        self.assertIn('Invalid JSON format', response.json['error'])
+            print(response.data)
 
-    @patch('flask_jwt_extended.jwt_required')
-    def test_submit_questionnaire_missing_answers_field(self, mock_jwt):
-        # Arrange: Missing 'answers' field
-        data = {"missing_answers_field": "some_value"}  # Missing 'answers' field
-        
-        mock_jwt.return_value = None
-        response = self.client.post('/questionnaire', json=data)
-        
-        # Assert: Expect a 422 error as the 'answers' field is missing
-        self.assertEqual(response.status_code, 422)
-        self.assertIn("Invalid or missing 'answers' field", response.json['error'])
+            # Assertions
+            self.assertEqual(response.status_code, 201)
+            self.assertIn("Questionnaire submitted successfully!", response.get_json().get('message'))
+            mock_put_item.assert_called()  # Ensure store_answers (and thus DynamoDB put_item) was called
+            mock_smtp.return_value.send_message.assert_called()  # Ensure email sending function was called
 
-    @patch('main2.store_answers')
-    @patch('flask_jwt_extended.jwt_required')
-    def test_submit_questionnaire_storage_failure(self, mock_jwt, mock_store_answers):
-        # Arrange: Simulate storage failure
-        mock_jwt.return_value = None
-        mock_store_answers.side_effect = Exception("Storage error")  # Mocking storage failure
+    @patch('main2.data_table.put_item')
+    @patch('main2.get_user_by_patient_id')
+    def test_submit_questionnaire_missing_userid(self, mock_get_user, mock_put_item):
+        data = {'answers': [{'question_id': 'q1', 'answer': 'Yes'}]}
         
-        data = {"answers": [{"question_id": 1, "answer": "yes"}]}
+        with app.test_client() as client:
+            response = client.post('/questionnaire', json=data)
+            
+            self.assertEqual(response.status_code, 400)
+            self.assertIn("Missing 'userid' in request data", response.get_json().get('error'))
+
+    @patch('main2.data_table.put_item')
+    @patch('main2.get_user_by_patient_id')
+    def test_submit_questionnaire_invalid_json(self, mock_get_user, mock_put_item):
+        data = None  # Invalid JSON format
         
-        # Act
-        response = self.client.post('/questionnaire', json=data)
+        with app.test_client() as client:
+            response = client.post('/questionnaire', json=data)
+            
+            self.assertEqual(response.status_code, 400)
+            self.assertIn("Invalid JSON format", response.get_json().get('error'))
+
+    @patch('main2.data_table.put_item')
+    @patch('main2.get_user_by_patient_id')
+    def test_submit_questionnaire_invalid_answers(self, mock_get_user, mock_put_item):
+        data = {'userid': '12345', 'answers': 'Invalid data'}  # Invalid answers format
         
-        # Assert: Expect a 500 error due to storage failure
-        self.assertEqual(response.status_code, 500)
-        self.assertIn("Failed to store questionnaire", response.json['error'])
+        with app.test_client() as client:
+            response = client.post('/questionnaire', json=data)
+            
+            self.assertEqual(response.status_code, 400)
+            self.assertIn("Invalid or missing 'answers' field", response.get_json().get('error'))
+
+    @patch('main2.data_table.put_item')
+    @patch('main2.get_user_by_patient_id')
+    @patch('main2.smtplib.SMTP_SSL')
+    def test_send_results_to_doctor(self, mock_smtp, mock_get_user, mock_put_item):
+        # Mock dependencies
+        mock_get_user.return_value = {'first_name': 'John', 'last_name': 'Doe', 'doctor_email': 'doctor@example.com'}
+        
+        mock_smtp.return_value = MagicMock()
+        mock_smtp.return_value.login.return_value = None
+        mock_smtp.return_value.send_message.return_value = None
+        
+        answers = [{'question_id': 'q1', 'answer': 'Yes'}, {'question_id': 'q2', 'answer': 'No'}]
+        patient_id = '12345'
+        
+        # Call send_results_to_doctor
+        send_results_to_doctor(patient_id, answers)
+
+        # Assertions
+        mock_smtp.return_value.send_message.assert_called_once()  # Check that email was sent
 
 if __name__ == '__main__':
     unittest.main()

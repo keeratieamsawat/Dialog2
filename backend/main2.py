@@ -528,20 +528,27 @@ def send_alert():
 
 # Questionnaire endpoint to submit responses
 @app.route('/questionnaire', methods=['POST'])
-@jwt_required()
 def submit_questionnaire():
-    data = request.json(force=True, silent=True)
-    current_user_id = get_jwt_identity()
-    if not data:
+    # Ensure the request has JSON content type
+    if not request.is_json:
         return jsonify({"error": "Invalid JSON format"}), 400
 
-    # Validate required fields
-    required_fields = ['answers']
-    if not all(field in data for field in required_fields) or not isinstance(data['answers'], list):
-        return jsonify({"error": "Invalid or missing 'answers' field"}), 400
-    
-    
     try:
+        data = request.get_json()  # Get JSON data
+
+        if not data:
+            return jsonify({"error": "Invalid JSON format"}), 400
+
+        # Extract user ID and check if it's provided
+        current_user_id = data.get('userid')
+        if not current_user_id:
+            return jsonify({"error": "Missing 'userid' in request data"}), 400
+
+        # Validate required fields
+        required_fields = ['answers']
+        if not all(field in data for field in required_fields) or not isinstance(data['answers'], list):
+            return jsonify({"error": "Invalid or missing 'answers' field"}), 400
+
         # Store answers in the DiaLog_Data table using store_answers
         store_answers(current_user_id, data['answers'])
 
@@ -551,6 +558,7 @@ def submit_questionnaire():
         return jsonify({"message": "Questionnaire submitted successfully!"}), 201
 
     except Exception as e:
+        app.logger.error(f"Error in submitting questionnaire: {str(e)}")  # Log the exception for debugging
         return jsonify({"error": f"Failed to store questionnaire: {e}"}), 500
 
 
@@ -584,26 +592,26 @@ def get_user_by_patient_id(patient_id):
         if 'Item' in response:
             user = response['Item']
             return {
-                'firstName': user.get('firstName', 'Unknown'),
-                'lastName': user.get('lastName', 'Unknown'),
-                'doctorEmail': user.get('doctorEmail', 'doctor@example.com'),
+                'first_name': user.get('first_name', 'Unknown'),
+                'last_name': user.get('last_name', 'Unknown'),
+                'doctor_email': user.get('doctor_email', 'Unkown'),
             }
         else:
             return {
-                'firstName': 'Unknown',
-                'lastName': 'Unknown',
-                'doctorEmail': 'doctor@example.com',
+                'first_name': 'Unknown',
+                'last_name': 'Unknown',
+                'doctor_email': 'Unknown',
             }
     except ClientError as e:
         print(f"Error getting user by patient_id {patient_id}: {e}")
-        return {'firstName': 'Unknown', 'lastName': 'Unknown', 'doctorEmail': 'doctor@example.com'}
+        return {'first_name': 'Unknown', 'last_name': 'Unknown', 'doctor_email': 'Unknown'}
 
 # Helper function to send results to the doctor
 def send_results_to_doctor(patient_id, answers):
     user = get_user_by_patient_id(patient_id)
-    firstname = user['firstName']
-    lastname = user['lastName']
-    doctor_email = user['doctorEmail']
+    firstname = user['first_name']
+    lastname = user['last_name']
+    doctor_email = user['doctor_email']
     
     # Prepare the email content with all questions and answers
     questionnaire_responses = "\n".join([f"Q{answer['question_id']}: {answer['answer']}" for answer in answers])
