@@ -26,66 +26,60 @@ class ComprehensiveMethodViewModel: ObservableObject {
     @Published var exerciseName: String = ""
     @Published var duration: String = ""
     @Published var intensity: String = ""
-    
+
     @Published var isBloodSugarOutOfRange: Bool = false
     @Published var bloodSugarAlert: BloodSugarAlert?
-    
-
-    // MARK: - Transform ViewModel data to Data Model
-    func toComprehensiveMethodData() -> ComprehensiveMethodData {
-        return ComprehensiveMethodData(
-            mode: "Comprehensive",
-            selectedDate: DateUtils.formattedDate(from: selectedDate, format: "yyyy-MM-dd"),
-            bloodSugarTime: DateUtils.formattedTime(from: bloodSugarTime, format: "HH:mm:ss"),
-            bloodSugarLevel: bloodSugarLevel,
-            mealTiming: mealTiming,
-            noteBloodSugar: noteBloodSugar,
-            selectedMeal: selectedMeal,
-            foodTime: DateUtils.formattedTime(from: foodTime, format: "HH:mm:ss"),
-            food: food,
-            caloriesIntake: caloriesIntake,
-            carbohydrateIntake: carbohydrateIntake,
-            noteFood: noteFood,
-            medicationName: medicationName,
-            dosage: dosage,
-            insulinTiming: DateUtils.formattedTime(from: insulinTiming, format: "HH:mm:ss"),
-            insulinNote: insulinNote,
-            exerciseName: exerciseName,
-            duration: duration,
-            intensity: intensity,
-            isBloodSugarOutOfRange: isBloodSugarOutOfRange,
-            bloodSugarAlert: bloodSugarAlert
-            
-        )
-    }
-    
-    // Method to check if blood sugar is out of range
-    func checkBloodSugarStatus() {
-        isBloodSugarOutOfRange = BloodSugarManager.shared.checkBloodSugarStatus(
-            bloodSugarLevel: bloodSugarLevel,
-            mealTiming: mealTiming
-        )
-
-        // If blood sugar is out of range, generate an alert
-        if isBloodSugarOutOfRange {
-            bloodSugarAlert = BloodSugarManager.shared.getBloodSugarAlert(
-                bloodSugarLevel: bloodSugarLevel,
-                mealTiming: mealTiming
-            )
-        }
-    }
 
     // MARK: - Send Data to Backend
     func sendDataToBackend() {
-        let dataModel = toComprehensiveMethodData()
-        let endpoint = "https://your-backend-api-url.com/simple-method"
-        let token = TokenManager.getToken() // Securely retrieve the JWT token
+        let userID = "eaba7c23-3bc4-4d56-943c-fc5a25cfbbce"
+        let timestamp = DateUtils.currentTimestamp()
+        var conditions: [Condition] = []
 
+        // **Dynamic Mapping**: Create field mappings
+        let fieldMappings: [(key: String, value: String?, date: Date)] = [
+            ("selectedDateComprehensive", DateUtils.formattedDate(from: selectedDate, format: "yyyy-MM-dd'T'HH:mm:ss"), selectedDate),
+            ("bloodSugarTimeComprehensive", DateUtils.formattedDate(from: bloodSugarTime, format: "yyyy-MM-dd'T'HH:mm:ss"), bloodSugarTime),
+            ("foodTimeComprehensive", DateUtils.formattedDate(from: foodTime, format: "yyyy-MM-dd'T'HH:mm:ss"), foodTime),
+            ("insulinTimingComprehensive", DateUtils.formattedDate(from: insulinTiming, format: "yyyy-MM-dd'T'HH:mm:ss"), insulinTiming),
+            ("bloodSugarComprehensive", bloodSugarLevel, bloodSugarTime),
+            ("mealTimingComprehensive", mealTiming, selectedDate),
+            ("noteBloodSugarComprehensive", noteBloodSugar, selectedDate),
+            ("selectedMealComprehensive", selectedMeal, foodTime),
+            ("foodComprehensive", food, foodTime),
+            ("caloriesIntakeComprehensive", caloriesIntake, foodTime),
+            ("carbohydrateIntakeComprehensive", carbohydrateIntake, foodTime),
+            ("noteFoodComprehensive", noteFood, foodTime),
+            ("medicationNameComprehensive", medicationName, insulinTiming),
+            ("dosageComprehensive", dosage, insulinTiming),
+            ("insulinNoteComprehensive", insulinNote, insulinTiming),
+            ("exerciseNameComprehensive", exerciseName, selectedDate),
+            ("durationComprehensive", duration, selectedDate),
+            ("intensityComprehensive", intensity, selectedDate)
+        ]
+
+        // **Iterate Through Field Mappings**: Add non-empty fields to conditions
+        for field in fieldMappings {
+            if let value = field.value, !value.isEmpty {
+                conditions.append(ConditionHelper.createCondition(
+                    userId: userID,
+                    dataType: field.key,
+                    value: value,
+                    date: field.date,
+                    timestamp: timestamp
+                ))
+            }
+        }
+
+        // **Prepare the Payload**
+        let payload = ConditionHelper.preparePayload(userId: userID, conditions: conditions)
+
+        // **Send Data to the Backend**
         APIService.shared.post(
-            endpoint: endpoint,
-            payload: dataModel, // Payload to be sent to backend
-            token: token,
-            responseType: Response.self // Backend response type
+            endpoint: "http://127.0.0.1:5000/conditions",
+            payload: payload,
+            token: TokenManager.getToken(),
+            responseType: Response.self
         ) { result in
             DispatchQueue.main.async {
                 switch result {
@@ -97,6 +91,9 @@ class ComprehensiveMethodViewModel: ObservableObject {
             }
         }
     }
-
 }
+
+
+
+
 
