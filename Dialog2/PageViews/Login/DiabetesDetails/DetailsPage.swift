@@ -111,6 +111,12 @@ struct InsulinInfoView: View {
             )
             .padding(.horizontal,40)
             
+            Text("How do you administer your insulin?")
+                .font(.title3)
+                .bold()
+                .padding(.leading,20)
+                .padding(.top,20)
+            
             // drop-down picker for insulin administration
             Picker("Administration", selection: $adminRoute) {
                 ForEach(adminRoutes, id: \.self) { type in
@@ -151,7 +157,7 @@ struct MedicationView: View {
     
     var body: some View {
         VStack(spacing:30) {
-            Text("What other health conditions have you been diagnosed, if any?")
+            Text("What other health conditions have you been diagnosed, if any? (Enter N/A if not applicable)")
                 .font(.title3)
                 .bold()
             // input other conditions
@@ -161,23 +167,8 @@ struct MedicationView: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2))
-            // no other conditions/don't know
-            Text("I don't have other conditions")
-                .bold()
-                .frame(maxWidth:.infinity)
-                .frame(height:40)
-                .foregroundColor(.white)
-                .background(Color("Primary_Color"))
-                .cornerRadius(10)
-            Text("I don't know")
-                .bold()
-                .frame(maxWidth:.infinity)
-                .frame(height:40)
-                .foregroundColor(.white)
-                .background(Color("Primary_Color"))
-                .cornerRadius(10)
             
-            Text("What other medications are you taking, if any?")
+            Text("What other medications are you taking, if any? (Enter N/A if not applicable)")
                 .font(.title3)
                 .bold()
             // input other medications
@@ -187,14 +178,7 @@ struct MedicationView: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2))
-            // no other medications
-            Text("I don't take other medications")
-                .bold()
-                .frame(height:40)
-                .frame(maxWidth:.infinity)
-                .foregroundColor(.white)
-                .background(Color("Primary_Color"))
-                .cornerRadius(10)
+            
             // button to direct to next page
             NavigationLink(destination: bsRangeView()) {
                 Text("Confirm")
@@ -207,9 +191,10 @@ struct MedicationView: View {
                     .padding(.horizontal,40)
             }
         }
-        .padding(.horizontal,40)
+        .padding(40)
     }
 }
+
 
 
 // MARK: choose target BS range for control

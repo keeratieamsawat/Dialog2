@@ -3,6 +3,8 @@ import SwiftUI
 struct DoctorInfoView: View {
     
     @State private var doctorName: String = ""
+    @State private var doctorEmail: String = ""
+    
     
     var body: some View {
         VStack(alignment:.leading,spacing: 30) {
@@ -21,15 +23,6 @@ struct DoctorInfoView: View {
             Text("Your Doctor's Email:")
                 .font(.headline)
             TextField("Enter your doctor's email", text: $doctorName)
-                .padding(10)
-                .frame(height: 40)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color("Primary_Color"), lineWidth: 2))
-                .offset(y:-20)
-            Text("Emergency Contact Number:")
-                .font(.headline)
-            TextField("Enter emergency contact number", text: $doctorName)
                 .padding(10)
                 .frame(height: 40)
                 .overlay(
