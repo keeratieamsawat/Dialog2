@@ -4,6 +4,7 @@ struct HomePageView: View {
     @State private var currentDate = Date() // Update in real time
     @State private var selectedLogMode: String = "Simple" // Mode selection
     @ObservedObject var glucoseData = GlucoseData() // Shared data model
+    @ObservedObject var diabetesData: DiabetesDetailsData // shared data model
 
     var body: some View {
         NavigationView {
@@ -101,7 +102,7 @@ struct HomePageView: View {
                         NavigationLink(destination: MyStatisticPage(glucoseData: glucoseData)) {
                             TabItem(icon: "chart.bar", label: "Stats")
                         }
-                        NavigationLink(destination: HomePageView()) {
+                        NavigationLink(destination: HomePageView(diabetesData:diabetesData)) {
                             TabItem(icon: "house.fill", label: "Home", isSelected: true)
                         }
                         NavigationLink(destination: MyInfoPage()) {
@@ -194,6 +195,6 @@ struct TabItem: View {
 // MARK: - Preview
 struct HomePageView_Previews: PreviewProvider {
     static var previews: some View {
-        HomePageView()
+        HomePageView(diabetesData:DiabetesDetailsData())
     }
 }

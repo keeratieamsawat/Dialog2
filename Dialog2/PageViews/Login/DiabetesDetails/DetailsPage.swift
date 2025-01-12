@@ -5,12 +5,8 @@ import SwiftUI
 
 struct DetailsPageView: View {
     
-    // private vars
-    @State private var diabetesType: String = "Type I" // default selection
-    @State private var diagnoseDate: Date = Date()
-    
-    // list of diabetes types for picker
-    let diabetesTypes = ["Type I","Type II","Gestational Diabetes","Other"]
+    // calling the data model
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         NavigationStack {
@@ -35,7 +31,7 @@ struct DetailsPageView: View {
                         .stroke(Color("Primary_Color"), lineWidth: 2)
                     DatePicker(
                         "Date diagnosed",
-                        selection: $diagnoseDate, displayedComponents: [.date])
+                        selection: $diabetesData.diagnoseDate, displayedComponents: [.date])
                     .padding(10)
                 }
                 .frame(width:300,height:50) // Ensure DatePicker height is consistent
@@ -43,8 +39,8 @@ struct DetailsPageView: View {
                 .datePickerStyle(CompactDatePickerStyle())
                 
                 // Picker for diabetes type
-                Picker("Diabetes Type", selection: $diabetesType) {
-                    ForEach(diabetesTypes, id: \.self) { type in
+                Picker("Diabetes Type", selection: $diabetesData.diabetesType) {
+                    ForEach(diabetesData.diabetesTypes, id: \.self) { type in
                         Text(type)
                             .tag(type) // match the tag to data type
                     }
@@ -60,7 +56,7 @@ struct DetailsPageView: View {
                 .padding(.horizontal,40)
             }
             // button to direct to next page
-            NavigationLink(destination: InsulinInfoView()) {
+            NavigationLink(destination: InsulinInfoView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(width:300,height:50)
@@ -78,13 +74,7 @@ struct DetailsPageView: View {
 
 struct InsulinInfoView: View {
     
-    @State private var insulinType: String = "Rapid-acting" // default
-    @State private var adminRoute: String = "Injection" //default
-    
-    // list of insulin types for picker
-    let insulinTypes = ["Rapid-acting","Short-acting", "Intermediate-acting","Long-acting","I'm not taking insulin"]
-    // list of insulin administration routes
-    let adminRoutes = ["Injection","Pen","Pump","Other","I'm not taking insulin"]
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30) {
@@ -95,8 +85,8 @@ struct InsulinInfoView: View {
                 .padding(.top,20)
             
             // drop-down picker for insulin types
-            Picker("Insulin Type", selection: $insulinType) {
-                ForEach(insulinTypes, id: \.self) { type in
+            Picker("Insulin Type", selection: $diabetesData.insulinType) {
+                ForEach(diabetesData.insulinTypes, id: \.self) { type in
                     Text(type)
                         .tag(type)
                 }
@@ -111,9 +101,15 @@ struct InsulinInfoView: View {
             )
             .padding(.horizontal,40)
             
+            Text("How do you administer your insulin?")
+                .font(.title3)
+                .bold()
+                .padding(.leading,20)
+                .padding(.top,20)
+            
             // drop-down picker for insulin administration
-            Picker("Administration", selection: $adminRoute) {
-                ForEach(adminRoutes, id: \.self) { type in
+            Picker("Administration", selection: $diabetesData.adminRoute) {
+                ForEach(diabetesData.adminRoutes, id: \.self) { type in
                     Text(type)
                         .tag(type)
                 }
@@ -127,7 +123,7 @@ struct InsulinInfoView: View {
                     .stroke(Color("Primary_Color"), lineWidth: 2)
             )
             // button to direct to next page
-            NavigationLink(destination: MedicationView()) {
+            NavigationLink(destination: MedicationView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(width:300,height:50)
@@ -145,58 +141,34 @@ struct InsulinInfoView: View {
 
 struct MedicationView: View {
     
-    // allow user type in other condition and medication
-    @State private var condition: String = ""
-    @State private var medication: String = ""
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30) {
-            Text("What other health conditions have you been diagnosed, if any?")
+            Text("What other health conditions have you been diagnosed, if any? (Enter N/A if not applicable)")
                 .font(.title3)
                 .bold()
             // input other conditions
-            TextField("Enter other conditions...", text: $condition)
+            TextField("Enter other conditions...", text: $diabetesData.condition)
                 .padding(10)
                 .frame(height:40)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2))
-            // no other conditions/don't know
-            Text("I don't have other conditions")
-                .bold()
-                .frame(maxWidth:.infinity)
-                .frame(height:40)
-                .foregroundColor(.white)
-                .background(Color("Primary_Color"))
-                .cornerRadius(10)
-            Text("I don't know")
-                .bold()
-                .frame(maxWidth:.infinity)
-                .frame(height:40)
-                .foregroundColor(.white)
-                .background(Color("Primary_Color"))
-                .cornerRadius(10)
             
-            Text("What other medications are you taking, if any?")
+            Text("What other medications are you taking, if any? (Enter N/A if not applicable)")
                 .font(.title3)
                 .bold()
             // input other medications
-            TextField("Enter other medications...", text: $medication)
+            TextField("Enter other medications...", text: $diabetesData.medication)
                 .padding(10)
                 .frame(height: 40)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2))
-            // no other medications
-            Text("I don't take other medications")
-                .bold()
-                .frame(height:40)
-                .frame(maxWidth:.infinity)
-                .foregroundColor(.white)
-                .background(Color("Primary_Color"))
-                .cornerRadius(10)
+            
             // button to direct to next page
-            NavigationLink(destination: UnitsView()) {
+            NavigationLink(destination: bsRangeView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(height:40)
@@ -207,91 +179,17 @@ struct MedicationView: View {
                     .padding(.horizontal,40)
             }
         }
-        .padding(.horizontal,40)
+        .padding(40)
     }
 }
 
-// MARK: select preferred units for logging BS and carbohydrates
 
-struct UnitsView: View{
-    
-    @State private var bsUnit: String = "mmol/L" // default
-    @State private var carbUnit: String = "grams" //default
-    
-    // list of blood sugar units
-    let bsUnits = ["mmol/L","mg/dL"]
-    // list of carbohydrate units
-    let carbUnits = ["grams","Calories"]
-    
-    var body:some View {
-        VStack(spacing:30) {
-            Text("Almost there!")
-                .font(.title)
-                .bold()
-            Text("What units are you most comfortable with?")
-                .font(.title3)
-                .bold()
-            
-            // drop-down picker for blood sugar units
-            Picker("Blood Sugar Units", selection: $bsUnit) {
-                ForEach(bsUnits, id: \.self) { type in
-                    Text(type)
-                        .tag(type)
-                }
-            }
-            .pickerStyle(MenuPickerStyle()) // drop-down menu
-            .frame(width:300,height:50)
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color("Primary_Color"), lineWidth: 2)
-            )
-            // drop-down picker for carbohydrate units
-            Picker("Carbs Units", selection: $carbUnit) {
-                ForEach(carbUnits, id: \.self) { type in
-                    Text(type)
-                        .tag(type)
-                }
-            }
-            .pickerStyle(MenuPickerStyle()) // drop-down menu
-            .frame(width:300,height:50)
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color("Primary_Color"), lineWidth: 2)
-            )
-            
-            // button to direct to next page
-            // passing on the bsUnit chosen to the bsRangeView page, bsRangeView will take bsUnit as argument
-            NavigationLink(destination: bsRangeView(bsUnit:bsUnit,carbUnit:carbUnit)) {
-                Text("Confirm")
-                    .bold()
-                    .frame(height:40)
-                    .frame(maxWidth:.infinity)
-                    .foregroundColor(.white)
-                    .background(Color("Primary_Color"))
-                    .cornerRadius(10)
-                    .padding(.horizontal,40)
-            }
-            
-        }
-        .padding(.horizontal,40)
-    }
-}
 
 // MARK: choose target BS range for control
 
 struct bsRangeView: View {
     
-    // passing on the chosen bs and carbs unit from UnitsView
-    let bsUnit:String
-    let carbUnit: String
-    
-    // target range, hyper and hypo
-    @State private var lowerBound: Float = 0.0 // initial value
-    @State private var upperBound: Float = 0.0
+    @StateObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30){
@@ -300,30 +198,30 @@ struct bsRangeView: View {
                 .bold()
             
             // target range lower bound
-            Text("Lower bound: \(lowerBound,specifier: "%.2f")\(bsUnit)")
+            Text("Lower bound: \(diabetesData.lowerBound,specifier: "%.2f")")
                 .font(.caption)
-            Slider(value: $lowerBound, in: 0.0...20.0, step: 0.1)
+            Slider(value: $diabetesData.lowerBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
                 .offset(y:-40)
             
             // target range upper bound
-            Text("Upper bound in \(bsUnit):")
+            Text("Upper bound in:")
                 .font(.headline)
-            Text("Upper bound: \(upperBound,specifier:"%.2f")\(bsUnit)")
+            Text("Upper bound: \(diabetesData.upperBound,specifier:"%.2f")")
                 .font(.caption)
-            Slider(value: $upperBound, in: 0.0...20.0, step: 0.1)
+            Slider(value: $diabetesData.upperBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
                 .offset(y:-40)
             
             // display chosen range
-            Text("Your chosen range: \(lowerBound,specifier: "%.2f") \(bsUnit) to \(upperBound,specifier: "%.2f") \(bsUnit)")
+            Text("Your chosen range: \(diabetesData.lowerBound,specifier: "%.2f") to \(diabetesData.upperBound,specifier: "%.2f") ")
                             .font(.footnote)
                             .foregroundColor(.black)
                             .offset(y:-40)
             
-            NavigationLink(destination: DoctorInfoView()) {
+            NavigationLink(destination: DoctorInfoView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(height:40)
@@ -337,6 +235,8 @@ struct bsRangeView: View {
     }
 }
 
-#Preview {
-    DetailsPageView()
+struct DetailsPage_Previews: PreviewProvider {
+    static var previews: some View {
+        DetailsPageView(diabetesData: DiabetesDetailsData())
+    }
 }
