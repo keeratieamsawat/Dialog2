@@ -109,7 +109,7 @@ struct IntensiveView: View {
                     // Apply Button
                     Button(action: {
                         viewModel.sendDataToBackend()
-                        viewModel.checkBloodSugarStatus() // Check if blood sugar is out of range
+                        //viewModel.checkBloodSugarStatus() // Check if blood sugar is out of range
                     }) {
                         Text("APPLY")
                             .font(.headline)

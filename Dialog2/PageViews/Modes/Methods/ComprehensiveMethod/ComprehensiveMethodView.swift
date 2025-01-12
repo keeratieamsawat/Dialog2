@@ -86,7 +86,7 @@ struct ComprehensiveMethodView: View {
                     // Apply Button
                     Button(action: {
                         viewModel.sendDataToBackend()
-                        viewModel.checkBloodSugarStatus() // Check blood sugar status
+                        //viewModel.checkBloodSugarStatus() // Check blood sugar status
                     }) {
                         Text("APPLY")
                             .font(.headline)

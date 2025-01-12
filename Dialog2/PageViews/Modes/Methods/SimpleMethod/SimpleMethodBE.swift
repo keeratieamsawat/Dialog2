@@ -1,7 +1,10 @@
 import Foundation
 import SwiftUI
 
+// MARK: - ViewModel for Simple Method
 class SimpleMethodViewModel: ObservableObject {
+    
+    // MARK: - Published Properties
     @Published var selectedDate = Date()
     @Published var bloodSugarTime = Date()
     @Published var bloodSugarLevel: String = ""
@@ -17,30 +20,32 @@ class SimpleMethodViewModel: ObservableObject {
 
     @Published var isBloodSugarOutOfRange: Bool = false
     @Published var bloodSugarAlert: BloodSugarAlert?
-    
+
+    // MARK: - Blood Sugar Check
     func checkBloodSugarStatus() {
-           isBloodSugarOutOfRange = BloodSugarManager.shared.checkBloodSugarStatus(
-               bloodSugarLevel: bloodSugarLevel,
-               mealTiming: mealTiming
-           )
+        isBloodSugarOutOfRange = BloodSugarManager.shared.checkBloodSugarStatus(
+            bloodSugarLevel: bloodSugarLevel,
+            mealTiming: mealTiming
+        )
 
-           if isBloodSugarOutOfRange {
-               bloodSugarAlert = BloodSugarManager.shared.getBloodSugarAlert(
-                   bloodSugarLevel: bloodSugarLevel,
-                   mealTiming: mealTiming
-               )
-               //triggerDoctorAlert(bloodSugarLevel: bloodSugarLevel)
-           } else {
-               bloodSugarAlert = nil
-           }
-       }
+        if isBloodSugarOutOfRange {
+            bloodSugarAlert = BloodSugarManager.shared.getBloodSugarAlert(
+                bloodSugarLevel: bloodSugarLevel,
+                mealTiming: mealTiming
+            )
+            // triggerDoctorAlert(bloodSugarLevel: bloodSugarLevel) // Uncomment if needed
+        } else {
+            bloodSugarAlert = nil
+        }
+    }
 
+    // MARK: - Send Data to Backend
     func sendDataToBackend() {
         let userID = "eaba7c23-3bc4-4d56-943c-fc5a25cfbbce"
         let timestamp = DateUtils.currentTimestamp()
         var conditions: [Condition] = []
 
-        // **Dynamic Mapping**: Create field mappings
+        // MARK: Dynamic Field Mapping
         let fieldMappings: [(key: String, value: String?, date: Date)] = [
             ("selectedDateSimple", DateUtils.formattedDate(from: selectedDate, format: "yyyy-MM-dd'T'HH:mm:ss"), selectedDate),
             ("bloodSugarTimeSimple", DateUtils.formattedDate(from: bloodSugarTime, format: "yyyy-MM-dd'T'HH:mm:ss"), bloodSugarTime),
@@ -55,7 +60,7 @@ class SimpleMethodViewModel: ObservableObject {
             ("noteFoodSimple", noteFood, foodTime)
         ]
 
-        // **Iterate Through Field Mappings**: Add non-empty fields to conditions
+        // MARK: - Create Conditions Dynamically
         for field in fieldMappings {
             if let value = field.value, !value.isEmpty {
                 conditions.append(ConditionHelper.createCondition(
@@ -68,10 +73,10 @@ class SimpleMethodViewModel: ObservableObject {
             }
         }
 
-        // **Prepare the Payload**
+        // MARK: - Prepare the Payload
         let payload = ConditionHelper.preparePayload(userId: userID, conditions: conditions)
 
-        // **Send Data to the Backend**
+        // MARK: - API Call to Backend
         APIService.shared.post(
             endpoint: "http://127.0.0.1:5000/conditions",
             payload: payload,
@@ -89,4 +94,15 @@ class SimpleMethodViewModel: ObservableObject {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
 
