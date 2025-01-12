@@ -62,16 +62,16 @@ struct DoctorInfoView: View {
         
         let diabetesDetails: [String: Any] = [
             "userid":diabetesData.userID,
-            "diabetes_type":diabetesData.diabetesType,
-            "diagnose_date":DateUtils.formattedDate(from: diabetesData.diagnoseDate, format: "yyyy-MM-dd"),
-            "insulin_type":diabetesData.insulinType,
-            "admin_route":diabetesData.adminRoute,
-            "condition":diabetesData.condition,
-            "medication":diabetesData.medication,
-            "lower_bound":diabetesData.lowerBound,
-            "upper_bound":diabetesData.upperBound,
-            "doctor_email":diabetesData.doctorEmail,
-            "doctor_name":diabetesData.doctorName
+            "diabetes_type": diabetesData.diabetesType,
+            "diagnose_date": DateUtils.formattedDate(from: diabetesData.diagnoseDate, format: "yyyy-MM-dd"),
+            "insulin_type": diabetesData.insulinType,
+            "admin_route": diabetesData.adminRoute,
+            "condition": diabetesData.condition,
+            "medication": diabetesData.medication,
+            "lower_bound": diabetesData.lowerBound,
+            "upper_bound": diabetesData.upperBound,
+            "doctor_email": diabetesData.doctorEmail,
+            "doctor_name": diabetesData.doctorName
         ]
         
         // convert to JSON
