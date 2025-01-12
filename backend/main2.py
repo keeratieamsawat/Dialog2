@@ -33,7 +33,7 @@ class UserClient:
     def search_data(self, field_name):
         try:
             # Query the user's main record
-            response = users_table.get_item(Key={'PK': self.user_id, 'SK': f"USER#{self.user_id}"})
+            response = users_table.get_item(Key={'PK': self.user_id})
             if 'Item' not in response:
                 raise ValueError("User not found")
 
@@ -166,7 +166,7 @@ def add_diabetes_info():
 
     # Fetch user from DynamoDB (assuming user already exists)
     try:
-        response = users_table.get_item(Key={'PK': userid, 'SK': f"USER#{userid}"})
+        response = users_table.get_item(Key={'PK': userid})
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
 
@@ -190,7 +190,7 @@ def add_diabetes_info():
         expression_values = {":diabetes_info": diabetes_info}
 
         users_table.update_item(
-            Key={'PK': userid, 'SK': f"USER#{userid}"},
+            Key={'PK': userid},
             UpdateExpression=update_expression,
             ExpressionAttributeValues=expression_values
         )
@@ -212,7 +212,7 @@ def update_diabetes_info():
 
     # Fetch user from DynamoDB (assuming user already exists)
     try:
-        response = users_table.get_item(Key={'PK': userid, 'SK': f"USER#{userid}"})
+        response = users_table.get_item(Key={'PK': userid})
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
 
@@ -240,7 +240,7 @@ def update_diabetes_info():
             }
 
             users_table.update_item(
-                Key={'PK': userid, 'SK': f"USER#{userid}"},
+                Key={'PK': userid},
                 UpdateExpression=update_expression,
                 ExpressionAttributeValues=expression_values
             )

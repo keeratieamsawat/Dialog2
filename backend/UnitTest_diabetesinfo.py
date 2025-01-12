@@ -32,10 +32,17 @@ class TestAddDiabetesInfo(unittest.TestCase):
         mock_get.return_value = {
             'Item': {
                 'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727',
-                'SK': 'USER#f87cd4cb-8959-4daf-a040-88add0d53727',
                 'first_name': 'John',
                 'last_name': 'Doe',
-                'email': 'johndoe@example.com'
+                'email': 'johndoe@example.com',
+                'first_name': 'John',
+                'last_name': 'Doe',
+                'email': 'johndoe@example.com',
+                'birthdate': '1990-05-15',  # Make sure birthdate is not overwritten
+                'country_of_residence': 'UK',
+                'weight': 75,
+                'height': 180,
+                'consent': True
             }
         }
 
@@ -53,9 +60,9 @@ class TestAddDiabetesInfo(unittest.TestCase):
         self.assertIn("Diabetes information added successfully!", response.json['message'])
 
         # Ensure that the get_item and update_item were called with the correct arguments
-        mock_get.assert_called_once_with(Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727', 'SK': 'USER#f87cd4cb-8959-4daf-a040-88add0d53727'})
+        mock_get.assert_called_once_with(Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'})
         mock_update.assert_called_once_with(
-    Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727', 'SK': 'USER#f87cd4cb-8959-4daf-a040-88add0d53727'},
+    Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'},
     UpdateExpression="SET diabetes_info = :diabetes_info",
     ExpressionAttributeValues={":diabetes_info": input_data}
         )
@@ -82,10 +89,14 @@ class TestAddDiabetesInfo(unittest.TestCase):
         mock_get.return_value = {
             'Item': {
                 'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727',
-                'SK': 'USER#f87cd4cb-8959-4daf-a040-88add0d53727',
                 'first_name': 'John',
                 'last_name': 'Doe',
-                'email': 'johndoe@example.com'
+                'email': 'johndoe@example.com',
+                'birthdate': '1990-05-15',
+                'country_of_residence': 'UK',
+                'weight': 75,
+                'height': 180,
+                'consent': True
             }
         }
 
@@ -103,12 +114,18 @@ class TestAddDiabetesInfo(unittest.TestCase):
         self.assertIn("Diabetes information updated successfully!", response.json['message'])
 
         # Ensure that the get_item and update_item were called with the correct arguments
-        mock_get.assert_called_once_with(Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727', 'SK': 'USER#f87cd4cb-8959-4daf-a040-88add0d53727'})
+        mock_get.assert_called_once_with(Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'})
         mock_update.assert_called_once_with(
-            Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727', 'SK': 'USER#f87cd4cb-8959-4daf-a040-88add0d53727'},
+            Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'},
             UpdateExpression="SET diabetes_info = :diabetes_info",
             ExpressionAttributeValues={":diabetes_info": updated_data}
         )
+
+        # Make sure user info like 'first_name', 'birthdate', etc. is not overwritten
+        updated_user = mock_update.call_args[1]['ExpressionAttributeValues'][':diabetes_info']
+        self.assertNotIn('first_name', updated_user)
+        self.assertNotIn('birthdate', updated_user)
+        self.assertNotIn('email', updated_user)
 
 
 if __name__ == '__main__':
