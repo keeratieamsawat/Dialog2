@@ -5,12 +5,8 @@ import SwiftUI
 
 struct DetailsPageView: View {
     
-    // private vars
-    @State private var diabetesType: String = "Type I" // default selection
-    @State private var diagnoseDate: Date = Date()
-    
-    // list of diabetes types for picker
-    let diabetesTypes = ["Type I","Type II","Gestational Diabetes","Other"]
+    // calling the data model
+    @ObservedObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         NavigationStack {
@@ -35,7 +31,7 @@ struct DetailsPageView: View {
                         .stroke(Color("Primary_Color"), lineWidth: 2)
                     DatePicker(
                         "Date diagnosed",
-                        selection: $diagnoseDate, displayedComponents: [.date])
+                        selection: $diabetesData.diagnoseDate, displayedComponents: [.date])
                     .padding(10)
                 }
                 .frame(width:300,height:50) // Ensure DatePicker height is consistent
@@ -43,8 +39,8 @@ struct DetailsPageView: View {
                 .datePickerStyle(CompactDatePickerStyle())
                 
                 // Picker for diabetes type
-                Picker("Diabetes Type", selection: $diabetesType) {
-                    ForEach(diabetesTypes, id: \.self) { type in
+                Picker("Diabetes Type", selection: $diabetesData.diabetesType) {
+                    ForEach(diabetesData.diabetesTypes, id: \.self) { type in
                         Text(type)
                             .tag(type) // match the tag to data type
                     }
@@ -60,7 +56,7 @@ struct DetailsPageView: View {
                 .padding(.horizontal,40)
             }
             // button to direct to next page
-            NavigationLink(destination: InsulinInfoView()) {
+            NavigationLink(destination: InsulinInfoView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(width:300,height:50)
@@ -78,13 +74,7 @@ struct DetailsPageView: View {
 
 struct InsulinInfoView: View {
     
-    @State private var insulinType: String = "Rapid-acting" // default
-    @State private var adminRoute: String = "Injection" //default
-    
-    // list of insulin types for picker
-    let insulinTypes = ["Rapid-acting","Short-acting", "Intermediate-acting","Long-acting","I'm not taking insulin"]
-    // list of insulin administration routes
-    let adminRoutes = ["Injection","Pen","Pump","Other","I'm not taking insulin"]
+    @ObservedObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30) {
@@ -95,8 +85,8 @@ struct InsulinInfoView: View {
                 .padding(.top,20)
             
             // drop-down picker for insulin types
-            Picker("Insulin Type", selection: $insulinType) {
-                ForEach(insulinTypes, id: \.self) { type in
+            Picker("Insulin Type", selection: $diabetesData.insulinType) {
+                ForEach(diabetesData.insulinTypes, id: \.self) { type in
                     Text(type)
                         .tag(type)
                 }
@@ -118,8 +108,8 @@ struct InsulinInfoView: View {
                 .padding(.top,20)
             
             // drop-down picker for insulin administration
-            Picker("Administration", selection: $adminRoute) {
-                ForEach(adminRoutes, id: \.self) { type in
+            Picker("Administration", selection: $diabetesData.adminRoute) {
+                ForEach(diabetesData.adminRoutes, id: \.self) { type in
                     Text(type)
                         .tag(type)
                 }
@@ -133,7 +123,7 @@ struct InsulinInfoView: View {
                     .stroke(Color("Primary_Color"), lineWidth: 2)
             )
             // button to direct to next page
-            NavigationLink(destination: MedicationView()) {
+            NavigationLink(destination: MedicationView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(width:300,height:50)
@@ -151,9 +141,7 @@ struct InsulinInfoView: View {
 
 struct MedicationView: View {
     
-    // allow user type in other condition and medication
-    @State private var condition: String = ""
-    @State private var medication: String = ""
+    @ObservedObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30) {
@@ -161,7 +149,7 @@ struct MedicationView: View {
                 .font(.title3)
                 .bold()
             // input other conditions
-            TextField("Enter other conditions...", text: $condition)
+            TextField("Enter other conditions...", text: $diabetesData.condition)
                 .padding(10)
                 .frame(height:40)
                 .overlay(
@@ -172,7 +160,7 @@ struct MedicationView: View {
                 .font(.title3)
                 .bold()
             // input other medications
-            TextField("Enter other medications...", text: $medication)
+            TextField("Enter other medications...", text: $diabetesData.medication)
                 .padding(10)
                 .frame(height: 40)
                 .overlay(
@@ -180,7 +168,7 @@ struct MedicationView: View {
                         .stroke(Color("Primary_Color"), lineWidth: 2))
             
             // button to direct to next page
-            NavigationLink(destination: bsRangeView()) {
+            NavigationLink(destination: bsRangeView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(height:40)
@@ -201,9 +189,7 @@ struct MedicationView: View {
 
 struct bsRangeView: View {
     
-    // target range, hyper and hypo
-    @State private var lowerBound: Float = 0.0 // initial value
-    @State private var upperBound: Float = 0.0
+    @ObservedObject var diabetesData:DiabetesDetailsData
     
     var body: some View {
         VStack(spacing:30){
@@ -212,9 +198,9 @@ struct bsRangeView: View {
                 .bold()
             
             // target range lower bound
-            Text("Lower bound: \(lowerBound,specifier: "%.2f")")
+            Text("Lower bound: \(diabetesData.lowerBound,specifier: "%.2f")")
                 .font(.caption)
-            Slider(value: $lowerBound, in: 0.0...20.0, step: 0.1)
+            Slider(value: $diabetesData.lowerBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
                 .offset(y:-40)
@@ -222,20 +208,20 @@ struct bsRangeView: View {
             // target range upper bound
             Text("Upper bound in:")
                 .font(.headline)
-            Text("Upper bound: \(upperBound,specifier:"%.2f")")
+            Text("Upper bound: \(diabetesData.upperBound,specifier:"%.2f")")
                 .font(.caption)
-            Slider(value: $upperBound, in: 0.0...20.0, step: 0.1)
+            Slider(value: $diabetesData.upperBound, in: 0.0...20.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
                 .offset(y:-40)
             
             // display chosen range
-            Text("Your chosen range: \(lowerBound,specifier: "%.2f") to \(upperBound,specifier: "%.2f") ")
+            Text("Your chosen range: \(diabetesData.lowerBound,specifier: "%.2f") to \(diabetesData.upperBound,specifier: "%.2f") ")
                             .font(.footnote)
                             .foregroundColor(.black)
                             .offset(y:-40)
             
-            NavigationLink(destination: DoctorInfoView()) {
+            NavigationLink(destination: DoctorInfoView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
                     .frame(height:40)
@@ -249,6 +235,8 @@ struct bsRangeView: View {
     }
 }
 
-#Preview {
-    DetailsPageView()
+struct DetailsPage_Previews: PreviewProvider {
+    static var previews: some View {
+        DetailsPageView(diabetesData: DiabetesDetailsData())
+    }
 }

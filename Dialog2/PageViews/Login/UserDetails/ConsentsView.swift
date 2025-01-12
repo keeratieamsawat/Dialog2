@@ -36,9 +36,10 @@ struct ConsentsView: View {
                 Spacer() // VStack spacer to push contents up
             }
             .padding(30) // VStack padding to make content not touch the edges
-            // navigation to DetailsPageView, when navigateToNext is true
+            
+            // navigation to DetailsPageView, when consent status is true
             .navigationDestination(isPresented: $userData.consentStatus) {
-                DetailsPageView()
+                DetailsPageView(diabetesData:DiabetesDetailsData())
             }
         }
     }

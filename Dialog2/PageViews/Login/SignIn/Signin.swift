@@ -64,7 +64,7 @@ struct SigninView: View {
                 }
                 
                 // navigation link for home page
-                NavigationLink(destination: HomePageView(), isActive: $navigateToHome) {
+                NavigationLink(destination: HomePageView(diabetesData:DiabetesDetailsData()), isActive: $navigateToHome) {
                     EmptyView() // make sure the navigation link does not show anything on the view page
                 }
             }
