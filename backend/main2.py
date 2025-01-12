@@ -159,46 +159,51 @@ def register():
 @app.route('/add_diabetes_info', methods=['POST'])
 def add_diabetes_info():
     data = request.json
-    userid = data.get("userid")
+    userid = str(data.get("userid"))
 
-    if not userid:
-        return jsonify({"error": "User ID is required"}), 400
+    if not isinstance(userid, str) or not userid.strip():
+        return jsonify({"error": "Invalid or missing User ID"}), 400
 
     # Fetch user from DynamoDB (assuming user already exists)
     try:
-        response = users_table.get_item(Key={'PK': userid})
+        print(f"Received request data: {data}")
+        response = users_table.get_item(Key={'userid': userid})
+        print(f"DynamoDB get_item response: {response}")
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
 
-        # Prepare the diabetes info
-        diabetes_info = {
-            'userid': userid,
-            'diabetes_type': data.get('diabetes_type'),
-            'diagnose_date': data.get('diagnose_date'),
-            'insulin_type': data.get('insulin_type'),
-            'admin_route': data.get('admin_route'),
-            'condition': data.get('condition'),
-            'medication': data.get('medication'),
-            'lower_bound': data.get('lower_bound'),
-            'upper_bound': data.get('upper_bound'),
-            'doctor_name':data.get('doctor_name'),
-            'doctor_email':data.get('doctor_email')
+        update_expression = "SET diabetes_type = :diabetes_type, diagnose_date = :diagnose_date, insulin_type = :insulin_type, admin_route = :admin_route, #condition = :condition, medication = :medication, lower_bound = :lower_bound, upper_bound = :upper_bound, doctor_name = :doctor_name, doctor_email = :doctor_email"
+        expression_values = {
+            ":diabetes_type": data.get('diabetes_type'),
+            ":diagnose_date": data.get('diagnose_date'),
+            ":insulin_type": data.get('insulin_type'),
+            ":admin_route": data.get('admin_route'),
+            ":condition": data.get('condition'),
+            ":medication": data.get('medication'),
+            ":lower_bound": data.get('lower_bound'),
+            ":upper_bound": data.get('upper_bound'),
+            ":doctor_name": data.get('doctor_name'),
+            ":doctor_email": data.get('doctor_email'),
         }
 
-        # Update only the diabetes_info field
-        update_expression = "SET diabetes_info = :diabetes_info"
-        expression_values = {":diabetes_info": diabetes_info}
 
+        print("Updating DynamoDB with diabetes info...")
         users_table.update_item(
-            Key={'PK': userid},
+            Key={'userid': userid},
             UpdateExpression=update_expression,
-            ExpressionAttributeValues=expression_values
+            ExpressionAttributeValues=expression_values,
+            ExpressionAttributeNames={
+                "#condition": "condition"  # 'condition' is a reserved word in DynamoDB
+            }
         )
+        
 
         return jsonify({"message": "Diabetes information added successfully!"}), 201
 
     except ClientError as e:
-        return jsonify({"error": e.response['Error']['Message']}), 500
+        error_message = e.response['Error']['Message']
+        print(f"Error during DynamoDB operation: {error_message}")
+        return jsonify({"error": error_message}), 500
     
 
     #update the diabetic info 
@@ -210,48 +215,78 @@ def update_diabetes_info():
     if not userid:
         return jsonify({"error": "User ID is required"}), 400
 
-    # Fetch user from DynamoDB (assuming user already exists)
     try:
-        response = users_table.get_item(Key={'PK': userid})
+        # Fetch user from DynamoDB to verify existence
+        response = users_table.get_item(Key={'userid': userid})
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
 
-        # Prepare the updated diabetes info
-        updated_diabetes_info = {
-            'userid': userid,
-            'diabetes_type': data.get('diabetes_type'),
-            'diagnose_date': data.get('diagnose_date'),
-            'insulin_type': data.get('insulin_type'),
-            'admin_route': data.get('admin_route'),
-            'condition': data.get('condition'),
-            'medication': data.get('medication'),
-            'lower_bound': data.get('lower_bound'),
-            'upper_bound': data.get('upper_bound'),
-            'doctor_name':data.get('doctor_name'),
-            'doctor_email':data.get('doctor_email')
-            
-        }
+        updated_diabetes_info = {}
 
-        # Use the update_item method to update the diabetes information
-        try:
-            update_expression = "SET diabetes_info = :diabetes_info"
-            expression_values = {
-                ":diabetes_info": updated_diabetes_info
-            }
+        for field in [
+            "diabetes_type", "diagnose_date", "insulin_type", 
+            "admin_route", "condition", "medication", 
+            "lower_bound", "upper_bound", "doctor_name", "doctor_email"
+        ]:
+            if data.get(field) is not None:
+                updated_diabetes_info[field] = data[field]
 
-            users_table.update_item(
-                Key={'PK': userid},
-                UpdateExpression=update_expression,
-                ExpressionAttributeValues=expression_values
-            )
+        if not updated_diabetes_info:
+            return jsonify({"error": "No valid fields provided for update"}), 400
 
-            return jsonify({"message": "Diabetes information updated successfully!"}), 200
+        # Update the database with only the provided fields
+        update_expression = "SET " + ", ".join(f"{field} = :{field}" for field in updated_diabetes_info)
+        expression_values = {f":{field}": value for field, value in updated_diabetes_info.items()}
 
-        except ClientError as e:
-            return jsonify({"error": e.response['Error']['Message']}), 500
+        users_table.update_item(
+            Key={'userid': userid},
+            UpdateExpression=update_expression,
+            ExpressionAttributeValues=expression_values
+        )
+
+        return jsonify({"message": "Diabetes information updated successfully!"}), 200
 
     except ClientError as e:
-        return jsonify({"error": e.response['Error']['Message']}), 500
+        error_message = e.response['Error']['Message']
+        print(f"Error during DynamoDB operation: {error_message}")
+        return jsonify({"error": error_message}), 500
+    
+    
+@app.route('/get_diabetes_info/<string:userid>', methods=['GET'])
+def get_diabetes_info(userid):
+    if not userid:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        # Fetch the user's record from DynamoDB
+        response = users_table.get_item(Key={'userid': userid})
+
+        if 'Item' not in response:
+            return jsonify({"error": "User not found"}), 404
+
+        # Extract diabetes information
+        item = response['Item']
+        diabetes_info = {
+            "diabetes_type": item.get("diabetes_type"),
+            "diagnose_date": item.get("diagnose_date"),
+            "insulin_type": item.get("insulin_type"),
+            "admin_route": item.get("admin_route"),
+            "condition": item.get("condition"),
+            "medication": item.get("medication"),
+            "lower_bound": item.get("lower_bound"),
+            "upper_bound": item.get("upper_bound"),
+            "doctor_name": item.get("doctor_name"),
+            "doctor_email": item.get("doctor_email")
+        }
+
+        # Return the diabetes information
+        return jsonify({"userid": userid, "diabetes_info": diabetes_info}), 200
+
+    except ClientError as e:
+        error_message = e.response['Error']['Message']
+        print(f"Error during DynamoDB operation: {error_message}")
+        return jsonify({"error": error_message}), 500
+
 
 
 
