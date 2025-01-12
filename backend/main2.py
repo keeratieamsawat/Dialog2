@@ -180,8 +180,8 @@ def add_diabetes_info():
             ":admin_route": data.get('admin_route'),
             ":condition": data.get('condition'),
             ":medication": data.get('medication'),
-            ":lower_bound": data.get('lower_bound'),
-            ":upper_bound": data.get('upper_bound'),
+            ":lower_bound": str(Decimal(data.get('lower_bound'))),
+            ":upper_bound": str(Decimal(data.get('upper_bound'))),
             ":doctor_name": data.get('doctor_name'),
             ":doctor_email": data.get('doctor_email'),
         }
@@ -251,7 +251,7 @@ def update_diabetes_info():
         print(f"Error during DynamoDB operation: {error_message}")
         return jsonify({"error": error_message}), 500
     
-    
+
 @app.route('/get_diabetes_info/<string:userid>', methods=['GET'])
 def get_diabetes_info(userid):
     if not userid:
