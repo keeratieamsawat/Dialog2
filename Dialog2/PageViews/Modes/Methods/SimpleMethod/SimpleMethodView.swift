@@ -1,40 +1,13 @@
 import SwiftUI
 
-struct SimpleMethodData: Codable {
-    let selectedDate: String
-    let bloodSugarTime: String
-    let bloodSugarLevel: String
-    let mealTiming : String
-    let noteBloodSugar: String
-    
-    
-    let foodTime: String
-    let food: String
-    let portionSize: String
-    let carbohydrateIntake: String
-    let noteFood: String
-    let selectedTab: String
-}
-
-
 struct SimpleMethodView: View {
-    @Environment(\.presentationMode) var presentationMode // For home page navigation
-
-    @State private var selectedTab: String = "" // Initially empty
-    @State private var selectedDate = Date()
-    @State private var bloodSugarTime = Date()
-    @State private var bloodSugarLevel: String = ""
-    @State private var mealTiming: String = ""
-    @State private var noteBloodSugar: String = ""
-
-    @State private var foodTime = Date()
-    @State private var food: String = ""
-    @State private var portionSize: String = ""
-    @State private var carbohydrateIntake: String = ""
-    @State private var noteFood: String = ""
-
+    @Environment(\.presentationMode) var presentationMode
+    @StateObject private var viewModel = SimpleMethodViewModel()
+    
+    // Selecting the meal
     let tabs = ["Breakfast", "Lunch", "Dinner", "Snack"]
 
+    // MARK: - Customise for each Method
     var body: some View {
         VStack(spacing: 0) {
             // Top Blue Bar
@@ -82,29 +55,32 @@ struct SimpleMethodView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                         .padding(.top, 20)
-
+                    
+                    // MARK: - User input
+                    
                     // Blood Sugar Section
                     BloodSugarSection(
-                        selectedDate: $selectedDate,
-                        bloodSugarTime: $bloodSugarTime,
-                        bloodSugarLevel: $bloodSugarLevel,
-                        mealTiming: $mealTiming,
-                        noteBloodSugar: $noteBloodSugar
+                        selectedDate: $viewModel.selectedDate,
+                        bloodSugarTime: $viewModel.bloodSugarTime,
+                        bloodSugarLevel: $viewModel.bloodSugarLevel,
+                        mealTiming: $viewModel.mealTiming,
+                        noteBloodSugar: $viewModel.noteBloodSugar
                     )
 
                     // Food Section
                     FoodSection(
-                        selectedTab: $selectedTab,
-                        foodTime: $foodTime,
-                        food: $food,
-                        Calories: $portionSize,
-                        carbohydrateIntake: $carbohydrateIntake,
-                        tabs: tabs
+                        selectedMeal: $viewModel.selectedMeal,
+                        foodTime: $viewModel.foodTime,
+                        food: $viewModel.food,
+                        caloriesIntake: $viewModel.caloriesIntake,
+                        carbohydrateIntake: $viewModel.carbohydrateIntake,
+                        noteFood: $viewModel.noteFood
                     )
 
                     // Apply Button
                     Button(action: {
-                        sendDataToBackend()
+                        viewModel.sendDataToBackend()
+                        viewModel.checkBloodSugarStatus() // Check blood sugar status after the apply button is clicked
                     }) {
                         Text("APPLY")
                             .font(.headline)
@@ -114,6 +90,14 @@ struct SimpleMethodView: View {
                             .background(Color("Primary_Color"))
                             .cornerRadius(10)
                             .padding(.horizontal)
+                    }
+                    
+                    // If blood sugar is out of range, display alert UI
+                    if viewModel.isBloodSugarOutOfRange, let alert = viewModel.bloodSugarAlert {
+                        BloodSugarAlertView(alert: alert, onDismiss: {
+                            viewModel.bloodSugarAlert = nil // Dismiss alert
+                        })
+                        .padding()
                     }
                 }
                 .padding(.bottom, 10)
@@ -128,36 +112,7 @@ struct SimpleMethodView: View {
             }
         }
         .edgesIgnoringSafeArea(.all)
-    }
-
-    private func saveDataToJSON() -> Data? {
-        let dataModel = SimpleMethodData(
-            selectedDate: DateUtils.formattedDate(from: selectedDate, format: "yyyy-MM-dd"),
-            bloodSugarTime: DateUtils.formattedTime(from: bloodSugarTime, format: "HH:mm:ss"),
-            bloodSugarLevel: bloodSugarLevel,
-            mealTiming : mealTiming,
-            noteBloodSugar: noteBloodSugar,
-            foodTime: DateUtils.formattedTime(from: foodTime, format: "HH:mm:ss"),
-            food: food,
-            portionSize: portionSize,
-            carbohydrateIntake: carbohydrateIntake,
-            noteFood: noteFood,
-            selectedTab: selectedTab
-        )
-
-        return JSONUtils.encodeToJSON(dataModel)
-    }
-
-    private func sendDataToBackend() {
-        guard let jsonData = saveDataToJSON() else {
-            print("Failed to create JSON data")
-            return
-        }
-
-        JSONUtils.sendDataToBackend(
-            jsonData: jsonData,
-            endpoint: "https://your-backend-api-url.com/endpoint"
-        )
+        .navigationBarBackButtonHidden(true)
     }
 }
 
