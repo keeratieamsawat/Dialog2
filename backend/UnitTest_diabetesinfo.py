@@ -2,9 +2,10 @@ import unittest
 from unittest.mock import patch, MagicMock
 from main2 import app  
 from flask import jsonify
+from decimal import Decimal
 
 
-class TestAddDiabetesInfo(unittest.TestCase):
+class TestDiabetesInfo(unittest.TestCase):
 
     def setUp(self):
         self.client = app.test_client()
@@ -13,9 +14,8 @@ class TestAddDiabetesInfo(unittest.TestCase):
     @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
     @patch('main2.users_table.update_item')  # Mocking DynamoDB update_item
     def test_add_diabetes_info_success(self, mock_update, mock_get):
-        # Test input data
         input_data = {
-            "userid": "f87cd4cb-8959-4daf-a040-88add0d53727",
+            "userid": "435b1d6c-65ae-4069-9bfc-f0a2f31c01b1",
             "diabetes_type": "Type 1",
             "diagnose_date": "2022-01-01",
             "insulin_type": "Rapid-acting",
@@ -28,17 +28,13 @@ class TestAddDiabetesInfo(unittest.TestCase):
             "doctor_email": "123@ic.ac.uk"
         }
 
-        # Mock DynamoDB get_item response
         mock_get.return_value = {
             'Item': {
-                'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727',
+                'PK': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1',
                 'first_name': 'John',
                 'last_name': 'Doe',
-                'email': 'johndoe@example.com',
-                'first_name': 'John',
-                'last_name': 'Doe',
-                'email': 'johndoe@example.com',
-                'birthdate': '1990-05-15',  # Make sure birthdate is not overwritten
+                'email': 'jd2@example.com',
+                'birthdate': '1990-05-15',
                 'country_of_residence': 'UK',
                 'weight': 75,
                 'height': 180,
@@ -46,33 +42,42 @@ class TestAddDiabetesInfo(unittest.TestCase):
             }
         }
 
-        # Mock DynamoDB update_item behavior (no need to return anything)
         mock_update.return_value = {}
 
-        # Create a test client
         client = app.test_client()
 
-        # Send a POST request to the /add_diabetes_info endpoint
         response = client.post('/add_diabetes_info', json=input_data)
 
-        # Check the response
         self.assertEqual(response.status_code, 201)
         self.assertIn("Diabetes information added successfully!", response.json['message'])
 
-        # Ensure that the get_item and update_item were called with the correct arguments
-        mock_get.assert_called_once_with(Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'})
+        mock_get.assert_called_once_with(Key={'userid': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1'})
         mock_update.assert_called_once_with(
-    Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'},
-    UpdateExpression="SET diabetes_info = :diabetes_info",
-    ExpressionAttributeValues={":diabetes_info": input_data}
+            Key={'userid': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1'},
+            UpdateExpression='SET diabetes_type = :diabetes_type, diagnose_date = :diagnose_date, insulin_type = :insulin_type, admin_route = :admin_route, #condition = :condition, medication = :medication, lower_bound = :lower_bound, upper_bound = :upper_bound, doctor_name = :doctor_name, doctor_email = :doctor_email',
+            ExpressionAttributeValues={ ":diabetes_type": "Type 1",
+                ":diagnose_date": "2022-01-01",
+                ":insulin_type": "Rapid-acting",
+                ":admin_route": "Subcutaneous",
+                ":condition": "Stable",
+                ":medication": "Insulin",
+                ":lower_bound": Decimal(80),
+                ":upper_bound": Decimal(180),
+                ":doctor_name": "Martin",
+                ":doctor_email": "123@ic.ac.uk"},
+                ExpressionAttributeNames={'#condition': 'condition'}
         )
+        print(mock_update.call_args)
+        updated_user = mock_update.call_args[1]['ExpressionAttributeValues']
+        self.assertEqual(updated_user[':diabetes_type'], 'Type 1')
+        self.assertEqual(updated_user[':doctor_name'], 'Martin')
+
 
     @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
     @patch('main2.users_table.update_item')  # Mocking DynamoDB update_item
     def test_update_diabetes_info_success(self, mock_update, mock_get):
-        # Test input data to update diabetes information
         updated_data = {
-            "userid": "f87cd4cb-8959-4daf-a040-88add0d53727",
+            "userid": "435b1d6c-65ae-4069-9bfc-f0a2f31c01b1",
             "diabetes_type": "Type 2",
             "diagnose_date": "2023-05-15",
             "insulin_type": "Long-acting",
@@ -85,13 +90,12 @@ class TestAddDiabetesInfo(unittest.TestCase):
             "doctor_email": "123@ic.ac.uk"
         }
 
-        # Mock DynamoDB get_item response (simulate the user exists)
         mock_get.return_value = {
             'Item': {
-                'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727',
+                'PK': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1',
                 'first_name': 'John',
                 'last_name': 'Doe',
-                'email': 'johndoe@example.com',
+                'email': 'jd2@example.com',
                 'birthdate': '1990-05-15',
                 'country_of_residence': 'UK',
                 'weight': 75,
@@ -100,33 +104,81 @@ class TestAddDiabetesInfo(unittest.TestCase):
             }
         }
 
-        # Mock DynamoDB update_item behavior (no need to return anything)
         mock_update.return_value = {}
 
-        # Create a test client
         client = app.test_client()
 
-        # Send a PUT request to the /update_diabetes_info endpoint
         response = client.put('/update_diabetes_info', json=updated_data)
 
-        # Check the response
         self.assertEqual(response.status_code, 200)
         self.assertIn("Diabetes information updated successfully!", response.json['message'])
 
-        # Ensure that the get_item and update_item were called with the correct arguments
-        mock_get.assert_called_once_with(Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'})
+        mock_get.assert_called_once_with(Key={'userid': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1'})
         mock_update.assert_called_once_with(
-            Key={'PK': 'f87cd4cb-8959-4daf-a040-88add0d53727'},
-            UpdateExpression="SET diabetes_info = :diabetes_info",
-            ExpressionAttributeValues={":diabetes_info": updated_data}
+            Key={'userid': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1'},
+            UpdateExpression='SET diabetes_type = :diabetes_type, diagnose_date = :diagnose_date, insulin_type = :insulin_type, admin_route = :admin_route, condition = :condition, medication = :medication, lower_bound = :lower_bound, upper_bound = :upper_bound, doctor_name = :doctor_name, doctor_email = :doctor_email',
+            ExpressionAttributeValues={":diabetes_type": "Type 2",
+                ":diagnose_date": "2023-05-15",
+                ":insulin_type": "Long-acting",
+                ":admin_route": "Subcutaneous",
+                ":condition": "Controlled",
+                ":medication": "Metformin",
+                ":lower_bound": 4.0,
+                ":upper_bound": 7.0,
+                ":doctor_name": "Martin",
+                ":doctor_email": "123@ic.ac.uk"}
         )
 
-        # Make sure user info like 'first_name', 'birthdate', etc. is not overwritten
-        updated_user = mock_update.call_args[1]['ExpressionAttributeValues'][':diabetes_info']
+        updated_user = mock_update.call_args[1]['ExpressionAttributeValues']
         self.assertNotIn('first_name', updated_user)
         self.assertNotIn('birthdate', updated_user)
         self.assertNotIn('email', updated_user)
 
+    @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
+    def test_get_diabetes_info_success(self, mock_get):
+        userid = "435b1d6c-65ae-4069-9bfc-f0a2f31c01b1"
+
+        mock_get.return_value = {
+            'Item': {
+                'PK': userid,
+                'diabetes_type': 'Type 1',
+                'diagnose_date': '2022-01-01',
+                'insulin_type': 'Rapid-acting',
+                'admin_route': 'Subcutaneous',
+                'condition': 'Stable',
+                'medication': 'Insulin',
+                'lower_bound': 80,
+                'upper_bound': 180, 
+                'doctor_name': 'Martin',
+                'doctor_email': '123@ic.ac.uk'
+            }
+        }
+
+        client = app.test_client()
+
+        response = client.get(f'/get_diabetes_info/{userid}')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['userid'], userid)
+        self.assertIn('diabetes_info', response.json)
+        self.assertEqual(response.json['diabetes_info']['diabetes_type'], 'Type 1')
+
+        mock_get.assert_called_once_with(Key={'userid': userid})
+
+    @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
+    def test_get_diabetes_info_user_not_found(self, mock_get):
+        userid = "nonexistent_user"
+
+        mock_get.return_value = {}
+
+        client = app.test_client()
+
+        response = client.get(f'/get_diabetes_info/{userid}')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("User not found", response.json['error'])
+
+        mock_get.assert_called_once_with(Key={'userid': userid})
 
 if __name__ == '__main__':
     unittest.main()
