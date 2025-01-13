@@ -9,22 +9,22 @@ class TestDiaLogApp(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls): 
-        cls.client = app.test_client() #Set up the test client
-    
+        cls.client = app.test_client() 
+        
     @patch('boto3.resource')
     #Test login with correct credentials
     def test_login_success(self, mock_dynamodb):
-        mock_table = MagicMock()
+        mock_table = MagicMock() #simulate a DynamoDB table
         mock_dynamodb.return_value.Table.return_value = mock_table
-        # Mock response from DynamoDB
-        mock_table.get_item.return_value = {'Item': {'email': 'johndoe@example.com', 'password': 'password123'}}
         
+        mock_table.get_item.return_value = {'Item': {'email': 'johndoe@example.com', 'password': 'password123'}} # Mock response from DynamoDB
+        #credentials
         data = {
             "email": "johndoe@example.com",
             "password": "password123"
         }
         response = self.client.post('/login', json=data)
-        print(response.data)  # Debugging purposes only
+        print(response.data)  # Debugging
         self.assertEqual(response.status_code, 200)
         self.assertIn("Login successful", response.json['message'])
     
