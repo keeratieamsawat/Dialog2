@@ -55,7 +55,7 @@ struct ConsentsView: View {
             "password": userData.password,
             "confirm_password": userData.confirmPassword,
             "gender": userData.gender,
-            "birthdate": DateUtils.formattedDate(from: userData.birthDate, format: "yy-mm-dd"),
+            "birthdate": DateUtils.formattedDate(from: userData.birthDate, format: "yyyy-MM-dd"),
             "country_of_residence": userData.country,
             "emergency_contact": userData.emergContact,
             "weight": userData.weight,
