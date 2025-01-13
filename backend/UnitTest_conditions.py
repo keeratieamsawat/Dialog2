@@ -7,7 +7,7 @@ from flask import json
 
 class TestConditionsAPI(unittest.TestCase):
 
-    @patch('main2.data_table.put_item')  # Mock DynamoDB put_item
+    @patch('main2.data_table.put_item')  
     def test_add_conditions_success(self, mock_put_item):
         mock_put_item.return_value = None  # Simulate successful insertion
 
@@ -21,7 +21,7 @@ class TestConditionsAPI(unittest.TestCase):
 
         with app.test_client() as client:
             response = client.post('/conditions', json=test_data)
-        print(response.data)
+        print(response.data) #debugging
 
         self.assertEqual(response.status_code, 201)
         self.assertIn('User conditions saved successfully!', response.json.get('message'))
@@ -82,7 +82,6 @@ class TestConditionsAPI(unittest.TestCase):
             }
         }
 
-        # Mock the 'update_item' to return updated attributes
         mock_update_item.return_value = {
             'Attributes': {
                 'value': 160,
@@ -93,7 +92,6 @@ class TestConditionsAPI(unittest.TestCase):
         # Sample data to test the update
         test_data = {"value": 160, "date": "2025-01-11T12:00:00"}
 
-        # Sending the PUT request to update the condition
         with app.test_client() as client:
             response = client.put('/conditions/2/blood_sugar', json=test_data)
         
