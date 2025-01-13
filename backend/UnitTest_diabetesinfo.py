@@ -1,5 +1,4 @@
 #The script contains unit tests for the /add_diabetes_info, /update_diabetes_info, and /get_diabetes_info/<string:userid> endpoints
-## The following test suite is structured with help from ChatGPT
 
 import unittest
 from unittest.mock import patch, MagicMock
@@ -13,9 +12,10 @@ class TestDiabetesInfo(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
         self.client.testing = True
-
-    @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
-    @patch('main2.users_table.update_item')  # Mocking DynamoDB update_item
+        
+#Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com 
+    @patch('main2.users_table.get_item')  
+    @patch('main2.users_table.update_item')  
     def test_add_diabetes_info_success(self, mock_update, mock_get):
         input_data = {
             "userid": "435b1d6c-65ae-4069-9bfc-f0a2f31c01b1",
@@ -74,10 +74,10 @@ class TestDiabetesInfo(unittest.TestCase):
         updated_user = mock_update.call_args[1]['ExpressionAttributeValues']
         self.assertEqual(updated_user[':diabetes_type'], 'Type 1')
         self.assertEqual(updated_user[':doctor_name'], 'Martin')
+#reference ends 
 
-
-    @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
-    @patch('main2.users_table.update_item')  # Mocking DynamoDB update_item
+    @patch('main2.users_table.get_item')  
+    @patch('main2.users_table.update_item') 
     def test_update_diabetes_info_success(self, mock_update, mock_get):
         updated_data = {
             "userid": "435b1d6c-65ae-4069-9bfc-f0a2f31c01b1",
@@ -137,7 +137,7 @@ class TestDiabetesInfo(unittest.TestCase):
         self.assertNotIn('birthdate', updated_user)
         self.assertNotIn('email', updated_user)
 
-    @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
+    @patch('main2.users_table.get_item')  
     def test_get_diabetes_info_success(self, mock_get):
         userid = "435b1d6c-65ae-4069-9bfc-f0a2f31c01b1"
 
@@ -168,19 +168,14 @@ class TestDiabetesInfo(unittest.TestCase):
 
         mock_get.assert_called_once_with(Key={'userid': userid})
 
-    @patch('main2.users_table.get_item')  # Mocking DynamoDB get_item
+    @patch('main2.users_table.get_item')  
     def test_get_diabetes_info_user_not_found(self, mock_get):
         userid = "nonexistent_user"
-
         mock_get.return_value = {}
-
         client = app.test_client()
-
         response = client.get(f'/get_diabetes_info/{userid}')
-
         self.assertEqual(response.status_code, 404)
         self.assertIn("User not found", response.json['error'])
-
         mock_get.assert_called_once_with(Key={'userid': userid})
 
 if __name__ == '__main__':
