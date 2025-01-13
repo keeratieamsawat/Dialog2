@@ -1,3 +1,7 @@
+#The script contains unit tests for the /alert-doctor endpoint in a Flask app.
+#This test suite is structured with the help from ChatGPT to ensure proper testing to ensure proper mocking
+# of dependencies like 'UserClient' and 'smtplib.SMTP_SSL' in Flask route testing.
+
 import unittest
 from unittest.mock import patch, MagicMock
 from flask import Flask, jsonify
