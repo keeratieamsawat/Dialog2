@@ -33,7 +33,7 @@ class UserClient:
     def search_data(self, field_name):
         try:
             # Query the user's main record
-            response = users_table.get_item(Key={'PK': self.user_id})
+            response = users_table.get_item(Key={'userid': self.user_id})
             if 'Item' not in response:
                 raise ValueError("User not found")
 
@@ -516,6 +516,7 @@ def send_alert():
     try:
         # Extract the data from the request
         data = request.get_json()
+        print(f"Received data: {data}")
         
         # Validate required fields
         required_fields = ['userid', 'bloodSugarLevel']
@@ -546,14 +547,21 @@ def send_alert():
         msg['To'] = doctor_email
 
         # Send the message via SMTP
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.login('javacakesdialog@gmail.com', "kwzr qwep klty agqm")
-        server.send_message(msg)
-        server.quit()
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.login('javacakesdialog@gmail.com', "kwzr qwep klty agqm")  # Replace with your app password
+            server.send_message(msg)
+            server.quit()
+            print("Email sent successfully.")  # Debugging
+        except smtplib.SMTPException as email_error:
+            print(f"Error sending email: {email_error}")  # Debugging
+            return jsonify({"error": "Failed to send email"}), 500
 
+        # Return success response
         return jsonify({"message": "Alert sent to doctor successfully!"}), 200
 
     except Exception as e:
+        print(f"Unexpected error: {e}")  # Debugging
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 
