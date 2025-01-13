@@ -1,21 +1,29 @@
 import SwiftUI
 
+// A view that displays a blood sugar alert with a title, message, and dismiss button.
 struct BloodSugarAlertView: View {
+    
+    // The alert data passed to the view
     let alert: BloodSugarAlert
+    
+    // A closure that is called when the dismiss button is pressed
     var onDismiss: (() -> Void)?
 
     var body: some View {
         VStack {
+            // Title of the alert, displayed in red color and bold font
             Text(alert.title)
                 .font(.title)
-                .foregroundColor(.red) // Title in red color
+                .foregroundColor(.red)
                 .padding()
 
+            // Message of the alert, providing further information
             Text(alert.message)
                 .padding()
 
+            // Dismiss button, which triggers the onDismiss action when pressed
             Button(action: {
-                onDismiss?() // Close the alert when the button is pressed
+                onDismiss?()
             }) {
                 Text(alert.dismissButtonTitle)
                     .padding()
@@ -32,9 +40,10 @@ struct BloodSugarAlertView: View {
     }
 }
 
+// Preview for the BloodSugarAlertView to display the alert in SwiftUI preview
 struct BloodSugarAlertView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a sample alert
+        // Create a sample alert with a title, message, and dismiss button text
         let sampleAlert = BloodSugarAlert(
             title: "Warning",
             message: "Your blood sugar is lower than the target range. We have already emailed your doctor for further assistance.",
@@ -43,12 +52,13 @@ struct BloodSugarAlertView_Previews: PreviewProvider {
 
         // Display the BloodSugarAlertView with the sample alert
         BloodSugarAlertView(alert: sampleAlert) {
-            print("Alert dismissed") // You can add actions when the alert is dismissed
+            print("Alert dismissed")
         }
-        .previewLayout(.sizeThatFits) // Preview with appropriate layout
-        .padding() // Add padding to the preview
+        .previewLayout(.sizeThatFits)
+        .padding() 
     }
 }
+
 
 
 
