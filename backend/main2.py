@@ -52,12 +52,12 @@ class UserClient:
             print(f"Error retrieving data: {e}")
             return None
 
-    def query_by_date_range(self, data_type, start_datetime, end_datetime):
+    def query_by_date_range(self, data_type, start_date, end_date):
         try:
             response = data_table.query(
                 KeyConditionExpression=(
                         Key('userid#datatype').eq(f'{self.user_id}#{data_type}') &
-                        Key('date').between(start_datetime, end_datetime)
+                        Key('date').between(f'{start_date}:00', f'{end_date}:59')
                 ),
                 ProjectionExpression="#date, #value",
                 ExpressionAttributeNames={'#date': 'date', '#value': 'value'},
@@ -89,7 +89,7 @@ class User:
             'first_name': self.first_name,
             'last_name': self.last_name,
             'email': self.email,
-            'password': self.password,  # Hash this in production
+            'password': self.password, 
             'gender': self.gender,
             'birthdate': self.birthdate,
             'country_of_residence': self.residence,
@@ -107,7 +107,7 @@ def register():
         'gender', 'birthdate', 'country_of_residence', 'emergency_contact',
         'weight', 'height', 'consent'
     ]
-
+    #raise error if information is missing
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"Missing required field: {field}"}), 400
@@ -127,7 +127,6 @@ def register():
 
     # Create a new user object
     try:
-        # Create a new user object (no need to pass 'userid' since it's auto-generated)
         new_user = User(
             first_name=data['first_name'],
             last_name=data['last_name'],
@@ -144,9 +143,7 @@ def register():
         # Ensure the 'userid' is included in the item before saving to DynamoDB
         user_dict = new_user.as_dict()
 
-        # Debugging: print the user_dict to ensure 'userid' is in it
-        print("User dictionary being inserted:", json.dumps(user_dict, indent=2))
-
+       
         # Store user in DynamoDB (new_user.as_dict() includes the generated 'userid')
         users_table.put_item(Item=user_dict)
 
@@ -155,7 +152,7 @@ def register():
         print(f"Error occurred: {str(e)}")
         return jsonify({"error": "An error occurred during registration."}), 500
 
-
+#store the diabetes information of user to the user table
 @app.route('/add_diabetes_info', methods=['POST'])
 def add_diabetes_info():
     data = request.json
@@ -164,10 +161,10 @@ def add_diabetes_info():
     if not isinstance(userid, str) or not userid.strip():
         return jsonify({"error": "Invalid or missing User ID"}), 400
 
-    # Fetch user from DynamoDB (assuming user already exists)
+    # Fetch user from DynamoDB 
     try:
         print(f"Received request data: {data}")
-        response = users_table.get_item(Key={'userid': userid})
+        response = users_table.get_item(Key={'userid': userid}) #userid is the PK
         print(f"DynamoDB get_item response: {response}")
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
@@ -187,7 +184,7 @@ def add_diabetes_info():
         }
 
 
-        print("Updating DynamoDB with diabetes info...")
+        print("Updating DynamoDB with diabetes info...") 
         users_table.update_item(
             Key={'userid': userid},
             UpdateExpression=update_expression,
@@ -207,6 +204,8 @@ def add_diabetes_info():
     
 
     #update the diabetic info 
+
+#update diabetes information in the account page 
 @app.route('/update_diabetes_info', methods=['PUT'])
 def update_diabetes_info():
     data = request.json
@@ -216,7 +215,6 @@ def update_diabetes_info():
         return jsonify({"error": "User ID is required"}), 400
 
     try:
-        # Fetch user from DynamoDB to verify existence
         response = users_table.get_item(Key={'userid': userid})
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
@@ -251,7 +249,7 @@ def update_diabetes_info():
         print(f"Error during DynamoDB operation: {error_message}")
         return jsonify({"error": error_message}), 500
     
-
+#extract diabetes information from the user table
 @app.route('/get_diabetes_info/<string:userid>', methods=['GET'])
 def get_diabetes_info(userid):
     if not userid:
@@ -264,7 +262,6 @@ def get_diabetes_info(userid):
         if 'Item' not in response:
             return jsonify({"error": "User not found"}), 404
 
-        # Extract diabetes information
         item = response['Item']
         diabetes_info = {
             "diabetes_type": item.get("diabetes_type"),
@@ -288,13 +285,11 @@ def get_diabetes_info(userid):
         return jsonify({"error": error_message}), 500
 
 
-
-
 # User login
-# User login endpoint
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
+    #validation credential is the email and password
     email = data.get('email')
     password = data.get('password')
 
@@ -319,31 +314,24 @@ def login():
 @app.route('/users/<user_id>', methods=['GET'])
 def get_user(user_id):
     client = UserClient(user_id)
-    user = client.search_data(attribute='userid, email, name')
-    print(f"Retrieved user: {user}")  # Debugging line
+    
+    # Define the fields you want to retrieve
+    fields = ['userid', 'email', 'name']
+    
+    user_data = {}
+    for field in fields:
+        field_value = client.search_data(field_name=field)
+        if field_value is not None:
+            user_data[field] = field_value
+        else:
+            return jsonify({"error": f"{field} not found."}), 404  # Return error if any field is missing
+    
+    print(f"Retrieved user: {user_data}")  # Debugging line
+    
+    return jsonify(user_data), 200
 
-    if not user:
-        return jsonify({"error": "User not found."}), 404
 
-    return jsonify(user), 200
-
-# Extract user data to a downloadable file
-@app.route('/users/<user_id>/export', methods=['GET'])
-def export_user(user_id):
-    client = UserClient(user_id)
-    user = client.search_data(attribute='userid, email, name')  # Update attributes as needed
-
-    if not user:
-        return jsonify({"error": "User not found."}), 404
-
-    user_data = "\n".join([f"{key}: {value}" for key, value in user.items()])
-    response_message = {"message": "User data exported successfully"}
-    return jsonify(response_message), 200
-
-# Mock database
-patient_conditions = {}
-
-# Patient conditions
+#stor daily entries to the data table
 @app.route('/conditions', methods=['POST'])
 def add_conditions():
     data = request.json
@@ -394,7 +382,7 @@ def add_conditions():
         print(f"Error in add_conditions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-
+#extract specific entry 
 @app.route('/conditions/<user_id>', methods=['GET'])
 def get_conditions(user_id):
     try:
@@ -414,7 +402,7 @@ def get_conditions(user_id):
 
         conditions = [
             {
-                'datatype': item['userid#datatype'].split('#')[1],
+                'datatype': item['userid#datatype'].split('#')[1],#composite key
                 'date': item['date'],
                 'value': item['value']
             }
@@ -426,7 +414,7 @@ def get_conditions(user_id):
         print(f"Error in get_conditions: {str(e)}")
         return jsonify({"error": str(e)}), 500
     
-
+#change existing entry
 @app.route('/conditions/<user_id>/<datatype>', methods=['PUT'])
 def update_conditions(user_id, datatype):
     data = request.json
@@ -484,17 +472,16 @@ def update_conditions(user_id, datatype):
         logging.error(f"Error in update_conditions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-    
-@app.route('/graphs', methods=['GET'])
-@jwt_required()
+#generating graph of blood sugar fluctuation    
+@app.route('/graphs', methods=['POST'])
 def gen_graph():
-    data = request.json()
+    data = request.json
 
-    current_user_id = get_jwt_identity()  # Extract user_id from the JWT
+    current_user_id = data.get("userid")
     user = UserClient(current_user_id)  # Create a User instance
 
-    start_date = request.args.get('start_datetime')
-    end_date = request.args.get('end_datetime')
+    start_date = data.get('fromDate')
+    end_date = data.get('toDate')
 
     print("DEBUG: Received start_date =", start_date)
     print("DEBUG: Received end_date =", end_date)
@@ -502,15 +489,27 @@ def gen_graph():
     if not start_date or not end_date:
         return jsonify({"error": "Missing required parameters"}), 400, {'Content-Type': 'application/json'}
 
-    data = user.query_data(start_date, end_date)
-    print("DEBUG: query_data result =", data)
+    data = {"data": user.query_by_date_range('bloodSugar', start_date, end_date)}
+
     if data is None:
         print("DEBUG: query_data returned None, triggering 500 response.")
         return jsonify({"error": "Failed to query data"}), 500
 
-    return jsonify({"data": data})
+    # Convert Decimal to float
+    def preprocess(data):
+        if isinstance(data, list):
+            return [preprocess(item) for item in data]
+        elif isinstance(data, dict):
+            return {key: preprocess(value) for key, value in data.items()}
+        elif isinstance(data, Decimal):
+            return float(data)
+        return data
 
+    processed_data = preprocess(data)
 
+    return jsonify(processed_data)
+
+#send alert to doctor when the blood sugar level is out of the safe range
 @app.route('/alert-doctor', methods=['POST'])
 def send_alert():
     try:
@@ -536,7 +535,11 @@ def send_alert():
         lastname = user.search_data('last_name')
         doctor_email = user.search_data('doctor_email')
 
+        print(f"Retrieved user data - First Name: {firstname}, Last Name: {lastname}, Doctor Email: {doctor_email}")  # Debugging
+
+
         if not firstname or not lastname or not doctor_email:
+            print("User data is incomplete.")  # Debugging
             return jsonify({"error": "User data incomplete. Unable to send alert."}), 400
         
         # Create the email message
@@ -569,20 +572,18 @@ def send_alert():
 # send notifications accroding to user's personal settings - eg. at a specific time every day
 
 
-# Questionnaire endpoint to submit responses
+# store questionnaire responses to the data table 
 @app.route('/questionnaire', methods=['POST'])
 def submit_questionnaire():
-    # Ensure the request has JSON content type
     if not request.is_json:
         return jsonify({"error": "Invalid JSON format"}), 400
 
     try:
-        data = request.get_json()  # Get JSON data
+        data = request.get_json()  
 
         if not data:
             return jsonify({"error": "Invalid JSON format"}), 400
 
-        # Extract user ID and check if it's provided
         current_user_id = data.get('userid')
         if not current_user_id:
             return jsonify({"error": "Missing 'userid' in request data"}), 400
@@ -629,47 +630,67 @@ def store_answers(patient_id, answers):
             print(f"Error storing answer for patient_id {patient_id}: {e}")
 
 
-def get_user_by_patient_id(patient_id):
+# send questionnaire results to the doctor
+@app.route('/send-questionnaire', methods=['POST'])
+def send_results_to_doctor():
     try:
-        response = users_table.get_item(Key={'userid': patient_id})
-        if 'Item' in response:
-            user = response['Item']
-            return {
-                'first_name': user.get('first_name', 'Unknown'),
-                'last_name': user.get('last_name', 'Unknown'),
-                'doctor_email': user.get('doctor_email', 'Unkown'),
-            }
-        else:
-            return {
-                'first_name': 'Unknown',
-                'last_name': 'Unknown',
-                'doctor_email': 'Unknown',
-            }
-    except ClientError as e:
-        print(f"Error getting user by patient_id {patient_id}: {e}")
-        return {'first_name': 'Unknown', 'last_name': 'Unknown', 'doctor_email': 'Unknown'}
+        data = request.get_json()
+        print(f"Received data: {data}")
 
-# Helper function to send results to the doctor
-def send_results_to_doctor(patient_id, answers):
-    user = get_user_by_patient_id(patient_id)
-    firstname = user['first_name']
-    lastname = user['last_name']
-    doctor_email = user['doctor_email']
-    
-    # Prepare the email content with all questions and answers
-    questionnaire_responses = "\n".join([f"Q{answer['question_id']}: {answer['answer']}" for answer in answers])
+        required_fields = ['userid', 'answers']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
 
-    msg = EmailMessage()
-    msg.set_content(f'Your patient, {firstname} {lastname}, has submitted the following questionnaire responses:\n\n{questionnaire_responses}')
-    msg['Subject'] = 'Patient Questionnaire Responses from DiaLog'
-    msg['From'] = 'javacakesdialog@gmail.com'
-    msg['To'] = doctor_email
+        # Extract user ID and answers
+        current_user_id = data['userid']
+        answers = data['answers']
 
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.login('javacakesdialog@gmail.com', "your_email_password")  # Update with a secure method for password management
-    server.send_message(msg)
-    server.quit()
+        # Ensure answers is a list of questions and answers
+        if not isinstance(answers, list) or any('question_id' not in answer or 'answer' not in answer for answer in answers):
+            return jsonify({"error": "Invalid format for answers. Each answer must have 'question_id' and 'answer' fields."}), 400
 
+        # Create a User instance
+        user = UserClient(current_user_id)
+
+        # Retrieve user data for constructing the email
+        firstname = user.search_data('first_name')
+        lastname = user.search_data('last_name')
+        doctor_email = user.search_data('doctor_email')
+
+        print(f"Retrieved user data - First Name: {firstname}, Last Name: {lastname}, Doctor Email: {doctor_email}")
+
+        if not firstname or not lastname or not doctor_email:
+            print("User data is incomplete.")  # Debugging
+            return jsonify({"error": "User data incomplete. Unable to send questionnaire."}), 400
+
+        # Prepare the email content with all questions and answers
+        questionnaire_responses = "\n".join([f"Q{answer['question_id']}: {answer['answer']}" for answer in answers])
+
+        # Create the email message
+        msg = EmailMessage()
+        msg.set_content(f'Your patient, {firstname} {lastname}, has submitted the following questionnaire responses:\n\n{questionnaire_responses}')
+        msg['Subject'] = 'Patient Questionnaire Responses from DiaLog'
+        msg['From'] = 'javacakesdialog@gmail.com'
+        msg['To'] = doctor_email
+
+        # Send the message via SMTP
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.login('javacakesdialog@gmail.com', "kwzr qwep klty agqm")  # Replace with your app password
+            server.send_message(msg)
+            server.quit()
+            print("Email sent successfully.")  # Debugging
+        except smtplib.SMTPException as email_error:
+            print(f"Error sending email: {email_error}")  # Debugging
+            return jsonify({"error": "Failed to send email"}), 500
+
+        # Return success response
+        return jsonify({"message": "Questionnaire sent to doctor successfully!"}), 200
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")  # Debugging
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
