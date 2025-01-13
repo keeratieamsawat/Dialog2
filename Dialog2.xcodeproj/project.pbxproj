@@ -195,6 +195,9 @@
 			);
 			mainGroup = F9C539562D0AD89F007DF398;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9524E6B32D353FF800AF567E /* XCRemoteSwiftPackageReference "JWTDecode" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F9C539602D0AD89F007DF398 /* Products */;
 			projectDirPath = "";
@@ -585,6 +588,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9524E6B32D353FF800AF567E /* XCRemoteSwiftPackageReference "JWTDecode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/JWTDecode.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = F9C539572D0AD89F007DF398 /* Project object */;
 }

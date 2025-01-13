@@ -1,16 +1,11 @@
-// the sign-in page takes in user email and password for those users who has already registered
-
-// Each user email and password should be unique and corresponds to a unique personal token in backend - this allows each user to sign-in to their own account
-
 import SwiftUI
 
 struct SigninView: View {
-    
     @State private var userEmail: String = ""
     @State private var password: String = ""
     @State private var loginMessage: String = ""
-    @State private var accessToken: String? = nil // when login successful, store access token
-    @State private var navigateToHome: Bool = false // boolean variable to conditionally navigate to HomePageView
+    @State private var accessToken: String? = nil
+    @State private var navigateToHome: Bool = false // Used to navigate to HomePageView
     
     var body: some View {
         NavigationStack {
@@ -18,8 +13,8 @@ struct SigninView: View {
                 Text("Sign-In to Your Account")
                     .font(.title)
                     .bold()
-                
-                // user input their registered email and password
+
+                // Email Input
                 Text("User Email:")
                     .font(.headline)
                 TextField("Enter your registration email", text: $userEmail)
@@ -30,7 +25,8 @@ struct SigninView: View {
                             .stroke(Color("Primary_Color"), lineWidth: 2)
                     )
                     .offset(y: -10)
-                
+
+                // Password Input
                 Text("Password:")
                     .font(.headline)
                 SecureField("Enter your password", text: $password)
@@ -41,10 +37,9 @@ struct SigninView: View {
                             .stroke(Color("Primary_Color"), lineWidth: 2)
                     )
                     .offset(y: -10)
-                
-               // login button
+
+                // Login Button
                 Button(action: {
-                    // calling the login function (written below)
                     loginUser(email: userEmail, password: password)
                 }) {
                     Text("Login")
@@ -54,48 +49,45 @@ struct SigninView: View {
                         .background(Color("Primary_Color"))
                         .cornerRadius(8)
                 }
-                
-               // display login message - success/error
+
+                // Display login message
                 if !loginMessage.isEmpty {
                     Text(loginMessage)
                         .font(.subheadline)
                         .foregroundColor(loginMessage.contains("success") ? .green : .red)
                         .padding(.top, 10)
                 }
-                
-                // navigation link for home page
-                NavigationLink(destination: MainPageView(), isActive: $navigateToHome) {
-                    EmptyView() // make sure the navigation link does not show anything on the view page
+
+                // Navigate to HomePageView after successful login
+                NavigationLink(destination: HomePageView(diabetesData: DiabetesDetailsData()), isActive: $navigateToHome) {
+                    EmptyView()
                 }
             }
             .padding(40)
         }
     }
-    
-// MARK: loginUser function to handle user login, send login request to backend.
-// Backend will check if email and password are already stored in database, and allow the user to continue to their account if so
-    
+
+    // MARK: - Login User
     func loginUser(email: String, password: String) {
-        
-        // backend database URL input here
+        // Backend URL
         guard let url = URL(string: "http://127.0.0.1:5000/login") else {
             loginMessage = "Invalid URL"
             return
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        // prepare email and password to send to server
+
+        // Prepare email and password
         let loginData: [String: String] = ["email": email, "password": password]
         guard let httpBody = try? JSONSerialization.data(withJSONObject: loginData, options: []) else {
             loginMessage = "Failed to encode request data"
             return
         }
         request.httpBody = httpBody
-        
-        // sending email and password user input to server
+
+        // Send login request
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 DispatchQueue.main.async {
@@ -103,14 +95,14 @@ struct SigninView: View {
                 }
                 return
             }
-            
+
             guard let httpResponse = response as? HTTPURLResponse else {
                 DispatchQueue.main.async {
                     loginMessage = "Invalid server response"
                 }
                 return
             }
-            
+
             if let data = data {
                 do {
                     let jsonResponse = try JSONSerialization.jsonObject(with: data, options: [])
@@ -119,9 +111,13 @@ struct SigninView: View {
                            let message = responseDict["message"] as? String,
                            let token = responseDict["access_token"] as? String {
                             DispatchQueue.main.async {
+                                // Save the token using TokenManager
+                                TokenManager.saveToken(token)
+                                print("Token saved successfully: \(token)") // Debugging log
+
                                 loginMessage = message
                                 accessToken = token
-                                navigateToHome = true // set boolean value to be true, to navigate to HomePageView after success in login
+                                navigateToHome = true // Navigate to the home page
                             }
                         } else {
                             DispatchQueue.main.async {

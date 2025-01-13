@@ -108,7 +108,7 @@ struct HomePageView: View {
                         NavigationLink(destination: MyInfoPage()) {
                             TabItem(icon: "person.fill", label: "Me")
                         }
-                        NavigationLink(destination: QuestionPage()) {
+                        NavigationLink(destination: QuestionnaireView()) {
                             TabItem(icon: "doc.text", label: "Questions")
                         }
                     }
