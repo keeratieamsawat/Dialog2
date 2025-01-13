@@ -1,95 +1,91 @@
 import SwiftUI
 
+// BloodSugarSection is a view that handles the input of blood sugar-related data, including:
+// 1. Date and time of the measurement
+// 2. Blood sugar level (in mmol/L)
+// 3. The condition (pre-meal or post-meal)
+// 4. An optional note for additional details
+//
+// This section is designed to be reused across different views (Simple method,Comprehensive method and Intensive Method ).
+
+    // MARK: - UI of blood sugar section.
 struct BloodSugarSection: View {
-    @Binding var selectedDate: Date
-    @Binding var bloodSugarTime: Date
-    @Binding var bloodSugarLevel: String
-    @Binding var mealTiming: String
-    @Binding var noteBloodSugar: String
-
-    @State private var showAlert = false // State to show the alert
-
-    var isHyperglycemia: Bool {
-        guard let bloodSugar = Double(bloodSugarLevel) else { return false }
-        if mealTiming == "Pre-meal" {
-            return bloodSugar > 7.0 // Fasting threshold
-        } else if mealTiming == "Post-meal" {
-            return bloodSugar > 11.0 // 2 hours after meal threshold
-        }
-        return false
-    }
+    
+    // Binding variables input from SimpleMethodView,ComprehensiveMethodView and IntensiveMethodView
+    @Binding var selectedDate: Date  // The selected date
+    @Binding var bloodSugarTime: Date  // The time of blood sugar measurement
+    @Binding var bloodSugarLevel: String  // The blood sugar level input by the user
+    @Binding var mealTiming: String  // The condition (Pre-meal/Post-meal)
+    @Binding var noteBloodSugar: String  // Additional notes related to the blood sugar measurement
+    
+    @State var validationError: String? // State to hold validation error messages (if any)
 
     var body: some View {
+        
         VStack(spacing: 15) {
-            // Formatted Date
+            // Date Picker for selecting the date of the blood sugar measurement
             HStack {
                 Image(systemName: "calendar").foregroundColor(.white)
-                Text("DATE:")
-                    .foregroundColor(.white)
+                Text("DATE:").foregroundColor(.white)
                 Spacer()
                 DatePicker("", selection: $selectedDate, displayedComponents: .date)
                     .labelsHidden()
                     .foregroundColor(.white)
             }
 
-            // Blood Sugar Time
+            // Blood Sugar Time Picker for selecting the time when the blood sugar level is measured
             HStack {
                 Image(systemName: "clock").foregroundColor(.white)
                 Text("BLOOD SUGAR TIME:")
-                    .lineLimit(1)
-                    .layoutPriority(1)
                     .foregroundColor(.white)
+                    .lineLimit(1) // Limit the text to a single line
+                    .layoutPriority(1)
                 Spacer()
                 DatePicker("", selection: $bloodSugarTime, displayedComponents: .hourAndMinute)
                     .foregroundColor(.white)
             }
 
-            // Blood Sugar Level
+            // Input for the blood sugar level with validation
             HStack {
                 Image(systemName: "drop.fill").foregroundColor(.yellow)
-                Text("BLOOD SUGAR LEVEL:")
-                    .foregroundColor(.white)
+                Text("BLOOD SUGAR LEVEL:").foregroundColor(.white)
                     .lineLimit(1)
                     .layoutPriority(1)
                 Spacer()
                 TextField("", text: $bloodSugarLevel)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(maxWidth: 200)
-                    .onChange(of: bloodSugarLevel) { _ in
-                        if isHyperglycemia {
-                            showAlert = true // Trigger the alert when blood sugar is out of range
-                        }
+                    .keyboardType(.decimalPad) // Set the numeric keypad for input
+                    .onChange(of: bloodSugarLevel) { newValue, _ in
+                        validateBloodSugarLevel(newValue)  // Validate blood sugar level on change
                     }
+                Text("mmol/L").foregroundColor(.black).font(.footnote)  // Display units
             }
 
-            // Condition Picker
+            // Display validation error if any
+            if let errorMessage = validationError {
+                Text(errorMessage).font(.caption).foregroundColor(.red).padding(.top, -10)
+            }
+            
+            // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
+
+            // Picker for selecting meal timing (Pre-meal or Post-meal)
             HStack {
                 Image(systemName: "pencil").foregroundColor(.white)
-                Text("CONDITION:")
-                    .foregroundColor(.white)
+                Text("CONDITION:").foregroundColor(.white)
                 Spacer()
                 Picker("", selection: $mealTiming) {
                     Text("Pre-meal").tag("Pre-meal")
                     Text("Post-meal").tag("Post-meal")
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .frame(maxWidth: 200)
+                .pickerStyle(SegmentedPickerStyle())  // Use a segmented picker for better UI
+                .frame(maxWidth: 200)  // Set the maximum width
             }
+            
+            // End of reference 1
 
-            // Explanation Text
-            Text("""
-            Pre-meal: Before eating your meal.
-            Post-meal: Measured 2 hours after your last meal.
-            """)
-            .font(.footnote)
-            .foregroundColor(.white)
-            .multilineTextAlignment(.center)
-            .padding(.top, 3)
-
-            // Notes Field
+            // Notes field for optional notes related to blood sugar measurement
             HStack {
-                Text("NOTE:")
-                    .foregroundColor(.white)
+                Text("NOTE:").foregroundColor(.white)
                 Spacer()
                 TextField("Optional", text: $noteBloodSugar)
                     .multilineTextAlignment(.center)
@@ -97,19 +93,35 @@ struct BloodSugarSection: View {
                     .frame(maxWidth: 200)
             }
         }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color.blue.opacity(0.5)))
-        .padding(.horizontal)
-        .alert(isPresented: $showAlert) { // Use SwiftUI's built-in Alert
-            Alert(
-                title: Text("High Blood Sugar"),
-                message: Text("Your blood sugar level is out of range. Please consult a doctor."),
-                dismissButton: .default(Text("OK"))
-            )
+        .padding()  // Add padding inside the section
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color.blue.opacity(0.5)))  // Background styling
+        .padding(.horizontal)  // Horizontal padding for spacing
+    }
+    
+    // MARK: - Validation Function for Blood Sugar Level
+    private func validateBloodSugarLevel(_ value: String) {
+        // Check if the value is empty or not
+        if value.isEmpty {
+            validationError = nil  // No error if the input is empty
+        } else if let bloodSugar = Double(value) {
+            // Validate the blood sugar level (within a reasonable range)
+            if bloodSugar < 0 {
+                validationError = "Blood sugar level cannot be negative."
+            } else if bloodSugar > 50 {
+                validationError = "Blood sugar level seems too high. Please check your input."
+            } else {
+                validationError = nil  // Clear error if valid
+            }
+        } else {
+            // Error if the value is not a valid number
+            validationError = "Please enter a valid numeric value."
         }
     }
 }
 
+// MARK: - Preview for BloodSugarSection
+
+// Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
 struct BloodSugarSection_Previews: PreviewProvider {
     static var previews: some View {
         BloodSugarSection(
@@ -121,3 +133,6 @@ struct BloodSugarSection_Previews: PreviewProvider {
         )
     }
 }
+// End of reference 1
+
+
