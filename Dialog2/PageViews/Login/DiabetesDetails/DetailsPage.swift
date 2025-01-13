@@ -1,5 +1,5 @@
-// this file contains:
-// details of the user's diabetes conditions
+// MARK: this file contains UI pages for user's diabetes condition details
+// the variables are stored as a data model in separate file "DiabetesDetailsData"
 
 import SwiftUI
 
@@ -25,7 +25,7 @@ struct DetailsPageView: View {
                     .padding(.leading,20)
                     .padding(.top,20)
                 
-                // Date picker for date diagnosed
+                // date picker for diagnosis date, using the specific structure for a date picker in SwiftUI
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(Color("Primary_Color"), lineWidth: 2)
@@ -34,38 +34,37 @@ struct DetailsPageView: View {
                         selection: $diabetesData.diagnoseDate, displayedComponents: [.date])
                     .padding(10)
                 }
-                .frame(width:300,height:50) // Ensure DatePicker height is consistent
-                .padding(.horizontal,40) // Padding around the DatePicker
+                .frame(width:300,height:50) // set height and width for date picker frame
                 .datePickerStyle(CompactDatePickerStyle())
                 
-                // Picker for diabetes type
+                // picker for diabetes type, using SwiftUI's drop-down menu style
                 Picker("Diabetes Type", selection: $diabetesData.diabetesType) {
                     ForEach(diabetesData.diabetesTypes, id: \.self) { type in
                         Text(type)
-                            .tag(type) // match the tag to data type
+                            .tag(type) // matching each tag to the data type of the variable, in this case, a String
                     }
                 }
-                .pickerStyle(MenuPickerStyle()) // drop-down menu
-                .frame(width:300,height:50) // Ensure Picker width and height are consistent with DatePicker
-                .background(Color.white) // Background color for the picker
-                .cornerRadius(10) // Rounded corners for the border
-                .overlay( // border around the picker
+                .pickerStyle(MenuPickerStyle()) // drop-down menu style
+                .frame(width:300,height:50) // set width and height the same as the date picker
+                .background(Color.white)
+                .cornerRadius(10)
+                .overlay(
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(Color("Primary_Color"), lineWidth: 2)
                 )
-                .padding(.horizontal,40)
             }
-            // button to direct to next page
+            
+            // "Confirm" button that navigates to next page
             NavigationLink(destination: InsulinInfoView(diabetesData:diabetesData)) {
+                // diabetesData argument passed into the navigation link, to ensure data from this page is propagated to the next
                 Text("Confirm")
                     .bold()
                     .frame(width:300,height:50)
                     .foregroundColor(.white)
                     .background(Color("Primary_Color"))
                     .cornerRadius(10)
-                    .padding(.horizontal,40)
             }
-            .padding(.top,40) // Add overall padding for spacing
+            .padding(.top,40) // padding for spacing between components
         }
     }
 }
@@ -122,7 +121,8 @@ struct InsulinInfoView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(Color("Primary_Color"), lineWidth: 2)
             )
-            // button to direct to next page
+            
+            // button for navigation, passing diabetesData argument again
             NavigationLink(destination: MedicationView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
@@ -130,7 +130,6 @@ struct InsulinInfoView: View {
                     .foregroundColor(.white)
                     .background(Color("Primary_Color"))
                     .cornerRadius(10)
-                    .padding(.horizontal,40)
             }
             .padding(.horizontal,40)
         }
@@ -148,7 +147,7 @@ struct MedicationView: View {
             Text("What other health conditions have you been diagnosed, if any? (Enter N/A if not applicable)")
                 .font(.title3)
                 .bold()
-            // input other conditions
+            // user can type in other conditions
             TextField("Enter other conditions...", text: $diabetesData.condition)
                 .padding(10)
                 .frame(height:40)
@@ -159,7 +158,8 @@ struct MedicationView: View {
             Text("What other medications are you taking, if any? (Enter N/A if not applicable)")
                 .font(.title3)
                 .bold()
-            // input other medications
+            
+            // user can type in other medications
             TextField("Enter other medications...", text: $diabetesData.medication)
                 .padding(10)
                 .frame(height: 40)
@@ -167,7 +167,7 @@ struct MedicationView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2))
             
-            // button to direct to next page
+            // navigation button, passing diabetesData argument again
             NavigationLink(destination: bsRangeView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
@@ -176,14 +176,11 @@ struct MedicationView: View {
                     .foregroundColor(.white)
                     .background(Color("Primary_Color"))
                     .cornerRadius(10)
-                    .padding(.horizontal,40)
             }
         }
         .padding(40)
     }
 }
-
-
 
 // MARK: choose target BS range for control
 
@@ -197,30 +194,32 @@ struct bsRangeView: View {
                 .font(.title3)
                 .bold()
             
-            // target range lower bound
+            // target range lower bound, implemented with a slider style that allows the user to slide and choose their target range
             Text("Lower bound: \(diabetesData.lowerBound,specifier: "%.2f")")
+            // specifier %.2f ensures 2 decimal places
                 .font(.caption)
-            Slider(value: $diabetesData.lowerBound, in: 0.0...20.0, step: 0.1)
+            Slider(value: $diabetesData.lowerBound, in: 50.0...80.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
                 .offset(y:-40)
             
-            // target range upper bound
+            // target range upper bound, slider style
             Text("Upper bound in:")
                 .font(.headline)
             Text("Upper bound: \(diabetesData.upperBound,specifier:"%.2f")")
                 .font(.caption)
-            Slider(value: $diabetesData.upperBound, in: 0.0...20.0, step: 0.1)
+            Slider(value: $diabetesData.upperBound, in: 70.0...120.0, step: 0.1)
                 .padding(40)
                 .accentColor(Color("Primary_Color"))
                 .offset(y:-40)
             
-            // display chosen range
+            // line of text to display the chosen range selected by the user with the sliders
             Text("Your chosen range: \(diabetesData.lowerBound,specifier: "%.2f") to \(diabetesData.upperBound,specifier: "%.2f") ")
                             .font(.footnote)
                             .foregroundColor(.black)
                             .offset(y:-40)
             
+            // navigation button, passing diabetesData argument again
             NavigationLink(destination: DoctorInfoView(diabetesData:diabetesData)) {
                 Text("Confirm")
                     .bold()
@@ -235,6 +234,7 @@ struct bsRangeView: View {
     }
 }
 
+// preview provider to allow viewing of the UI pages while passing the diabetesData 
 struct DetailsPage_Previews: PreviewProvider {
     static var previews: some View {
         DetailsPageView(diabetesData: DiabetesDetailsData())
