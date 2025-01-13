@@ -22,6 +22,7 @@ class TestGenGraph(unittest.TestCase):
     def test_gen_graph_success(self, MockUserClient):
         # Mock UserClient behavior
         mock_user = MockUserClient.return_value
+        #Reference - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com 
         mock_user.query_by_date_range.return_value = [
             {"date": "2025-01-01", "value": 100},
             {"date": "2025-01-02", "value": 110}
@@ -39,6 +40,7 @@ class TestGenGraph(unittest.TestCase):
                 {"date": "2025-01-02", "value": 110}
             ]
         })
+        #reference ends
 
     
 if __name__ == '__main__':
