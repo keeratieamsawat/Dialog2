@@ -1,3 +1,5 @@
+// MARK: the login page of the app, allowing new users to choose "Create Account" and existing users to choose "Sign-in"
+
 import SwiftUI
 
 struct LoginView: View {
@@ -14,6 +16,7 @@ struct LoginView: View {
                     .foregroundStyle(Color("Primary_Color"))
                     .padding(.top, 40)
                     .offset(y:-40)
+                
                 // create account/sign-in text
                 Text("Create a new account - or sign-in if you already have one.")
                     .font(.title2)
@@ -24,7 +27,7 @@ struct LoginView: View {
                 
                 // "Create Account": prompt the user to create account
                 // this button goes to create account page
-                NavigationLink(destination: CreateAccountView(userData: userData)) { // Pass userData here
+                NavigationLink(destination: CreateAccountView(userData: userData)) { // pass userData here
                     Text("Create Account")
                         .bold()
                         .frame(maxWidth: .infinity, minHeight: 50)
@@ -56,3 +59,4 @@ struct LoginView: View {
 #Preview {
     LoginView()
 }
+
