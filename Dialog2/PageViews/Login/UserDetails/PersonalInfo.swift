@@ -25,12 +25,12 @@ struct PersonalInfoView: View {
                 Text("Gender:")
                     .font(.headline)
                 TextField("Your gender", text: $userData.gender)
-                    .padding(10)
-                    .frame(height: 40)
+                    .padding(10) // this padding creates some blank before the text, so that the text does not touch the edge of the frame
+                    .frame(height: 40) // standardise height of the frames
                     .overlay(
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: 8) // make the frame a rectangle with round corners
                             .stroke(Color("Primary_Color"), lineWidth: 2))
-                    .offset(y:-10)
+                    .offset(y:-10) // slight offset in y-axis for better vertical alignments
                 
                 // birth date
                 Text("Birth Date:")
@@ -38,15 +38,15 @@ struct PersonalInfoView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color("Primary_Color"), lineWidth: 2)
-                    
+                    // using a date picker for birth date selection
                     DatePicker(
                         "Select your birthday",
                         selection: $userData.birthDate,
                         displayedComponents: [.date])
                     .padding(10)
                 }
-                .frame(height:20)
-                .datePickerStyle(CompactDatePickerStyle())
+                .frame(height:20) // as there is a date picker inside, the frame height need to be adjusted slightly different from the other frames
+                .datePickerStyle(CompactDatePickerStyle()) // date picker style
                 
                 // country of residence
                 Text("Country of Residence:")
@@ -71,7 +71,7 @@ struct PersonalInfoView: View {
                             .stroke(Color("Primary_Color"), lineWidth: 2))
                 
                 // for weight and height
-                // using HStack and VStack to align them next to each other
+                // using HStack and VStack togehter, to align them next to each other
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Weight:")

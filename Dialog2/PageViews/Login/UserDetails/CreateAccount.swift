@@ -1,7 +1,10 @@
+// MARK: this page allows new users to create account, entering their personal details. at the end of these pages, the user details will be sent to backend database and register as a new user.
+
 import SwiftUI
 
 struct CreateAccountView: View {
     
+    // calling userData data model across all pages
     @StateObject var userData: UserRegistrationData
     
     var body: some View {
@@ -29,7 +32,7 @@ struct CreateAccountView: View {
                     .overlay( // user .overlay to add round rectangle border to textfield
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color("Primary_Color"), lineWidth: 2))
-                    .offset(y:-10) // push the textfield a bit upwards
+                    .offset(y:-10) // using y-axis offset to push the textfield a bit upwards
                 
                 // last name
                 Text("Last Name:")
