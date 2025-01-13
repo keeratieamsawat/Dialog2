@@ -1,12 +1,11 @@
 #The script contains unit tests for the /alert-doctor endpoint in a Flask app.
-#This test suite is structured with the help from ChatGPT to ensure proper testing to ensure proper mocking
-# of dependencies like 'UserClient' and 'smtplib.SMTP_SSL' in Flask route testing.
 
 import unittest
 from unittest.mock import patch, MagicMock
 from flask import Flask, jsonify
 from main2 import app, User  # Import your Flask app and User class
 
+#Reference - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com 
 class TestSendAlert(unittest.TestCase):
 
     def setUp(self):
@@ -46,7 +45,8 @@ class TestSendAlert(unittest.TestCase):
         # Verify the email content
         msg = mock_smtp_instance.send_message.call_args[0][0]
         self.assertIn('Your patient, John Doe, has recorded an unsafe blood sugar level of 250 mol/L.', msg.get_content())
-
+#Reference ends
+    
     @patch('main2.UserClient.search_data')
     def test_send_alert_missing_fields(self, mock_search_data):
         # Simulate missing 'bloodSugarLevel'
