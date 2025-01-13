@@ -1,3 +1,5 @@
+// MARK: this is one of the statistics pages UI, that allows choosing date range and displaying sample exercise logs; type of exercise, duration, and intensity can be recorded
+
 import SwiftUI
 
 struct ExerciseStatView: View {
@@ -9,11 +11,11 @@ struct ExerciseStatView: View {
     // for exercise data
     @State private var exerciseName: String = "Cardio"
     @State private var duration: String = "40 minutes"
-    @State private var intensity: String = "very intense I'm so tired"
+    @State private var intensity: String = "very intense"
     
     var body: some View {
         VStack(spacing: 0) {
-            // header
+            // top blue header
             ZStack {
                 Color("Primary_Color")
                     .frame(maxWidth: .infinity, maxHeight: 100)
@@ -53,7 +55,7 @@ struct ExerciseStatView: View {
                 .foregroundColor(.purple)
                 .padding(.top)
 
-            // scrollable logs
+            // scrollable logs created with for loop that allows viewing sample data
             ScrollView {
                 VStack(spacing: 15) {
                     // some sample logs
@@ -88,6 +90,7 @@ struct ExerciseStatView: View {
                 }
                 .padding(.top)
             }
+            
             // bottom blue bar
             ZStack {
                 Color("Primary_Color")
@@ -96,7 +99,7 @@ struct ExerciseStatView: View {
                     .offset(y:40)
             }
         }
-        .edgesIgnoringSafeArea(.top)
+        .edgesIgnoringSafeArea(.top) // align everything to the top without leaving blank pages
     }
 }
 
