@@ -1,3 +1,5 @@
+// MARK: this is one of the user statistics pages UI, that allows choosing date range. The UI displays a few sample logs with sample data on carbohydrate intake
+
 import SwiftUI
 
 struct CarbIntakeStatView: View {
@@ -13,7 +15,7 @@ struct CarbIntakeStatView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // header
+            // top blue header
             ZStack {
                 Color("Primary_Color")
                     .frame(maxWidth: .infinity, maxHeight: 100)
@@ -56,7 +58,7 @@ struct CarbIntakeStatView: View {
             // scrollable logs
             ScrollView {
                 VStack(spacing: 15) {
-                    // some sample logs
+                    // some sample logs created with sample data and for loop
                     ForEach(0..<3, id: \.self) { _ in
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
@@ -90,12 +92,14 @@ struct CarbIntakeStatView: View {
                         .background(
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color.green.opacity(0.2))
+                            // each block is rectangle with round edges, and green with an adjusted opacity
                         )
                         .padding(.horizontal)
                     }
                 }
                 .padding(.top)
             }
+            
             // bottom blue bar
             ZStack {
                 Color("Primary_Color")
@@ -104,7 +108,7 @@ struct CarbIntakeStatView: View {
                     .offset(y:40)
             }
         }
-        .edgesIgnoringSafeArea(.top)
+        .edgesIgnoringSafeArea(.top) // align everything to the top without leaving blank
     }
 }
 

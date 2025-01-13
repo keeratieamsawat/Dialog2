@@ -1,3 +1,5 @@
+// MARK: this is one of the statistics UI pages that displays other medicine that the user is taking
+
 import SwiftUI
 
 struct MedicationStatView: View {
@@ -6,12 +8,12 @@ struct MedicationStatView: View {
     @State private var condition: String = "high blood pressure"
     @State private var medicationName: String = "medication"
     @State private var medDosage: String = "dose"
-    @State private var medNote: String = "BOOM"
+    @State private var medNote: String = "Note"
 
     
     var body: some View {
         VStack(spacing: 0) {
-            // header
+            // top blue header
             ZStack {
                 Color("Primary_Color")
                     .frame(maxWidth: .infinity, maxHeight: 100)
