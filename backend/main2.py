@@ -54,12 +54,13 @@ class UserClient:
 
     def query_by_date_range(self, data_type, start_date, end_date):
         try:
+            # Query DynamoDB table by userid, data_type, start_date and end_date
             response = data_table.query(
                 KeyConditionExpression=(
                         Key('userid#datatype').eq(f'{self.user_id}#{data_type}') &
                         Key('date').between(f'{start_date}:00', f'{end_date}:59')
                 ),
-                ProjectionExpression="#date, #value",
+                ProjectionExpression="#date, #value", # Only return date and value
                 ExpressionAttributeNames={'#date': 'date', '#value': 'value'},
                 Limit=500
             )
@@ -472,7 +473,7 @@ def update_conditions(user_id, datatype):
         logging.error(f"Error in update_conditions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-#generating graph of blood sugar fluctuation    
+# Generating graph of blood sugar fluctuation    
 @app.route('/graphs', methods=['POST'])
 def gen_graph():
     data = request.json
@@ -486,9 +487,11 @@ def gen_graph():
     print("DEBUG: Received start_date =", start_date)
     print("DEBUG: Received end_date =", end_date)
 
+    # If missing parameters
     if not start_date or not end_date:
         return jsonify({"error": "Missing required parameters"}), 400, {'Content-Type': 'application/json'}
 
+    # Query data by date
     data = {"data": user.query_by_date_range('bloodSugar', start_date, end_date)}
 
     if data is None:
