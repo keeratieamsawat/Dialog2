@@ -8,14 +8,15 @@ import json
 class TestDiaLogApp(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.client = app.test_client()
+        cls.client = app.test_client() #set up test client
      
-    @patch('main2.users_table.scan')  # Mock users_table.scan
+    @patch('main2.users_table.scan')  
     def test_register_success(self, mock_scan):
         # Mock the response to simulate no existing user
         mock_scan.return_value = {
             'Items': []
         }
+        #input user data 
         data = {
             "first_name": "John",
             "last_name": "Doe",
@@ -41,6 +42,7 @@ class TestDiaLogApp(unittest.TestCase):
         mock_scan.return_value = {
             'Items': []
         }
+        #data missing emergency contact
         data = {
             "first_name": "John",
             "last_name": "Doe",
@@ -58,7 +60,7 @@ class TestDiaLogApp(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Missing required field", response.json['error'])
  
-    @patch('main2.users_table.scan')  # Mock users_table.scan
+    @patch('main2.users_table.scan') 
     def test_register_email_already_exists(self, mock_scan):
         # Mock the response to simulate an existing user with the same email
 
