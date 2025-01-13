@@ -1,11 +1,14 @@
+// Page view to display user's basic therapy information
 import SwiftUI
 
 struct InsulinTherapyView: View {
+    // MARK: - State Variables
     @State private var therapyType: String = "Pen / Syringes"
     @State private var insulinType: String = "Rapid-acting insulin"
     @State private var customInsulinType: String = ""
     @State private var healthConditions: String = ""
     @State private var otherMedications: String = ""
+
     @State private var showTherapyTypePicker = false
     @State private var showInputSheet = false
     @State private var inputTitle: String = ""
@@ -30,7 +33,6 @@ struct InsulinTherapyView: View {
 
                 // MARK: - Content Section
                 VStack(spacing: 0) {
-                    // Header Section
                     ZStack {
                         Color.white
 
@@ -139,9 +141,11 @@ struct InsulinTherapyView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .navigationBarHidden(true)
+        // Show therapy type picker
         .sheet(isPresented: $showTherapyTypePicker) {
             TherapyTypePicker(therapyType: $therapyType)
         }
+        // Show input sheet for other health conditions or medications
         .sheet(isPresented: $showInputSheet) {
             InputSheet(
                 title: inputTitle,
@@ -196,6 +200,7 @@ struct TherapyTypePicker: View {
 }
 
 // MARK: - Input Sheet
+// Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
 struct InputSheet: View {
     let title: String
     @Binding var inputText: String
@@ -217,6 +222,7 @@ struct InputSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
                         UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
+                        /* end of reference 1 */
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
@@ -229,6 +235,7 @@ struct InputSheet: View {
         }
     }
 }
+
 
 // MARK: - Preview
 struct InsulinTherapyView_Previews: PreviewProvider {

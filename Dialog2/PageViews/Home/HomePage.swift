@@ -1,3 +1,6 @@
+//  The main home page for the app, showing glucose levels, metrics, and navigation options
+//  Includes a graph for daily glucose levels and links to key app features
+
 import SwiftUI
 
 struct HomePageView: View {

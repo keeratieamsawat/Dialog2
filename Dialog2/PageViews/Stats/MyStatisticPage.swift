@@ -1,6 +1,9 @@
+//  Displays user statistics such as glucose data, exercises, insulin intake, and food intake. Includes time range selection and navigation to detailed views.
+
 import SwiftUI
 
 struct MyStatisticPage: View {
+    // Enum to track the active card type for navigation
     enum StatCardType: Hashable {
         case bloodSugarFluctuations
         case exercisesAndWeight
@@ -8,10 +11,12 @@ struct MyStatisticPage: View {
         case otherMedicine
         case foodIntake
     }
-
+    // MARK: - Glucose Data Model
+    // Shared model to manage glucose data
     class GlucoseData: ObservableObject {
         @Published var data: [[String: Any]] = []  // Array of dictionaries to store glucose data
         
+        // Calculates the average glucose level
         func calculateAverage() -> Double {
             let totalValue = data.reduce(0) { (sum, item) in
                 // Safely unwrap and convert the 'value' to Double
@@ -23,6 +28,7 @@ struct MyStatisticPage: View {
         }
     }
     
+    // MARK: - State Variables
     @StateObject var glucoseData: GlucoseData = GlucoseData() // Shared data model for glucose statistics
     @State private var fromDate = Date()
     @State private var fromTime = Date()
@@ -203,6 +209,7 @@ struct MyStatisticPage: View {
     }
     
     // MARK: - Fetch Data
+    // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
     private func fetchData(for card: StatCardType) {
         print("Fetching data for \(card)")
         let data: [String: String] = [
@@ -222,6 +229,7 @@ struct MyStatisticPage: View {
         }
     }
 }
+/* end of reference 1 */
 
 // MARK: - Stat Card Component
 

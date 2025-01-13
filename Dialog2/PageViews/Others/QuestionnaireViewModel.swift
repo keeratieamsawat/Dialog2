@@ -17,7 +17,7 @@ class QuestionnaireViewModel: ObservableObject {
     
     @Published var answers: [UUID: String] = [:]
     @Published var submissionStatus: String?
-
+    
     func submitQuestionnaire() {
         guard let token = TokenManager.getToken() else {
             self.submissionStatus = "Error: User not authenticated."
@@ -34,7 +34,8 @@ class QuestionnaireViewModel: ObservableObject {
             self.submissionStatus = "Error: Please answer all questions before submitting."
             return
         }
-
+        
+        // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
         // Convert answers to QuestionAnswer objects
         let questionAnswers = answers.map { QuestionAnswer(question_id: $0.key.uuidString, answer: $0.value) }
         let payload = QuestionnairePayload(userid: userID, answers: questionAnswers)
@@ -47,8 +48,10 @@ class QuestionnaireViewModel: ObservableObject {
         } catch {
             print("Failed to encode payload: \(error)")
         }
+        /* end of reference 1 */
 
         // Send API request
+        // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
         APIService.shared.post(
             endpoint: "http://127.0.0.1:5000/questionnaire",
             payload: payload,
@@ -56,6 +59,7 @@ class QuestionnaireViewModel: ObservableObject {
             responseType: Response.self
         ) { [weak self] result in
             DispatchQueue.main.async {
+                /* end of reference 2 */
                 switch result {
                 case .success(let response):
                     self?.submissionStatus = response.success ? "Questionnaire submitted successfully!" : "Submission failed: \(response.message)"

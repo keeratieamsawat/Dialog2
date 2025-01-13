@@ -5,7 +5,6 @@ struct QuestionnaireView: View {
     
     var body: some View {
         VStack {
-            // Title
             Text("Symptom Assessment")
                 .font(.title)
                 .fontWeight(.bold)

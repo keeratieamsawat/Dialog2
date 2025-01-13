@@ -1,10 +1,12 @@
+// Page view to display and update basic therapy information
 import SwiftUI
 
 struct BasicTherapyInfoView: View {
+    // State to store diabetes type, patient sex, and year of diagnosis
     @State private var diabetesType: String = "Type 2"
     @State private var sex: String = "-"
     @State private var yearOfDiagnosis: Int = 2022
-
+    
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -24,7 +26,6 @@ struct BasicTherapyInfoView: View {
 
                 // MARK: - Content Section
                 VStack(spacing: 0) {
-                    // Header Section
                     ZStack {
                         Color.white
 
@@ -43,6 +44,7 @@ struct BasicTherapyInfoView: View {
                     // MARK: - List of Options
                     List {
                         // Diabetes Type Section
+                        // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
                         Section {
                             NavigationLink(
                                 destination: DiabetesTypeSelectionView(selectedType: $diabetesType)
@@ -57,6 +59,7 @@ struct BasicTherapyInfoView: View {
                                         .foregroundColor(.gray)
                                 }
                             }
+                            /* end of reference 1 */
 
                             // Sex Section
                             NavigationLink(
@@ -109,6 +112,7 @@ struct BasicTherapyInfoView: View {
 }
 
 // MARK: - Diabetes Type Selection View
+// Reference 2 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
 struct DiabetesTypeSelectionView: View {
     @Binding var selectedType: String
     let types = ["Type 1", "Type 2"]
@@ -133,6 +137,7 @@ struct DiabetesTypeSelectionView: View {
         .navigationTitle("Select Diabetes Type")
     }
 }
+/* end of reference 2 */
 
 // MARK: - Sex Selection View
 struct SexSelectionView: View {

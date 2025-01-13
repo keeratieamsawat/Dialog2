@@ -1,17 +1,23 @@
+// Page view to display user's body condition and recommended sugar intake
 import SwiftUI
 
 struct FoodView: View {
+    // MARK: - State Variables
+    //state variables for user's body weight and height
     @State private var bodyWeightTarget: Double = 65.0
     @State private var bodyHeight: Double = 170.0
 
     @State private var showWeightTargetPicker = false
     @State private var showHeightPicker = false
-    
-    // Recommended daily carb intake (grams) calculation
+
+    // MARK: - Computed Properties
+    //Calculates the recommended daily carb intake (in grams) based on body weight
     var recommendedCarbIntake: Int {
-        let tdee = 25.0 * bodyWeightTarget // Rough estimate: 25 calories per kg of body weight
-        let carbCalories = tdee * 0.50 // Assume 50% of calories from carbs
-        return Int(carbCalories / 4) // Convert carb calories to grams (1g carbs = 4 calories)
+        let tdee = 25.0 * bodyWeightTarget
+        // Estimated calories needed (25 kcal/kg of body weight)
+        let carbCalories = tdee * 0.08
+        // recommended carb less than 10% of total calories intake (Shereen Lehman)
+        return Int(carbCalories / 4)      // Convert carb calories to grams (1g = 4 kcal)
     }
 
     var body: some View {
@@ -33,7 +39,6 @@ struct FoodView: View {
 
                 // MARK: - Content Section
                 VStack(spacing: 0) {
-                    // Header Section
                     ZStack {
                         Color.white
 
@@ -115,6 +120,8 @@ struct FoodView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .navigationBarHidden(true)
+        
+        // Show picker for body weight target
         .sheet(isPresented: $showWeightTargetPicker) {
             ScrollPickerSheet(
                 title: "Body Weight Target",
@@ -123,6 +130,7 @@ struct FoodView: View {
                 unit: "kg"
             )
         }
+        // Show picker for body height
         .sheet(isPresented: $showHeightPicker) {
             ScrollPickerSheet(
                 title: "Body Height",
@@ -135,11 +143,12 @@ struct FoodView: View {
 }
 
 // MARK: - Scroll Picker Sheet
+// Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
 struct ScrollPickerSheet: View {
-    let title: String
-    @Binding var value: Double
-    let range: ClosedRange<Double>
-    let unit: String
+    let title: String              // Title of the picker
+    @Binding var value: Double     // Value bound to the picker
+    let range: ClosedRange<Double> // Range of selectable values
+    let unit: String               // Unit of measurement (e.g., "kg", "cm")
 
     var body: some View {
         NavigationView {
@@ -165,12 +174,13 @@ struct ScrollPickerSheet: View {
                 trailing: Button("Done") {
                     UIApplication.shared.windows.first?.rootViewController?.dismiss(animated: true, completion: nil)
                 }
+                /* end of reference 1 */
             )
         }
     }
 }
 
-// MARK: Preview
+// MARK: - Preview
 struct FoodView_Previews: PreviewProvider {
     static var previews: some View {
         FoodView()
