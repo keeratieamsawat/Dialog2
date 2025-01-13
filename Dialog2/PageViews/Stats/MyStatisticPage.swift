@@ -1,178 +1,274 @@
 import SwiftUI
 
 struct MyStatisticPage: View {
-    @ObservedObject var glucoseData: GlucoseData // Shared data model for glucose statistics
+    enum StatCardType: Hashable {
+        case bloodSugarFluctuations
+        case exercisesAndWeight
+        case insulinIntake
+        case otherMedicine
+        case foodIntake
+    }
 
+    class GlucoseData: ObservableObject {
+        @Published var data: [[String: Any]] = []  // Array of dictionaries to store glucose data
+        
+        func calculateAverage() -> Double {
+            let totalValue = data.reduce(0) { (sum, item) in
+                // Safely unwrap and convert the 'value' to Double
+                let value = item["value"] as? Double ?? 0.0
+                return sum + value
+            }
+            let average = data.isEmpty ? 0.0 : totalValue / Double(data.count)
+            return average
+        }
+    }
+    
+    @StateObject var glucoseData: GlucoseData = GlucoseData() // Shared data model for glucose statistics
+    @State private var fromDate = Date()
+    @State private var fromTime = Date()
+    @State private var toDate = Date()
+    @State private var toTime = Date()
+    
+    // State to track which card is active for navigation
+    @State private var activeCard: StatCardType? = nil
+    
     var body: some View {
-        NavigationView {
-            ZStack {
-                VStack(spacing: 0) {
-                    // MARK: - Top Blue Bar
-                    ZStack {
-                        Color("Primary_Color")
-                            .frame(height: 120)
-                            .edgesIgnoringSafeArea(.top)
-                        
+        NavigationView() {
+            VStack(spacing: 0) {
+                // MARK: - Header Section
+                ZStack {
+                    Color("Primary_Color")
+                        .frame(maxWidth:.infinity, maxHeight: 100)
+                        .edgesIgnoringSafeArea(.top)
+                    
+                    VStack(spacing:10) {
                         Text("My Statistics")
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .padding(.top, 55)
-                            .padding(.bottom, 10)
+                            .padding(-50)
                     }
+                }
+                
+                // MARK: - Time Range Picker
+                VStack(alignment:.leading,spacing: 15) {
+                    Text("Choose a time range...")
+                        .font(.headline)
+                        .padding(.leading)
+                        .offset(y:-60)
                     
-                    // MARK: - Time Range Picker
-                    VStack(alignment: .leading, spacing: 15) {
-                        Text("Choose a time range...")
-                            .font(.headline)
-                            .padding(.leading)
+                    // "From" Section
+                    HStack {
+                        Text("From")
+                            .font(.subheadline)
+                            .frame(width: 50, alignment: .leading)
+                            .padding(10)
                         
-                        // "From" Section
-                        HStack {
-                            Text("From")
-                                .font(.subheadline)
-                                .frame(width: 50, alignment: .leading)
-                                .padding(10)
-                            
-                            DatePicker("", selection: .constant(Date()), displayedComponents: .date)
-                                .labelsHidden()
-                                .padding(.horizontal)
-                            
-                            DatePicker("", selection: .constant(Date()), displayedComponents: .hourAndMinute)
-                                .labelsHidden()
-                                .padding(.horizontal)
-                        }
-                        .background(Color(UIColor.systemGray6))
-                        .cornerRadius(10)
-                        .padding(.horizontal)
+                        DatePicker("", selection: $fromDate, displayedComponents: .date)
+                            .labelsHidden()
+                            .padding(.horizontal)
                         
-                        // "To" Section
-                        HStack {
-                            Text("To")
-                                .font(.subheadline)
-                                .frame(width: 50, alignment: .leading)
-                                .padding(10)
-                            
-                            DatePicker("", selection: .constant(Date()), displayedComponents: .date)
-                                .labelsHidden()
-                                .padding(.horizontal)
-                            
-                            DatePicker("", selection: .constant(Date()), displayedComponents: .hourAndMinute)
-                                .labelsHidden()
-                                .padding(.horizontal)
-                        }
-                        .background(Color(UIColor.systemGray6))
-                        .cornerRadius(10)
-                        .padding(.horizontal)
+                        DatePicker("", selection: $fromTime, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .padding(.horizontal)
                     }
-                    .padding()
+                    .background(Color(UIColor.systemGray6))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .offset(y:-60)
                     
-                    // MARK: - Stat Buttons
-                    ScrollView {
-                        VStack(spacing: 15) {
-                            // Blood Sugar Fluctuations
+                    // "To" Section
+                    HStack {
+                        Text("To")
+                            .font(.subheadline)
+                            .frame(width: 50, alignment: .leading)
+                            .padding(10)
+                        
+                        DatePicker("", selection: $toDate, displayedComponents: .date)
+                            .labelsHidden()
+                            .padding(.horizontal)
+                        
+                        DatePicker("", selection: $toTime, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .padding(.horizontal)
+                    }
+                    .background(Color(UIColor.systemGray6))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .offset(y:-60)
+                }
+                .padding()
+                
+                // MARK: - Stat Buttons
+                ScrollView {
+                    VStack(spacing: 15) {
+                        // Blood Sugar Fluctuations
+                        Button(action: {
+                            fetchData(for: .bloodSugarFluctuations)
+                        }) {
                             StatCard(
                                 icon: "chart.bar",
                                 title: "Blood Sugar Fluctuations",
-                                description: "See your blood sugar fluctuation trends during the chosen time period.",
-                                destination: GlucoseStatsView(glucoseData: glucoseData)
+                                description: "See your blood sugar fluctuation trends during the chosen time period."
                             )
-                            
-                            // Exercises & Change in Weight
+                        }
+                        
+                        // Exercises & Change in Weight
+                        Button(action: {
+                            activeCard = .exercisesAndWeight
+                        }) {
                             StatCard(
                                 icon: "figure.walk",
                                 title: "Exercises & Change in Weight",
-                                description: "Keeping a record of physical exercises you’ve done and any weight changes.",
-                                destination: ExerciseStatView()
+                                description: "Keeping a record of physical exercises you’ve done and any weight changes."
                             )
-                            
-                            // Insulin Intake
+                        }
+                        
+                        // Insulin Intake
+                        Button(action: {
+                            activeCard = .insulinIntake
+                        }) {
                             StatCard(
                                 icon: "pencil.tip.crop.circle",
                                 title: "Insulin Intake",
-                                description: "Check your detailed insulin intake - type of insulin and dose.",
-                                destination: InsulinStatView()
+                                description: "Check your detailed insulin intake - type of insulin and dose."
                             )
-                            
-                            // Other Medicine
+                        }
+                        
+                        // Other Medicine
+                        Button(action: {
+                            activeCard = .otherMedicine
+                        }) {
                             StatCard(
                                 icon: "pills.fill",
                                 title: "Other Medicine",
-                                description: "Other types of medicine you have taken - name and dose.",
-                                destination: MedicationStatView()
-                            )
-                            
-                            // Calorie Intake
-                            StatCard(
-                                icon: "cart.fill",
-                                title: "Calorie Intake",
-                                description: "It is of utmost importance to eat properly!",
-                                destination: CalorieIntakeStatView()
-                            )
-                            
-                            // Carbohydrate Intake
-                            StatCard(
-                                icon: "fork.knife",
-                                title: "Carbohydrate Intake",
-                                description: "View only your carbohydrate intake.",
-                                destination: CarbIntakeStatView()
+                                description: "Other types of medicine you have taken - name and dose."
                             )
                         }
-                        .padding(15)
+                        
+                        // Food Intake
+                        Button(action: {
+                            activeCard = .foodIntake
+                        }) {
+                            StatCard(
+                                icon: "cart.fill",
+                                title: "Food Intake",
+                                description: "It is of utmost importance to eat properly!"
+                            )
+                        }
+                        
+                        // Hidden NavigationLinks
+                        NavigationLink(
+                            destination: MeasuredStatView(glucoseData: glucoseData),
+                            tag: .bloodSugarFluctuations,
+                            selection: $activeCard
+                        ) { EmptyView() }
+                        NavigationLink(
+                            destination: ExerciseStatView(),
+                            tag: .exercisesAndWeight,
+                            selection: $activeCard
+                        ) { EmptyView() }
+                        NavigationLink(
+                            destination: InsulinStatView(),
+                            tag: .insulinIntake,
+                            selection: $activeCard
+                        ) { EmptyView() }
+                        NavigationLink(
+                            destination: MedicationStatView(),
+                            tag: .otherMedicine,
+                            selection: $activeCard
+                        ) { EmptyView() }
+                        NavigationLink(
+                            destination: CalorieIntakeStatView(),
+                            tag: .foodIntake,
+                            selection: $activeCard
+                        ) { EmptyView() }
                     }
-                    
-                    // MARK: - Email Statistics Button
-                    Button(action: {
-                        print("Email statistics to doctor tapped")
-                    }) {
-                        Text("Email My Statistics to my doctor")
-                            .foregroundColor(.red)
-                            .font(.headline)
-                    }
-                    .padding()
+                    .padding(15)
                 }
-                .edgesIgnoringSafeArea(.all)
+                .offset(y: -60)
+                
+                Button(action: {
+                    print("Email statistics to doctor tapped")
+                }) {
+                    Text("Email My Statistics to my doctor")
+                        .foregroundColor(.red)
+                        .font(.headline)
+                }
+                .padding()
+                .offset(y: -40)
             }
             .navigationBarHidden(true)
         }
     }
-    // MARK: - Stat Card Component
-    struct StatCard<Destination: View>: View {
-        var icon: String
-        var title: String
-        var description: String
-        var destination: Destination
-
-        var body: some View {
-            NavigationLink(destination: destination) {
-                HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: icon)
-                        .font(.title)
-                        .foregroundColor(Color.blue)
-
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(title)
-                            .font(.headline)
-                            .foregroundColor(.primary)
-
-                        Text(description)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.leading)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+    
+    // MARK: - Fetch Data
+    private func fetchData(for card: StatCardType) {
+        print("Fetching data for \(card)")
+        let data: [String: String] = [
+            "fromDate": JSONUtils.combineDateAndTimeAsString(date: fromDate, time: fromTime),
+            "toDate": JSONUtils.combineDateAndTimeAsString(date: toDate, time: toTime)
+        ]
+        JSONUtils.fetchData(Data: data) { result in
+            DispatchQueue.main.async {
+                if let result = result {
+                    print("Fetched data: \(result)")
+                    glucoseData.data = result
+                    activeCard = card
+                } else {
+                    print("Failed to fetch data.")
                 }
-                .padding()
-                .background(Color(UIColor.secondarySystemBackground))
-                .cornerRadius(10)
             }
         }
     }
 }
 
-// MARK: - Preview
-struct MyStatisticPage_Previews: PreviewProvider {
-    static var previews: some View {
-        MyStatisticPage(glucoseData: GlucoseData())
+// MARK: - Stat Card Component
+
+struct StatCard: View {
+    var icon: String
+    var title: String
+    var description: String
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: icon)
+                .font(.title)
+                .foregroundColor(Color.blue)
+            
+            VStack(alignment: .leading, spacing: 5) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.leading)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding()
+        .background(Color(UIColor.secondarySystemBackground))
+        .cornerRadius(10)
     }
 }
+//    // MARK: - Preview
+    struct MyStatisticPage_Previews: PreviewProvider {
+        static var mockGlucose: MyStatisticPage.GlucoseData {
+            let glucoseData = MyStatisticPage.GlucoseData()
+    //        glucoseData.data = [
+    //            ["date": "2024-12-08T13:59:00", "value": 80.0],
+    //            ["date": "2024-12-31T17:00:00", "value": 100.0],
+    //            ["date": "2025-01-11T06:53:07", "value": 58.0]
+    //        ]
+            glucoseData.data = [
+                        ["date": "2025-01-13T13:59:00", "value": 80.0],
+                        ["date": "2025-01-13T15:00:00", "value": 80.0]
+                        ]
+            return glucoseData
+        }
+        static var previews: some View {
+            MyStatisticPage(glucoseData: mockGlucose)
+        }
+    }

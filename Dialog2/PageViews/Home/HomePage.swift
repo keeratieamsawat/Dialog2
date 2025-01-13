@@ -3,16 +3,17 @@ import SwiftUI
 struct HomePageView: View {
     @State private var currentDate = Date() // Update in real time
     @State private var selectedLogMode: String = "Simple" // Mode selection
-    @ObservedObject var glucoseData = GlucoseData() // Shared data model
-    @ObservedObject var diabetesData: DiabetesDetailsData // shared data model
+    // Shared data model (for glucose level graph)
+    @StateObject var glucoseDataDefault: MyStatisticPage.GlucoseData = MyStatisticPage.GlucoseData()
 
     var body: some View {
+        
         NavigationView {
             VStack(spacing: 0) {
                 // MARK: - Top Blue Bar
                 ZStack {
                     Color("Primary_Color")
-                        .frame(height: 120)
+                        .frame(height: 140)
                         .edgesIgnoringSafeArea(.top)
 
                     Text(formattedDate(currentDate))
@@ -20,7 +21,7 @@ struct HomePageView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding(.top, 55)
-                        .padding(.bottom, 10)
+                        .padding(.bottom, -50)
                 }
 
                 // MARK: - Log Mode Picker
@@ -37,16 +38,46 @@ struct HomePageView: View {
                 .padding(.horizontal, 20)
 
                 // MARK: - Daily Glucose Graph
-                NavigationLink(destination: GlucoseStatView(glucoseData: glucoseData)) {
+                NavigationLink(destination: GlucoseStatView(glucoseDataDefault: glucoseDataDefault)) {
                     VStack {
-                        Text("Average Glucose Level Per Hour")
+                        Text("Blood glucose levels today")
                             .font(.headline)
                             .foregroundColor(Color("Primary_Color"))
                             .padding(.top, 10)
-
-                        GraphView(data: glucoseData.dailyGlucoseLevels)
-                            .frame(height: 170)
-                            .padding()
+                        
+                        if glucoseDataDefault.data.isEmpty {
+                            Text("No data available")
+                                .frame(width: 350, height: 230)
+                                .foregroundColor(.gray)
+                                .font(.headline)
+                                .onAppear {
+                                    let currentDate = Date()
+                                    
+                                    // Get formatted strings for both dates
+                                    let formattedCurrentDate = JSONUtils.getFormattedDate(for: currentDate)
+                                    let Data: [String: String] = [
+                                        "fromDate": formattedCurrentDate,
+                                        "toDate": formattedCurrentDate
+                                    ]
+                                    JSONUtils.fetchData(Data: Data) { result in
+                                        DispatchQueue.main.async {
+                                            if let result = result {
+                                                print("Fetched data: \(result)")
+                                                glucoseDataDefault.data = result // Update data on the main thread
+                                                if glucoseDataDefault.data.count == 1 {
+                                                    glucoseDataDefault.data.append(["date": Date(), "value": glucoseDataDefault.data[0]["value"]!])
+                                                }
+                                            }else {
+                                                print("Failed to fetch data.")
+                                            }
+                                        }
+                                    }
+                                }
+                        } else {
+                            GraphView(data: glucoseDataDefault.data)
+                                .frame(height: 300)
+                                .padding()
+                        }
                     }
                     .background(Color.white)
                     .cornerRadius(10)
@@ -57,11 +88,11 @@ struct HomePageView: View {
                 // MARK: - Key Metrics
                 VStack(spacing: 20) {
                     HStack(spacing: 20) {
-                        NavigationLink(destination: MeasuredStatView(glucoseData: glucoseData)) {
-                            MetricCard(title: "Measured", value: "\(glucoseData.dailyGlucoseLevels.count) times")
+                        NavigationLink(destination: MeasuredStatView(glucoseData: glucoseDataDefault)) {
+                            MetricCard(title: "Measured", value: "\(glucoseDataDefault.data.count) time(s)")
                         }
-                        NavigationLink(destination: AverageStatView(glucoseData: glucoseData)) {
-                            MetricCard(title: "Average", value: "\(String(format: "%.2f", glucoseData.calculateAverage())) mmol/L")
+                        NavigationLink(destination: AverageStatView(glucoseData: glucoseDataDefault)) {
+                            MetricCard(title: "Average", value: "\(String(format: "%.2f", glucoseDataDefault.calculateAverage())) mmol/L")
                         }
                         NavigationLink(destination: CarbIntakeStatView()) {
                             MetricCard(title: "Carb Intake", value: "20 g")
@@ -99,10 +130,10 @@ struct HomePageView: View {
                 // MARK: - Navigation Tabs and Bottom Blue Section
                 VStack(spacing: 0) {
                     HStack {
-                        NavigationLink(destination: MyStatisticPage(glucoseData: glucoseData)) {
+                        NavigationLink(destination: MyStatisticPage()) {
                             TabItem(icon: "chart.bar", label: "Stats")
                         }
-                        NavigationLink(destination: HomePageView(diabetesData:diabetesData)) {
+                        NavigationLink(destination: HomePageView()) {
                             TabItem(icon: "house.fill", label: "Home", isSelected: true)
                         }
                         NavigationLink(destination: MyInfoPage()) {
@@ -194,7 +225,20 @@ struct TabItem: View {
 
 // MARK: - Preview
 struct HomePageView_Previews: PreviewProvider {
+    static var mockGlucose: MyStatisticPage.GlucoseData {
+        let glucoseData = MyStatisticPage.GlucoseData()
+//        glucoseData.data = [
+//            ["date": "2024-12-08T13:59:00", "value": 80.0],
+//            ["date": "2024-12-31T17:00:00", "value": 100.0],
+//            ["date": "2025-01-11T06:53:07", "value": 58.0]
+//        ]
+        glucoseData.data = [
+                    
+                    ]
+        return glucoseData
+    }
+
     static var previews: some View {
-        HomePageView(diabetesData:DiabetesDetailsData())
+        HomePageView(glucoseDataDefault: mockGlucose)
     }
 }

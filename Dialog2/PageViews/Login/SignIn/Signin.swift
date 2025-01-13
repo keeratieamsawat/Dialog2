@@ -59,7 +59,7 @@ struct SigninView: View {
                 }
 
                 // Navigate to HomePageView after successful login
-                NavigationLink(destination: HomePageView(diabetesData: DiabetesDetailsData()), isActive: $navigateToHome) {
+                NavigationLink(destination: HomePageView(), isActive: $navigateToHome) {
                     EmptyView()
                 }
             }

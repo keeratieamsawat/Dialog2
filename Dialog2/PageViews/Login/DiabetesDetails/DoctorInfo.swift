@@ -47,7 +47,7 @@ struct DoctorInfoView: View {
                     .padding(.horizontal,40)
             }
             .navigationDestination(isPresented: $diabetesData.allDone) {
-                HomePageView(diabetesData:diabetesData)
+                HomePageView()
                 
             }
         }
