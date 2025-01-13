@@ -1,3 +1,5 @@
+// MARK: this page allows user to select a date range from two date pickers; they can click into different pages for viewing different statistics that they have logged in the main page.
+
 import SwiftUI
 
 struct MyStatisticPage: View {
