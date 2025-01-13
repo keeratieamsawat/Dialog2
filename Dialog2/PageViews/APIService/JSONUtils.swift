@@ -24,6 +24,7 @@ struct JSONUtils {
                 let jsonData = try JSONUtils.dictionaryToJSONData(mutableData)
                 
                 // Send the data to the backend
+                // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
                 JSONUtils.sendDataToBackend(jsonData: jsonData, endpoint: "http://127.0.0.1:5000/graphs") { result in
                     switch result {
                     case .success(let response):
@@ -75,7 +76,7 @@ struct JSONUtils {
     
     static func convertStringToDate(dateString: String) -> Date? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss" // Adjust format if necessary
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         return dateFormatter.date(from: dateString)
     }
     
@@ -84,11 +85,11 @@ struct JSONUtils {
     }
     
     // Model for each item in the "data" array
+    // Reference 2 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
     struct DataItem: Decodable {
         var value: Double
-        var date: String  // You can convert this to a Date object if needed
+        var date: String
         
-        // Custom decoding for the date string format if required
         enum CodingKeys: String, CodingKey {
             case value
             case date
@@ -101,7 +102,7 @@ struct JSONUtils {
     }
     
     
-    /// Sends JSON data to the specified backend URL.
+    /// Sends JSON data to the specified backend URL
     static func sendDataToBackend(jsonData: Data, endpoint: String, completion: @escaping (Result<BackendResponse, Error>) -> Void) {
         
         guard let url = URL(string: endpoint) else {
@@ -113,8 +114,6 @@ struct JSONUtils {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = jsonData
-        // request.setValue("Bearer <your_access_token>", forHTTPHeaderField: "Authorization")
-        
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -126,6 +125,7 @@ struct JSONUtils {
                 print("Backend response status: \(httpResponse.statusCode)")
             }
             
+            // Reference 3 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
             if let data = data {
                 print(String(data: data, encoding: .utf8) ?? "Invalid Data")
                 do {
@@ -139,7 +139,7 @@ struct JSONUtils {
                     completion(.failure(error)) // Return the decoding error in the completion handler
                 }
             } else {
-                // If no data is returned (empty response body), handle it gracefully
+                // If no data is returned (empty response body), handle
                 print("No data returned from the backend.")
                 // Return a failure because no data was received
                 completion(.failure(NSError(domain: "No data", code: 0, userInfo: nil)))
