@@ -1,6 +1,8 @@
 // MARK: for the consents part, the user will click the agree button, and their consent status will be sent to backend
 // On clicking the button: 1) they will proceed to the next step only if consent status is true (when they click the button to agree 2) all of the registration data will be send to backend
 
+// for privacy & legal consents, we have consulted professionals regarding what exactly to write - we were suggested to look at GDPR and any NHS regulations on storing and using patients user data. however, as our app does not take in any actual user data for now, and due to time constraints, we decided to just do a demonstrative UI instead of creating the detailed content
+
 import SwiftUI
 
 // MARK: ConsentsView page UI
