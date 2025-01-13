@@ -1,4 +1,5 @@
 #The test contains unit test for /gen_graph endpoint
+
 import unittest
 from unittest.mock import patch, MagicMock
 from flask import Flask, jsonify
@@ -9,7 +10,7 @@ class TestGenGraph(unittest.TestCase):
         self.app = app.test_client()
         self.app.testing = True
 
-    @patch('main2.UserClient')  # Replace with the actual import path of UserClient
+    @patch('main2.UserClient') 
     def test_gen_graph_missing_parameters(self, MockUserClient):
         # Test missing parameters
         response = self.app.post('/graphs', json={"userid": "123"})
@@ -17,7 +18,7 @@ class TestGenGraph(unittest.TestCase):
         self.assertEqual(response.json, {"error": "Missing required parameters"})
 
     
-    @patch('main2.UserClient')  # Replace with the actual import path of UserClient
+    @patch('main2.UserClient')  
     def test_gen_graph_success(self, MockUserClient):
         # Mock UserClient behavior
         mock_user = MockUserClient.return_value
