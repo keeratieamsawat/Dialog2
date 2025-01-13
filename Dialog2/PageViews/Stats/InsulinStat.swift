@@ -1,3 +1,5 @@
+// MARK: this is one of the statistics UI pages, that allows choosing date range and displaying sample logs of insulin intake
+
 import SwiftUI
 
 struct InsulinStatView: View {
@@ -16,7 +18,7 @@ struct InsulinStatView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // header
+            // top blue header
             ZStack {
                 Color("Primary_Color")
                     .frame(maxWidth: .infinity, maxHeight: 100)
