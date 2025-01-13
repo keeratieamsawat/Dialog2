@@ -1,3 +1,6 @@
+#The script contains unit tests for the /add_diabetes_info, /update_diabetes_info, and /get_diabetes_info/<string:userid> endpoints
+## The following test suite is structured with help from ChatGPT
+
 import unittest
 from unittest.mock import patch, MagicMock
 from main2 import app  
