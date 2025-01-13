@@ -36,7 +36,7 @@ struct ContentView: View {
                 }
                 
                 NavigationLink(destination: MainPageView()) {
-                    Text("Go to fucking login fuck u")
+                    Text("Go to login")
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.purple)
