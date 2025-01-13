@@ -1,37 +1,38 @@
 import SwiftUI
 
+// ViewModel for managing the Intensive Method form data
 struct IntensiveView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel = IntensiveMethodViewModel()
+    @Environment(\.presentationMode) var presentationMode // Dismiss view on button press
+    @StateObject private var viewModel = IntensiveMethodViewModel() // ViewModel to manage form data
 
     var body: some View {
         VStack(spacing: 0) {
-            // Top Bar
+            // MARK: - Top Bar
             ZStack {
-                Color("Primary_Color")
+                Color("Primary_Color") // Background color for top bar
                     .frame(height: 120)
-                    .edgesIgnoringSafeArea(.top)
+                    .edgesIgnoringSafeArea(.top) // Make sure the top bar stretches to the top
                 HStack {
-                    Button(action: { presentationMode.wrappedValue.dismiss() }) {
-                        Image(systemName: "xmark")
+                    Button(action: { presentationMode.wrappedValue.dismiss() }) { // Close button
+                        Image(systemName: "xmark") // X mark for close action
                             .font(.title2)
                             .foregroundColor(.white)
                     }
-                    .frame(width: 50)
+                    .frame(width: 50) // Fixed width for the close button
                     Spacer()
-                    Text("Intensive Method")
+                    Text("Intensive Method") // Title in the center
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                     Spacer()
-                    Button(action: {}) {} // Placeholder for symmetry
-                        .frame(width: 50)
+                    Button(action: {}) {} // Placeholder button for symmetry
+                        .frame(width: 50) // Fixed width for symmetry
                 }
                 .padding(.horizontal, 13)
-                .padding(.top, 40)
+                .padding(.top, 40) // Padding to position the elements
             }
 
-            // Scrollable Content
+            // MARK: - Scrollable Content
             ScrollView {
                 VStack(spacing: 15) {
                     Text("Ideal refining lifestyle or treatment strategies to improve diabetes management")
@@ -51,7 +52,7 @@ struct IntensiveView: View {
                         noteBloodSugar: $viewModel.noteBloodSugar
                     )
 
-                    // Food Section
+                    //  Food Section
                     FoodSection(
                         selectedMeal: $viewModel.selectedMeal,
                         foodTime: $viewModel.foodTime,
@@ -61,42 +62,42 @@ struct IntensiveView: View {
                         noteFood: $viewModel.noteFood
                     )
 
-                    // Carb Bolus Insulin Section
+                    // Carb Insulin Section
                     CarbInsulinSection(
                         carbBolusDosage: $viewModel.carbBolusDosage,
                         carbBolusTiming: $viewModel.carbBolusTiming,
                         carbBolusNote: $viewModel.carbBolusNote
                     )
 
-                    // High Blood Sugar Insulin Section
+                    //  High Blood Sugar Insulin Section
                     HighBSInsulinSection(
                         highBSBolusInsulinDose: $viewModel.highBSBolusInsulinDose,
                         highBSBolusInsulinTiming: $viewModel.highBSBolusInsulinTiming,
                         highBSBolusInsulinNote: $viewModel.highBSBolusInsulinNote
                     )
 
-                    // Ketone Section
+                    //  Ketone Section
                     KetoneSection(
                         ketoneValue: $viewModel.ketoneValue,
                         ketoneTiming: $viewModel.ketoneTiming,
                         ketoneNote: $viewModel.ketoneNote
                     )
 
-                    // Basal Insulin Section
+                    //  Basal Insulin Section
                     BasalRateSection(
                         basalValue: $viewModel.basalValue,
                         basalTiming: $viewModel.basalTiming,
                         basalNote: $viewModel.basalNote
                     )
 
-                    // Exercise Section
+                    //  Exercise Section
                     ExerciseSection(
                         exerciseName: $viewModel.exerciseName,
                         duration: $viewModel.duration,
                         intensity: $viewModel.intensity
                     )
 
-                    // Unusual Events Section
+                    //  Unusual Events Section
                     UnusualEventSection(
                         selectedIllness: $viewModel.selectedIllness,
                         selectedStress: $viewModel.selectedStress,
@@ -106,10 +107,10 @@ struct IntensiveView: View {
                         unusualEventNote: $viewModel.unusualEventNote
                     )
 
-                    // Apply Button
+                    // MARK: - Apply Button
                     Button(action: {
-                        viewModel.sendDataToBackend()
-                        //viewModel.checkBloodSugarStatus() // Check if blood sugar is out of range
+                        viewModel.sendDataToBackend() // Send data to the backend
+                        viewModel.checkBloodSugarStatus() // Check if blood sugar is out of range
                     }) {
                         Text("APPLY")
                             .font(.headline)
@@ -121,7 +122,7 @@ struct IntensiveView: View {
                             .padding(.horizontal)
                     }
 
-                    // If blood sugar is out of range, display alert UI
+                    // MARK: - Blood Sugar Alert
                     if viewModel.isBloodSugarOutOfRange, let alert = viewModel.bloodSugarAlert {
                         BloodSugarAlertView(alert: alert, onDismiss: {
                             viewModel.bloodSugarAlert = nil // Dismiss alert
@@ -131,22 +132,27 @@ struct IntensiveView: View {
                 }
                 .padding(.bottom, 20)
             }
-            .edgesIgnoringSafeArea([.leading, .trailing])
+            .edgesIgnoringSafeArea([.leading, .trailing]) // Ignore leading and trailing safe areas
+            .navigationBarBackButtonHidden(true) // Hide back button from navigation bar
 
+            // MARK: - Bottom Bar
             ZStack {
                 Color("Primary_Color")
                     .frame(height: 80)
-                    .edgesIgnoringSafeArea(.bottom)
+                    .edgesIgnoringSafeArea(.bottom) // Extend the color to the bottom
             }
         }
-        .edgesIgnoringSafeArea(.all)
-        .navigationBarBackButtonHidden(true)
+        .edgesIgnoringSafeArea(.all) // Extend all the way to the edges of the screen
+        .navigationBarBackButtonHidden(true) // Hide the back button
     }
 }
 
+// Preview of the view
 struct IntensiveView_Previews: PreviewProvider {
     static var previews: some View {
-        IntensiveView()
+        IntensiveView() // Preview for the Intensive View
     }
 }
+
+
 
