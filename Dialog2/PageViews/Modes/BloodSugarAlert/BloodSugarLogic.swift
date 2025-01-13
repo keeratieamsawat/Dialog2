@@ -1,48 +1,56 @@
 import Foundation
 import SwiftUI
 
+// BloodSugarManager: A singleton class to manage blood sugar levels and alerts.
 class BloodSugarManager {
 
-    static let shared = BloodSugarManager() // Singleton
+    // Singleton instance of BloodSugarManager
+    static let shared = BloodSugarManager()
 
-    private init() {}
+    private init() {} // Private initializer to prevent external instantiation
 
-    // Check if the blood sugar is outside of the target range
+    // MARK: - Check Blood Sugar Status
+
+    // Checks if the blood sugar level is outside the target range based on meal timing
     func checkBloodSugarStatus(
-        bloodSugarLevel: String,
-        mealTiming: String
+        bloodSugarLevel: String,  // Blood sugar level as a string
+        mealTiming: String        // Meal timing: either "Pre-meal" or "Post-meal"
     ) -> Bool {
         guard let bloodSugar = Double(bloodSugarLevel) else {
-            return false // Invalid input, assume within range
+            return false // Invalid input
         }
 
-        // Define thresholds for hyperglycemia and hypoglycemia
+        // Define threshold values for hypoglycemia and hyperglycemia
         let thresholds: (low: Double, preMealHigh: Double, postMealHigh: Double) = (low: 4.0, preMealHigh: 7.0, postMealHigh: 11.0)
 
-        // Logic to check if blood sugar is out of range
+        // Check if the blood sugar is out of range for pre-meal or post-meal timings
         if mealTiming == "Pre-meal" {
             return bloodSugar < thresholds.low || bloodSugar > thresholds.preMealHigh
         } else if mealTiming == "Post-meal" {
             return bloodSugar < thresholds.low || bloodSugar > thresholds.postMealHigh
         }
 
-        return false // Assume in range if mealTiming is invalid
+        return false // Assume blood sugar is in range if meal timing is not recognized
     }
 
-    // This function returns an alert if the blood sugar is out of range
+    // MARK: - Get Blood Sugar Alert
+
+    // Returns an alert if the blood sugar level is outside the target range
     func getBloodSugarAlert(
-        bloodSugarLevel: String,
-        mealTiming: String
+        bloodSugarLevel: String,  // Blood sugar level as a string
+        mealTiming: String        // Meal timing: either "Pre-meal" or "Post-meal"
     ) -> BloodSugarAlert? {
         guard let bloodSugar = Double(bloodSugarLevel) else {
-            return nil
+            return nil // Return nil if the blood sugar level is invalid
         }
 
+        // Define threshold values for hypoglycemia and hyperglycemia
         let thresholds: (low: Double, preMealHigh: Double, postMealHigh: Double) = (low: 4.0, preMealHigh: 7.0, postMealHigh: 11.0)
 
-        var message = ""
-        let dismissButtonTitle = "OK, I have understood"
+        var message = "" // Variable to store the alert message
+        let dismissButtonTitle = "OK, I have understood" // Button title for the alert
 
+        // Check for pre-meal and post-meal scenarios
         if mealTiming == "Pre-meal" {
             if bloodSugar < thresholds.low {
                 message = "Your blood sugar is lower than the target range. We have already emailed your doctor for further assistance."
@@ -57,11 +65,12 @@ class BloodSugarManager {
             }
         }
 
+        // If the message is not empty, return the alert
         if !message.isEmpty {
             return BloodSugarAlert(
-                title: "Warning",
-                message: message,
-                dismissButtonTitle: dismissButtonTitle
+                title: "Warning",  // Alert title
+                message: message,  // Alert message
+                dismissButtonTitle: dismissButtonTitle // Button to dismiss the alert
             )
         }
 
