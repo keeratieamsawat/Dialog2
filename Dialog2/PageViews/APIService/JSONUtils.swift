@@ -13,8 +13,15 @@ struct JSONUtils {
 
     static func fetchData(Data: [String: String], completion: @escaping ([[String: Any]]?) -> Void) {
             do {
-                print(Data)
-                let jsonData = try JSONUtils.dictionaryToJSONData(Data)
+                // Create a mutable copy of the dictionary
+                var mutableData = Data
+                
+                // Add the userid to the dictionary
+                let userid = "eaba7c23-3bc4-4d56-943c-fc5a25cfbbce"
+                mutableData["userid"] = userid
+                
+                // Convert the updated dictionary to JSON Data
+                let jsonData = try JSONUtils.dictionaryToJSONData(mutableData)
                 
                 // Send the data to the backend
                 JSONUtils.sendDataToBackend(jsonData: jsonData, endpoint: "http://127.0.0.1:5000/graphs") { result in
