@@ -30,7 +30,7 @@ class TestDiabetesInfo(unittest.TestCase):
             "doctor_name": "Martin",
             "doctor_email": "123@ic.ac.uk"
         }
-
+        #Mocks the response from the database when fetching a user's current information
         mock_get.return_value = {
             'Item': {
                 'PK': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1',
@@ -46,14 +46,13 @@ class TestDiabetesInfo(unittest.TestCase):
         }
 
         mock_update.return_value = {}
-
         client = app.test_client()
-
         response = client.post('/add_diabetes_info', json=input_data)
 
         self.assertEqual(response.status_code, 201)
         self.assertIn("Diabetes information added successfully!", response.json['message'])
 
+        #Confirms that mock_get was called once with the correct key to fetch the user (userid)
         mock_get.assert_called_once_with(Key={'userid': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1'})
         mock_update.assert_called_once_with(
             Key={'userid': '435b1d6c-65ae-4069-9bfc-f0a2f31c01b1'},
@@ -108,9 +107,7 @@ class TestDiabetesInfo(unittest.TestCase):
         }
 
         mock_update.return_value = {}
-
         client = app.test_client()
-
         response = client.put('/update_diabetes_info', json=updated_data)
 
         self.assertEqual(response.status_code, 200)
