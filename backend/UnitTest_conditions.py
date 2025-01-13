@@ -1,5 +1,4 @@
 #The script contains unit tests for the /conditions, /conditions/<user_id>, and /conditions/<user_id>/<datatype> endpoints
-#This test suite is structured with the help from ChatGPT to ensure proper mockings of the database
 
 import unittest
 from unittest.mock import patch, MagicMock
@@ -41,7 +40,7 @@ class TestConditionsAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json.get('error'), "User ID is required")
 
-    @patch('main2.data_table.scan')  # Mock DynamoDB scan
+    @patch('main2.data_table.scan') 
     def test_get_conditions_success(self, mock_scan):
         # Mock a response from DynamoDB
         mock_scan.return_value = {
@@ -61,7 +60,7 @@ class TestConditionsAPI(unittest.TestCase):
         self.assertEqual(response.json['conditions'][0]['datatype'], 'blood_sugar')
         self.assertEqual(response.json['conditions'][1]['datatype'], 'blood_pressure')
 
-    @patch('main2.data_table.scan')  # Mock DynamoDB scan
+    @patch('main2.data_table.scan') 
     def test_get_conditions_no_data(self, mock_scan):
         mock_scan.return_value = {'Items': []}
 
@@ -71,8 +70,8 @@ class TestConditionsAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json.get('error'), "No data found for the specified user ID")
 
-    @patch('main2.data_table.get_item')  # Mock DynamoDB get_item
-    @patch('main2.data_table.update_item')  # Mock DynamoDB update_item
+    @patch('main2.data_table.get_item')  
+    @patch('main2.data_table.update_item')  
     def test_update_conditions_success(self, mock_update_item, mock_get_item):
         # Mock the 'get_item' to return a condition matching the format of the composite key
         mock_get_item.return_value = {
@@ -98,7 +97,7 @@ class TestConditionsAPI(unittest.TestCase):
         with app.test_client() as client:
             response = client.put('/conditions/2/blood_sugar', json=test_data)
         
-        print(response.data)  # This will help us debug and understand the response
+        print(response.data)  
 
         # Asserting the response
         self.assertEqual(response.status_code, 200)
@@ -106,10 +105,10 @@ class TestConditionsAPI(unittest.TestCase):
         self.assertEqual(response.json['updated_data']['value'], 160)
 
 
-    @patch('main2.data_table.get_item')  # Mock DynamoDB get_item
-    @patch('main2.data_table.update_item')  # Mock DynamoDB update_item
+    @patch('main2.data_table.get_item')  
+    @patch('main2.data_table.update_item')  
     def test_update_conditions_not_found(self, mock_update_item, mock_get_item):
-        mock_get_item.return_value = {}  # Simulate no item found
+        mock_get_item.return_value = {}  
         mock_update_item.return_value = {}
 
         test_data = {"value": 160, "date": "2025-01-11T12:00:00"}
@@ -121,7 +120,7 @@ class TestConditionsAPI(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json.get('error'), "Condition not found for the given user_id and datatype")
 
-    @patch('main2.data_table.update_item')  # Mock DynamoDB update_item
+    @patch('main2.data_table.update_item')  
     def test_update_conditions_missing_data(self, mock_update_item):
         test_data = {}  # Missing 'value' and 'date'
 
