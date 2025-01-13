@@ -1,3 +1,4 @@
+#The test contains unit test for /gen_graph endpoint
 import unittest
 from unittest.mock import patch, MagicMock
 from flask import Flask, jsonify
