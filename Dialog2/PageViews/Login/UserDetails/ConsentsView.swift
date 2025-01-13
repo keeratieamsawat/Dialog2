@@ -62,7 +62,7 @@ struct ConsentsView: View {
             "consent": userData.consentStatus
         ]
         
-// REFERENCE: The following code was mainly provided by ChatGPT (with modifications) when being prompted to create code for sending http request from SwiftUI to backend database.
+// Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
         // similar code being used in DoctorInfo and Signin pages as well
 
         // log the data to ensure it's being populated correctly
@@ -111,8 +111,12 @@ struct ConsentsView: View {
         task.resume()
     }
 
+/* end of reference 1 */
     
 // MARK: when consent button is clicked, call function and submit request to backend
+
+// Reference 2 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
+    // similar code being used in DoctorInfo and Signin pages as well
     
     func submitConsent() {
         // Send the user data to the backend
@@ -128,6 +132,8 @@ struct ConsentsView: View {
         }
     }
 }
+
+/* end of reference 2 */
 
 // preview provider to visualise UI with userData being passed
 struct ConsentsView_Previews: PreviewProvider {

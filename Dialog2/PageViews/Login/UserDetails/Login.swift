@@ -3,9 +3,8 @@
 import SwiftUI
 
 struct LoginView: View {
-    
-    @StateObject var userData = UserRegistrationData()
-    
+    @ObservedObject var userData = UserRegistrationData() // Create the userData instance
+
     var body: some View {
         NavigationStack {
             VStack(spacing:30) { // organize items with spacing
@@ -17,6 +16,7 @@ struct LoginView: View {
                     .foregroundStyle(Color("Primary_Color"))
                     .padding(.top, 40)
                     .offset(y:-40)
+                
                 // create account/sign-in text
                 Text("Create a new account - or sign-in if you already have one.")
                     .font(.title2)
@@ -27,7 +27,7 @@ struct LoginView: View {
                 
                 // "Create Account": prompt the user to create account
                 // this button goes to create account page
-                NavigationLink(destination: CreateAccountView(userData:userData)) {
+                NavigationLink(destination: CreateAccountView(userData: userData)) { // pass userData here
                     Text("Create Account")
                         .bold()
                         .frame(maxWidth: .infinity, minHeight: 50)
@@ -37,27 +37,25 @@ struct LoginView: View {
                         .padding(.horizontal,40)
                 }
                 
-                // "Sign-in": prompt exisiting user to sign in
+                // "Sign-in": prompt existing user to sign in
                 // this button goes to sign-in page
                 NavigationLink(destination: SigninView()) {
-                    NavigationLink(destination: SigninView()) {
-                        Text("Sign-in")
-                            .bold()
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .padding(.horizontal,40)
-                    }
-                    
+                    Text("Sign-in")
+                        .bold()
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .padding(.horizontal,40)
                 }
-                // align all contents to the centre of page
-                .frame(maxHeight: .infinity, alignment: .center)
+                
             }
+            // align all contents to the centre of page
+            .frame(maxHeight: .infinity, alignment: .center)
         }
     }
 }
-    #Preview {
-        LoginView()
-    }
 
+#Preview {
+    LoginView()
+}

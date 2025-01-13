@@ -75,7 +75,7 @@ struct SigninView: View {
 // MARK: loginUser function to handle user login, send login request to backend.
 // Backend will check if email and password are already stored in database, and allow the user to continue to their account if so
     
-// REFERENCE: The following code was mainly provided by ChatGPT (with modifications) when being prompted to create code for sending http request from SwiftUI to backend database.
+// Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
     // similar code being used in DoctorInfo and ConsentsView pages as well
     
     func loginUser(email: String, password: String) {
@@ -152,6 +152,8 @@ struct SigninView: View {
         task.resume()
     }
 }
+
+/* end of reference 1 */
 
 #Preview {
     SigninView()

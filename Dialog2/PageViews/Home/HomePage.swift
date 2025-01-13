@@ -37,7 +37,7 @@ struct HomePageView: View {
                 .padding(.horizontal, 20)
 
                 // MARK: - Daily Glucose Graph
-                NavigationLink(destination: GlucoseStatView(glucoseData: glucoseData)) {
+                NavigationLink(destination: GlucoseStatsView(glucoseData: glucoseData)) {
                     VStack {
                         Text("Average Glucose Level Per Hour")
                             .font(.headline)

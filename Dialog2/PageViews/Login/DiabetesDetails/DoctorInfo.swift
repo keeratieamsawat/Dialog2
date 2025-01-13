@@ -88,7 +88,7 @@ struct DoctorInfoView: View {
             "doctor_name": diabetesData.doctorName
         ]
 
-// REFERENCE: The following code was mainly provided by ChatGPT (with modifications) when being prompted to create code for sending http request from SwiftUI to backend database.
+// Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
         // similar code was also being used in other pages - Signin and ConsentsView.
         
         // convert to JSON
@@ -145,7 +145,12 @@ struct DoctorInfoView: View {
         task.resume()
     }
     
+/* end of reference 1 */
+    
 // MARK: this function submits the diabetes details data to backend, under the condition that "All done" button is clicked
+   
+// Reference 2 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
+    // similar code being used in ConsentsView and Signin pages as well
     
     func submitDiabetes() {
         // Send the diabetes details data to the backend
@@ -163,6 +168,7 @@ struct DoctorInfoView: View {
         }
     }
 }
+/* end of reference 2 */
 
 // preview provider to preview the UI with diabetesData being passed
     struct DoctorInfo_Previews: PreviewProvider {

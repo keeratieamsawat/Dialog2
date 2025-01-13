@@ -3,7 +3,8 @@
 import SwiftUI
 
 struct PersonalInfoView: View {
-
+    
+    // calling the data model
     @ObservedObject var userData = UserRegistrationData()
     
     var body: some View {

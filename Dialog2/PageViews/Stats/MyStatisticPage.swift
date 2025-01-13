@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct MyStatisticPage: View {
-    @ObservedObject var glucoseData: GlucoseData // Shared data model for glucose statistics
+    @ObservedObject var glucoseData: GlucoseData // shared data model for glucose statistics
     
     var body: some View {
         NavigationView {
