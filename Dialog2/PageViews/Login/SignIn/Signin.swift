@@ -1,4 +1,4 @@
-// the sign-in page takes in user email and password for those users who has already registered
+// MARK: the sign-in page takes in user email and password for those users who has already registered
 
 // Each user email and password should be unique and corresponds to a unique personal token in backend - this allows each user to sign-in to their own account
 
@@ -75,9 +75,12 @@ struct SigninView: View {
 // MARK: loginUser function to handle user login, send login request to backend.
 // Backend will check if email and password are already stored in database, and allow the user to continue to their account if so
     
+// REFERENCE: The following code was mainly provided by ChatGPT (with modifications) when being prompted to create code for sending http request from SwiftUI to backend database.
+    // similar code being used in DoctorInfo and ConsentsView pages as well
+    
     func loginUser(email: String, password: String) {
         
-        // backend database URL input here
+        // backend databse URL, with "login" being the endpoint
         guard let url = URL(string: "http://127.0.0.1:5000/login") else {
             loginMessage = "Invalid URL"
             return
@@ -121,7 +124,8 @@ struct SigninView: View {
                             DispatchQueue.main.async {
                                 loginMessage = message
                                 accessToken = token
-                                navigateToHome = true // set boolean value to be true, to navigate to HomePageView after success in login
+                                navigateToHome = true
+                                // set boolean value to be true, to navigate to HomePageView after success in login
                             }
                         } else {
                             DispatchQueue.main.async {

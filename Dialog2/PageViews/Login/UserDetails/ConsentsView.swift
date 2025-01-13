@@ -1,8 +1,7 @@
-// for the consents part, the user will click the agree button, and their consent status will be sent to backend
+// MARK: for the consents part, the user will click the agree button, and their consent status will be sent to backend
 // On clicking the button: 1) they will proceed to the next step only if consent status is true (when they click the button to agree 2) all of the registration data will be send to backend
 
 import SwiftUI
-import Foundation
 
 // MARK: ConsentsView page UI
 
@@ -62,11 +61,16 @@ struct ConsentsView: View {
             "height": userData.height,
             "consent": userData.consentStatus
         ]
+        
+// REFERENCE: The following code was mainly provided by ChatGPT (with modifications) when being prompted to create code for sending http request from SwiftUI to backend database.
+        // similar code being used in DoctorInfo and Signin pages as well
 
-        // Log the data to ensure it's being populated correctly
+        // log the data to ensure it's being populated correctly
+        
         //print("Data being sent to the backend: \(registrationData)")
 
         // convert to JSON
+        // URL to backend database, endpoint is "register"
         guard let url = URL(string: "http://127.0.0.1:5000/register") else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
             return
@@ -93,13 +97,14 @@ struct ConsentsView: View {
 
             if let data = data {
                 do {
-                    // Assuming the backend returns a success message in the body
+                    // assuming the backend returns a success message in the body
                     let responseString = String(data: data, encoding: .utf8) ?? "Unknown response"
                     completion(.success(responseString))
                 } catch {
                     completion(.failure(error))
                 }
             }
+            // print out data to see what frontend is going to send
             print("Data being sent to the backend: \(registrationData)")
         }
         
@@ -124,6 +129,7 @@ struct ConsentsView: View {
     }
 }
 
+// preview provider to visualise UI with userData being passed
 struct ConsentsView_Previews: PreviewProvider {
     static var previews: some View {
         ConsentsView(userData: UserRegistrationData())

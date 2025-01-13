@@ -1,3 +1,5 @@
+// MARK: the login page of the app, allowing new users to choose "Create Account" and existing users to choose "Sign-in"
+
 import SwiftUI
 
 struct LoginView: View {

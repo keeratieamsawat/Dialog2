@@ -1,8 +1,8 @@
+// MARK: these pages take in new users' personal information, and propagate into following pages and eventually sent to backend
+
 import SwiftUI
 
 struct PersonalInfoView: View {
-
-// MARK: storing user inputs to the create account pages
 
     @ObservedObject var userData = UserRegistrationData()
     

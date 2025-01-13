@@ -1,3 +1,5 @@
+// MARK: main page of the app, with JavaCakes and DiaLog logos imported as Assets on Xcode and used in this UI page
+
 import SwiftUI
 
 struct MainPageView: View {
