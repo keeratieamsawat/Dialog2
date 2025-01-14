@@ -498,13 +498,13 @@ def gen_graph():
         print("DEBUG: query_data returned None, triggering 500 response.")
         return jsonify({"error": "Failed to query data"}), 500
 
-    # Convert Decimal to float
+    # Convert str to float
     def preprocess(data):
         if isinstance(data, list):
             return [preprocess(item) for item in data]
         elif isinstance(data, dict):
             return {key: preprocess(value) for key, value in data.items()}
-        elif isinstance(data, Decimal):
+        elif isinstance(data, str):
             return float(data)
         return data
 
