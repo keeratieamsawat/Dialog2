@@ -8,6 +8,7 @@ struct HomePageView: View {
     @State private var selectedLogMode: String = "Simple" // Mode selection
     // Shared data model (for glucose level graph)
     @StateObject var glucoseDataDefault: MyStatisticPage.GlucoseData = MyStatisticPage.GlucoseData()
+    @State private var isLoading = true
     @State private var carbohydrateIntake = 0
     @State private var dosage = 0
     @State private var duration = 0
@@ -20,7 +21,7 @@ struct HomePageView: View {
                 // MARK: - Top Blue Bar
                 ZStack {
                     Color("Primary_Color")
-                        .frame(height: 120)
+                        .frame(height: 140)
                         .edgesIgnoringSafeArea(.top)
 
                     Text(formattedDate(currentDate))
@@ -28,7 +29,7 @@ struct HomePageView: View {
                         .fontWeight(.bold)
                         .foregroundColor(.white)
                         .padding(.top, 55)
-                        .padding(.bottom, 10)
+                        .padding(.bottom, -50)
                 }
 
                 // MARK: - Log Mode Picker
@@ -52,104 +53,54 @@ struct HomePageView: View {
                             .foregroundColor(Color("Primary_Color"))
                             .padding(.top, 10)
                         
-                        if glucoseDataDefault.data.isEmpty {
+                        if isLoading {
+                            // Show a loading indicator while fetching data
+                            ProgressView("Loading...")
+                                .frame(width: 350, height: 300)
+                                .padding()
+                        } else if glucoseDataDefault.data.isEmpty {
                             Text("No data available")
                                 .frame(width: 350, height: 300)
                                 .foregroundColor(.gray)
                                 .font(.headline)
-//                                .onAppear {
-//                                    let currentDate = Date()
-//                                    
-//                                    // Get formatted strings for both dates
-//                                    let formattedCurrentDate = JSONUtils.getFormattedDate(for: currentDate)
-//                                    var Data: [String: String] = [
-//                                        "fromDate": formattedCurrentDate,
-//                                        "toDate": formattedCurrentDate
-//                                    ]
-//                                    JSONUtils.fetchData(Data: Data) { result in
-//                                        DispatchQueue.main.async {
-//                                            if let result = result {
-//                                                print("Fetched data: \(result)")
-//                                                glucoseDataDefault.data = result // Update data on the main thread
-//                                                if glucoseDataDefault.data.count == 1 {
-//                                                    glucoseDataDefault.data.append(["date": Date(), "value": glucoseDataDefault.data[0]["value"]!])
-//                                                }
-//                                            }else {
-//                                                print("Failed to fetch data.")
-//                                            }
-//                                        }
-//                                    }
-//                                    Data["carb"] = "carbohydrateIntake\(selectedLogMode)"
-//                                    Data["med"] = "dosage\(selectedLogMode)"
-//                                    Data["exercise"] = "duration\(selectedLogMode)"
-//                                    Data["calorie"] = "caloriesIntake\(selectedLogMode)"
-//                                    JSONUtils.fetchHomeData(Data:Data){result in DispatchQueue.main.async {
-//                                        if let result = result {
-//                                            (carbohydrateIntake, dosage, duration, caloriesIntake) = result
-//                                        } else{
-//                                            print("Failed to fetch data.")
-//                                        }
-//                                    }}
-//                                }
                         } else {
-//                            let currentDate = Date()
-//                            
-//                            // Get formatted strings for both dates
-//                            let formattedCurrentDate = JSONUtils.getFormattedDate(for: currentDate)
-//                            var Data: [String: String] = [
-//                                "fromDate": formattedCurrentDate,
-//                                "toDate": formattedCurrentDate
-//                            ]
-//                            JSONUtils.fetchData(Data: Data) { result in
-//                                DispatchQueue.main.async {
-//                                    if let result = result {
-//                                        print("Fetched data: \(result)")
-//                                        glucoseDataDefault.data = result // Update data on the main thread
-//                                        if glucoseDataDefault.data.count == 1 {
-//                                            glucoseDataDefault.data.append(["date": Date(), "value": glucoseDataDefault.data[0]["value"]!])
-//                                        }
-//                                    }else {
-//                                        print("Failed to fetch data.")
-//                                    }
-//                                }
-//                            }
+                            // Render GraphView only when data is available
                             GraphView(data: glucoseDataDefault.data)
                                 .frame(height: 300)
                                 .padding()
                         }
                     }
-                    .onAppear {
-                            // Fetch data every time the view appears
-                            // Get today's date
-                            let today = Date()
+                .onAppear {
+                        isLoading = true // Reset loading state
+                    
+                        // Fetch data every time the view appears
+                        // Get today's date
+                        let today = Date()
 
-                            // Get the current calendar
-                            let calendar = Calendar.current
+                        // Get the current calendar
+                        let calendar = Calendar.current
 
-                            // Get the current date without the time component
-                            let currentDate = calendar.startOfDay(for: today)
+                        // Get the current date without the time component
+                        let currentDate = calendar.startOfDay(for: today)
 //                            let currentDate = Date()
-                            let formattedCurrentDate = JSONUtils.getFormattedDateHome(for: currentDate)
-                            let Data: [String: String] = [
-                                "userid": "1",
-                                "fromDate": "\(formattedCurrentDate)T00:00",
-                                "toDate": "\(formattedCurrentDate)T23:59"
-                            ]
-                            JSONUtils.fetchData(Data: Data) { result in
-                                DispatchQueue.main.async {
-                                    if let result = result {
-                                        print("Fetched data: \(result)")
-                                        glucoseDataDefault.data = result // Update data on the main thread
-//                                        if glucoseDataDefault.data.count == 1 {
-//                                            glucoseDataDefault.data.append(["date": Date(), "value": glucoseDataDefault.data[0]["value"]!])
-//                                            print(glucoseDataDefault.data)
-//                                        }
-                                    } else {
-                                        print("Failed to fetch data.")
-                                    }
+                        let formattedCurrentDate = JSONUtils.getFormattedDateHome(for: currentDate)
+                        let Data: [String: String] = [
+                            "userid": "1",
+                            "fromDate": "\(formattedCurrentDate)T00:00",
+                            "toDate": "\(formattedCurrentDate)T23:59"
+                        ]
+                        JSONUtils.fetchData(Data: Data) { result in
+                            DispatchQueue.main.async {
+                                if let result = result {
+                                    print("Fetched data: \(result)")
+                                    glucoseDataDefault.data = result // Update data on the main thread
+                                } else {
+                                    print("Failed to fetch data.")
                                 }
+                                isLoading = false
                             }
                         }
+                    }
                     .background(Color.white)
                     .cornerRadius(10)
                     .shadow(radius: 2)
@@ -189,7 +140,7 @@ struct HomePageView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(width: 170, height: 120)
+                        .frame(width: 170, height: 90)
                         .background(Color("Primary_Color"))
                         .cornerRadius(25)
                         .shadow(radius: 5)
