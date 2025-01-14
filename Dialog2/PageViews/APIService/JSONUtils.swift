@@ -11,17 +11,19 @@ struct JSONUtils {
     /// Encodes an encodable object into JSON data.
     ///
 
+//    
     static func fetchData(Data: [String: String], completion: @escaping ([[String: Any]]?) -> Void) {
             do {
-                // Create a mutable copy of the dictionary
-                var mutableData = Data
-                
-                // Add the userid to the dictionary
-                let userid = "eaba7c23-3bc4-4d56-943c-fc5a25cfbbce"
-                mutableData["userid"] = userid
+//                // Create a mutable copy of the dictionary
+//                var mutableData = Data
+//                
+//                // Add the userid to the dictionary
+//                let userid = "1"
+//                mutableData["userid"] = userid
+//                print(mutableData)
                 
                 // Convert the updated dictionary to JSON Data
-                let jsonData = try JSONUtils.dictionaryToJSONData(mutableData)
+                let jsonData = try JSONUtils.dictionaryToJSONData(Data)
                 
                 // Send the data to the backend
                 // Reference 1 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
@@ -49,6 +51,12 @@ struct JSONUtils {
     static func getFormattedDate(for date: Date) -> String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm" // Format: yyyy-MM-DDTHH:mm
+            return dateFormatter.string(from: date)
+        }
+    
+    static func getFormattedDateHome(for date: Date) -> String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd" // Format: yyyy-MM-DDTHH:mm
             return dateFormatter.string(from: date)
         }
         
