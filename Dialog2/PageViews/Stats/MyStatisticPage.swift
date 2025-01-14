@@ -18,7 +18,7 @@ struct MyStatisticPage: View {
     private var userID: String {
         guard let id = TokenManager.getUserID() else {
             submissionStatus = "Error: Unable to retrieve user ID from token."
-            return "1"
+            return "7808aba7-6ae4-4603-a408-560308d08ecc"
         }
         return id
     }

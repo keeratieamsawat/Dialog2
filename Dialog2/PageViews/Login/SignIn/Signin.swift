@@ -64,7 +64,7 @@ struct SigninView: View {
                 }
                 
                 // navigation link for home page
-                NavigationLink(destination: HomePageView(diabetesData:DiabetesDetailsData()), isActive: $navigateToHome) {
+                NavigationLink(destination: HomePageView(), isActive: $navigateToHome) {
                     EmptyView() // make sure the navigation link does not show anything on the view page
                 }
             }
@@ -124,6 +124,7 @@ struct SigninView: View {
                             DispatchQueue.main.async {
                                 loginMessage = message
                                 accessToken = token
+                                TokenManager.saveToken(accessToken!)
                                 navigateToHome = true
                                 // set boolean value to be true, to navigate to HomePageView after success in login
                             }

@@ -10,8 +10,7 @@ import Foundation
 struct JSONUtils {
     /// Encodes an encodable object into JSON data.
     ///
-
-//    
+    
     static func fetchData(Data: [String: String], completion: @escaping ([[String: Any]]?) -> Void) {
             do {
 //                // Create a mutable copy of the dictionary
@@ -95,12 +94,12 @@ struct JSONUtils {
     // Model for each item in the "data" array
     // Reference 2 - OpenAI. (2025). ChatGPT (v. 4). Retrieved from https://chat.openai.com
     struct DataItem: Decodable {
-        var value: Double
         var date: String
+        var value: Double
         
         enum CodingKeys: String, CodingKey {
-            case value
             case date
+            case value
         }
     }
     

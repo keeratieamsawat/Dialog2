@@ -3,11 +3,22 @@ import SwiftUI
 struct GlucoseStatsView: View {
     
     // vars to store from and to date - create a date range
-    @ObservedObject var glucoseData: MyStatisticPage.GlucoseData // Shared data model for glucose statistics
+    @StateObject var glucoseData: MyStatisticPage.GlucoseData = MyStatisticPage.GlucoseData() // Shared data model for glucose statistics
     @State private var fromDate = Date()
     @State private var fromTime = Date()
     @State private var toDate = Date()
     @State private var toTime = Date()
+    @State private var submissionStatus: String = "" // for error handling
+        
+    // Computed property to retrieve userID
+    private var userID: String {
+        guard let id = TokenManager.getUserID() else {
+            submissionStatus = "Error: Unable to retrieve user ID from token."
+            return "7808aba7-6ae4-4603-a408-560308d08ecc"
+        }
+        return id
+    }
+         
     
     var body: some View {
         
@@ -53,25 +64,20 @@ struct GlucoseStatsView: View {
             }
             .padding()
             .onTapGesture {
-                let Data: [String: String] = [
+                let data: [String: String] = [
+                    "userid": userID,
                     "fromDate": JSONUtils.combineDateAndTimeAsString(date: fromDate, time: fromTime),
-                    "toDate": JSONUtils.combineDateAndTimeAsString(date: fromDate, time: fromTime)
+                    "toDate": JSONUtils.combineDateAndTimeAsString(date: toDate, time: toTime)
                 ]
-                do {
-                    let jsonData = try JSONUtils.dictionaryToJSONData(Data)
-                    // Use jsonData here
-                    JSONUtils.sendDataToBackend(jsonData: jsonData, endpoint: "http://127.0.0.1:5000/graphs"){ result in
-                        switch result {
-                        case .success(let response):
-                            // Process the response data
-                            DispatchQueue.main.async {
-                                glucoseData.data = response.data.map { JSONUtils.convertToDictionary(dataItem: $0) }}
-                        case .failure(let error):
-                            print("Error fetching data from backend: \(error)")
+                JSONUtils.fetchData(Data: data) { result in
+                    DispatchQueue.main.async {
+                        if let result = result {
+                            print("Fetched data: \(result)")
+                            glucoseData.data = result
+                        } else {
+                            print("Failed to fetch data.")
                         }
                     }
-                } catch {
-                    print("Error converting dictionary to JSON: \(error.localizedDescription)")
                 }
                 
                 // MARK: - Glucose Trend Graph
@@ -86,12 +92,17 @@ struct GlucoseStatsView: View {
                 Text("Glucose Trend")
                     .font(.headline)
                     .foregroundColor(.blue)
-                
-                GraphView(data: glucoseData.data) // Reuse GraphView
-                    .frame(height: 200)
-                    .padding()
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
+                if glucoseData.data.isEmpty {
+                    Text("No data available")
+                        .frame(width: 350, height: 300)
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                } else {
+                    // Render GraphView only when data is available
+                    GraphView(data: glucoseData.data)
+                        .frame(height: 300)
+                        .padding()
+                }
                 
                 // MARK: - Measurements List
                 Text("Glucose Measurements")

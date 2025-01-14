@@ -118,7 +118,7 @@ struct GraphView: View {
                 let yValues = points.map { $0.1 }
 
                 // Ensure min and max values exist for scaling
-                if let minY = yValues.min(), let maxY = yValues.max() {
+                if let minY = CGFloat?(0), let maxY = yValues.max() {
                     // Add padding to Y-axis range
                     let (adjustedMinY, adjustedMaxY) = calculateAdjustedYRange(minY: minY, maxY: maxY)
 
@@ -146,13 +146,6 @@ struct GraphView: View {
                             Path { path in
                                 path.move(to: CGPoint(x: padding, y: yPosition))
                                 path.addLine(to: CGPoint(x: width - padding, y: yPosition))
-                            }
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-
-                            // Vertical grid line
-                            Path { path in
-                                path.move(to: CGPoint(x: xPosition, y: padding))
-                                path.addLine(to: CGPoint(x: xPosition, y: height - padding))
                             }
                             .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                         }

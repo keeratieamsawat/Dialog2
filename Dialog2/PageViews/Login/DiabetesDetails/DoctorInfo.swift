@@ -61,7 +61,7 @@ struct DoctorInfoView: View {
             }
             // navigation to home page
             .navigationDestination(isPresented: $diabetesData.allDone) {
-                HomePageView(diabetesData:diabetesData)
+                HomePageView()
                 
             }
         }

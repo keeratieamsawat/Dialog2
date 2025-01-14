@@ -16,10 +16,10 @@ struct HomePageView: View {
     @State private var submissionStatus: String = "" // for error handling
         
     // Computed property to retrieve userID
-    private var userID: String? {
+    private var userID: String {
         guard let id = TokenManager.getUserID() else {
             submissionStatus = "Error: Unable to retrieve user ID from token."
-            return nil
+            return "7808aba7-6ae4-4603-a408-560308d08ecc"
         }
         return id
     }
@@ -32,7 +32,7 @@ struct HomePageView: View {
                 // MARK: - Top Blue Bar
                 ZStack {
                     Color("Primary_Color")
-                        .frame(height: 140)
+                        .frame(height: 120)
                         .edgesIgnoringSafeArea(.top)
 
                     Text(formattedDate(currentDate))
@@ -71,18 +71,17 @@ struct HomePageView: View {
                                 .padding()
                         } else if glucoseDataDefault.data.isEmpty {
                             Text("No data available")
-                                .frame(width: 350, height: 300)
+                                .frame(width: 350, height: 280)
                                 .foregroundColor(.gray)
                                 .font(.headline)
                         } else {
                             // Render GraphView only when data is available
                             GraphView(data: glucoseDataDefault.data)
-                                .frame(height: 300)
+                                .frame(height: 280)
                                 .padding()
                         }
                     }
                 .onAppear {
-                        guard let userID = userID else { return }
                         isLoading = true // Reset loading state
                     
                         // Fetch data every time the view appears
@@ -173,7 +172,7 @@ struct HomePageView: View {
                         NavigationLink(destination: MyInfoPage()) {
                             TabItem(icon: "person.fill", label: "Me")
                         }
-                        NavigationLink(destination: QuestionPage()) {
+                        NavigationLink(destination: QuestionnaireView()) {
                             TabItem(icon: "doc.text", label: "Questions")
                         }
                     }
