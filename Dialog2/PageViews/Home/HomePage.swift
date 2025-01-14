@@ -13,6 +13,17 @@ struct HomePageView: View {
     @State private var dosage = 0
     @State private var duration = 0
     @State private var caloriesIntake = 0
+    @State private var submissionStatus: String = "" // for error handling
+        
+    // Computed property to retrieve userID
+    private var userID: String? {
+        guard let id = TokenManager.getUserID() else {
+            submissionStatus = "Error: Unable to retrieve user ID from token."
+            return nil
+        }
+        return id
+    }
+            
 
     var body: some View {
         
@@ -71,6 +82,7 @@ struct HomePageView: View {
                         }
                     }
                 .onAppear {
+                        guard let userID = userID else { return }
                         isLoading = true // Reset loading state
                     
                         // Fetch data every time the view appears
@@ -85,7 +97,7 @@ struct HomePageView: View {
 //                            let currentDate = Date()
                         let formattedCurrentDate = JSONUtils.getFormattedDateHome(for: currentDate)
                         let Data: [String: String] = [
-                            "userid": "1",
+                            "userid": userID,
                             "fromDate": "\(formattedCurrentDate)T00:00",
                             "toDate": "\(formattedCurrentDate)T23:59"
                         ]
