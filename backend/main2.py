@@ -498,14 +498,17 @@ def gen_graph():
         print("DEBUG: query_data returned None, triggering 500 response.")
         return jsonify({"error": "Failed to query data"}), 500
 
-    # Convert str to float
+    # Convert str blood sugar value to float
     def preprocess(data):
         if isinstance(data, list):
             return [preprocess(item) for item in data]
         elif isinstance(data, dict):
             return {key: preprocess(value) for key, value in data.items()}
         elif isinstance(data, str):
-            return float(data)
+            try:
+                return float(data)
+            except:
+                return data
         return data
 
     processed_data = preprocess(data)
