@@ -32,7 +32,7 @@ struct HomePageView: View {
                 // MARK: - Top Blue Bar
                 ZStack {
                     Color("Primary_Color")
-                        .frame(height: 120)
+                        .frame(height: 140)
                         .edgesIgnoringSafeArea(.top)
 
                     Text(formattedDate(currentDate))
