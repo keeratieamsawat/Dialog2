@@ -118,7 +118,7 @@ struct GraphView: View {
                 let yValues = points.map { $0.1 }
 
                 // Ensure min and max values exist for scaling
-                if let minY = CGFloat?(0), let maxY = yValues.max() {
+                if let minY = yValues.min(), let maxY = yValues.max() {
                     // Add padding to Y-axis range
                     let (adjustedMinY, adjustedMaxY) = calculateAdjustedYRange(minY: minY, maxY: maxY)
 
